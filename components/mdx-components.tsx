@@ -7,6 +7,7 @@ import CodeExample from "./CodeExample";
 import Quiz from "./Quiz";
 import Exercise from "./Exercise";
 import ReadMore from "./ReadMore";
+import DocsLinks from "./DocsLinks";
 
 export function getMDXComponents(chapterId: string) {
   return {
@@ -22,6 +23,9 @@ export function getMDXComponents(chapterId: string) {
     ) => <Exercise {...props} chapterId={chapterId} />,
     ReadMore: (props: React.ComponentProps<typeof ReadMore>) => (
       <ReadMore {...props} />
+    ),
+    DocsLinks: (props: React.ComponentProps<typeof DocsLinks>) => (
+      <DocsLinks {...props} />
     ),
     // Heading remap: the lesson page <h1> (frontmatter title) is the single
     // authoritative h1. MDX `#`..`####` are shifted down one semantic level so

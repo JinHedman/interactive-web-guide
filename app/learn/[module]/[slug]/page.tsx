@@ -94,6 +94,17 @@ export default async function LessonPage({ params }: PageProps) {
           components={components}
           options={{
             parseFrontmatter: false, // already parsed by gray-matter
+            // next-mdx-remote v6 ships a security feature, `blockJS`, that
+            // defaults to ON and strips every JSX *expression* attribute
+            // (`prop={...}`) plus `{...}` expression children before the MDX
+            // is compiled. Our lessons rely on those: <Quiz questions={[...]} />,
+            // <Exercise steps={[...]} solution={`...`} />, <DocsLinks links={[...]} />,
+            // and <CodeExample>{`...`}</CodeExample>. The lesson MDX is trusted,
+            // first-party content authored in this repo (content/**), not
+            // user-submitted, so this sanitiser does not apply — disabling it
+            // lets the authored props reach the components unchanged.
+            blockJS: false,
+            blockDangerousJS: false,
             mdxOptions: {
               remarkPlugins: [],
               rehypePlugins: [],
