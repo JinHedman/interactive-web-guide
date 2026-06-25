@@ -11,8 +11,7 @@ export default function ThemeToggle() {
     setDark(isDark);
   }, []);
 
-  function toggle() {
-    const next = !dark;
+  function setTheme(next: boolean) {
     setDark(next);
     if (next) {
       document.documentElement.setAttribute("data-theme", "dark");
@@ -24,28 +23,74 @@ export default function ThemeToggle() {
   }
 
   return (
-    <button
-      onClick={toggle}
-      aria-label={dark ? "Switch to light theme" : "Switch to dark theme"}
-      title={dark ? "Switch to light theme" : "Switch to dark theme"}
+    <div
+      role="group"
+      aria-label="Theme"
       style={{
-        background: "none",
-        border: "1px solid var(--border)",
-        borderRadius: "6px",
-        padding: "8px 12px",
-        minHeight: "36px",
-        cursor: "pointer",
-        color: "var(--fg-muted)",
-        fontSize: "0.875rem",
-        lineHeight: 1,
         display: "flex",
-        alignItems: "center",
-        gap: "6px",
-        transition: "border-color 0.15s, color 0.15s",
+        gap: "5px",
+        background: "var(--bg-subtle)",
+        borderRadius: "9px",
+        padding: "4px",
       }}
     >
-      {dark ? "☀" : "☾"}
-      <span style={{ fontSize: "0.8rem" }}>{dark ? "Light" : "Dark"}</span>
+      <Segment
+        active={!dark}
+        label="Light"
+        glyph="☀"
+        onClick={() => setTheme(false)}
+      />
+      <Segment
+        active={dark}
+        label="Dark"
+        glyph="☾"
+        onClick={() => setTheme(true)}
+      />
+    </div>
+  );
+}
+
+function Segment({
+  active,
+  label,
+  glyph,
+  onClick,
+}: {
+  active: boolean;
+  label: string;
+  glyph: string;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      aria-label={`Switch to ${label.toLowerCase()} theme`}
+      title={`Switch to ${label.toLowerCase()} theme`}
+      style={{
+        flex: 1,
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        gap: "5px",
+        minHeight: "30px",
+        padding: "5px",
+        border: "none",
+        borderRadius: "6px",
+        cursor: "pointer",
+        fontFamily: "var(--font-sans)",
+        fontSize: "12px",
+        fontWeight: active ? 600 : 500,
+        lineHeight: 1,
+        color: active ? "var(--fg-base)" : "var(--fg-subtle)",
+        background: active ? "var(--bg-surface)" : "transparent",
+        boxShadow: active ? "0 1px 2px rgba(0, 0, 0, 0.07)" : "none",
+        transition: "background 0.15s, color 0.15s, box-shadow 0.15s",
+      }}
+    >
+      <span aria-hidden>{glyph}</span>
+      <span>{label}</span>
     </button>
   );
 }

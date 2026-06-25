@@ -35,9 +35,9 @@ export default function Exercise({
     <section
       aria-label={`Exercise: ${title}`}
       style={{
-        margin: "2rem 0",
+        margin: "28px 0",
         border: "1px solid var(--border)",
-        borderRadius: "10px",
+        borderRadius: "12px",
         overflow: "hidden",
         background: "var(--bg-surface)",
       }}
@@ -45,8 +45,8 @@ export default function Exercise({
       {/* Header */}
       <div
         style={{
-          padding: "14px 20px",
-          background: "color-mix(in srgb, var(--progress-exercise) 12%, var(--bg-subtle))",
+          padding: "13px 18px",
+          background: "var(--bg-accent)",
           borderBottom: "1px solid var(--border)",
           display: "flex",
           alignItems: "center",
@@ -55,10 +55,26 @@ export default function Exercise({
           flexWrap: "wrap",
         }}
       >
-        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
-          <span aria-hidden style={{ fontSize: "1.1rem" }}>&#x1F4BB;</span>
-          <span style={{ fontWeight: 600, fontSize: "0.95rem", color: "var(--fg-base)" }}>
-            Exercise: {title}
+        <div style={{ display: "flex", alignItems: "center", gap: "9px" }}>
+          <span
+            aria-hidden
+            style={{
+              width: "22px",
+              height: "22px",
+              borderRadius: "6px",
+              background: "var(--progress-exercise)",
+              color: "#fff",
+              display: "inline-flex",
+              alignItems: "center",
+              justifyContent: "center",
+              fontSize: "11px",
+              flexShrink: 0,
+            }}
+          >
+            &#x270E;
+          </span>
+          <span style={{ fontWeight: 600, fontSize: "14px", color: "var(--fg-base)" }}>
+            Exercise — {title}
           </span>
         </div>
         {done && (
@@ -79,31 +95,45 @@ export default function Exercise({
       </div>
 
       {/* Body */}
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: "18px" }}>
         {/* Goal */}
         <div
           style={{
-            marginBottom: "16px",
-            padding: "12px 16px",
-            background: "var(--bg-accent)",
+            marginBottom: "14px",
+            padding: "12px 15px",
+            background: "var(--bg-base)",
             border: "1px solid var(--border)",
-            borderRadius: "6px",
+            borderRadius: "8px",
           }}
         >
-          <strong style={{ display: "block", fontSize: "0.8rem", letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--fg-muted)", marginBottom: "4px" }}>
+          <strong style={{ display: "block", fontSize: "10.5px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--fg-subtle)", marginBottom: "4px" }}>
             Goal
           </strong>
-          <p style={{ margin: 0, fontSize: "0.95rem" }}>{goal}</p>
+          <p style={{ margin: 0, fontSize: "14px", lineHeight: 1.55 }}>{goal}</p>
         </div>
 
         {/* Steps */}
         <div style={{ marginBottom: "16px" }}>
-          <strong style={{ display: "block", fontSize: "0.8rem", letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--fg-muted)", marginBottom: "8px" }}>
+          <strong style={{ display: "block", fontSize: "10.5px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--fg-subtle)", marginBottom: "8px" }}>
             Steps
           </strong>
-          <ol style={{ margin: 0, paddingLeft: "1.4rem", display: "flex", flexDirection: "column", gap: "8px" }}>
+          <ol
+            style={{
+              margin: 0,
+              paddingLeft: "20px",
+              listStyle: "decimal",
+              listStylePosition: "outside",
+            }}
+          >
             {steps.map((step, i) => (
-              <li key={i} style={{ fontSize: "0.9rem", lineHeight: 1.6 }}>
+              <li
+                key={i}
+                style={{
+                  fontSize: "14px",
+                  lineHeight: 1.55,
+                  marginBottom: i < steps.length - 1 ? "6px" : 0,
+                }}
+              >
                 {step}
               </li>
             ))}
@@ -113,33 +143,33 @@ export default function Exercise({
         {/* Expected result */}
         <div
           style={{
-            marginBottom: "20px",
-            padding: "10px 16px",
+            marginBottom: "18px",
+            padding: "10px 15px",
             background: "var(--bg-subtle)",
-            borderRadius: "6px",
+            borderRadius: "8px",
             border: "1px solid var(--border)",
           }}
         >
-          <strong style={{ display: "block", fontSize: "0.8rem", letterSpacing: "0.05em", textTransform: "uppercase", color: "var(--fg-muted)", marginBottom: "4px" }}>
+          <strong style={{ display: "block", fontSize: "10.5px", letterSpacing: "0.06em", textTransform: "uppercase", color: "var(--fg-subtle)", marginBottom: "4px" }}>
             Expected result
           </strong>
-          <p style={{ margin: 0, fontSize: "0.875rem", color: "var(--fg-muted)" }}>
+          <p style={{ margin: 0, fontSize: "13px", color: "var(--fg-muted)" }}>
             {expected}
           </p>
         </div>
 
         {/* Action buttons */}
-        <div style={{ display: "flex", gap: "12px", flexWrap: "wrap", alignItems: "center" }}>
+        <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
           <button
             onClick={() => setShowSolution((s) => !s)}
             style={{
-              padding: "7px 14px",
+              padding: "8px 16px",
               background: "none",
               color: "var(--fg-muted)",
-              border: "1px solid var(--border)",
-              borderRadius: "6px",
+              border: "1px solid var(--border-strong)",
+              borderRadius: "8px",
               fontWeight: 500,
-              fontSize: "0.875rem",
+              fontSize: "13px",
               cursor: "pointer",
             }}
             aria-expanded={showSolution}
@@ -151,13 +181,13 @@ export default function Exercise({
             <button
               onClick={handleMarkDone}
               style={{
-                padding: "7px 14px",
+                padding: "8px 16px",
                 background: "var(--progress-read)",
                 color: "#fff",
                 border: "none",
-                borderRadius: "6px",
+                borderRadius: "8px",
                 fontWeight: 600,
-                fontSize: "0.875rem",
+                fontSize: "13px",
                 cursor: "pointer",
               }}
             >

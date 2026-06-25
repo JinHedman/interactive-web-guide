@@ -3,34 +3,41 @@
 /* ─── Design tokens ─────────────────────────────────────────────────────── */
 :root {
   /* Backgrounds */
-  --bg-base:        #f8f7f4;
+  --bg-base:        #f6f7f9;
   --bg-surface:     #ffffff;
-  --bg-subtle:      #f1f0ec;
-  --bg-accent:      #fffbeb;
+  --bg-subtle:      #f1f2f5;
+  --bg-accent:      #fff7ed;
 
   /* Foregrounds */
-  --fg-base:        #1a1916;
-  --fg-muted:       #6b6a65;
-  /* AA-compliant: 4.77:1 on --bg-base, 5.11:1 on --bg-surface */
-  --fg-subtle:      #6f6e69;
+  --fg-base:        #14151a;
+  --fg-muted:       #565a66;
+  --fg-subtle:      #8a8f9c;
 
-  /* Brand (a calm teal-indigo) */
-  --brand:          #3d63dd;
-  --brand-light:    #dce6ff;
-  --brand-hover:    #2b4fbf;
+  /* Brand (indigo) */
+  --brand:          #4f46e5;
+  --brand-light:    #ece9ff;
+  --brand-hover:    #4338ca;
+  /* Filled buttons with white text */
+  --brand-solid:    #4f46e5;
 
   /* Code */
-  --code-bg:        #1e2030;
-  --code-fg:        #cdd6f4;
+  --code-bg:        #16181f;
+  --code-fg:        #c9cdd6;
+  --code-syntax-border: #262a36;
 
   /* Borders */
-  --border:         #e2e1db;
-  --border-strong:  #c4c3bb;
+  --border:         #e6e8ec;
+  --border-strong:  #d3d6dd;
 
   /* Progress colors */
   --progress-read:     #16a34a;
   --progress-exercise: #d97706;
   --progress-quiz:     #2563eb;
+
+  /* Quiz / sidebar accents */
+  --dot-incomplete:   #d0d3da;
+  --quiz-correct-bg:  #f0fdf4;
+  --quiz-wrong-bg:    #fef2f2;
 
   /* Feedback (theme-aware danger; AA on tinted surface) */
   --danger:        #c81e1e;
@@ -40,32 +47,51 @@
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
   --font-serif: Georgia, "Times New Roman", serif;
+
+  /* Shadows */
+  --shadow-card: 0 1px 4px rgba(0, 0, 0, 0.1), 0 26px 60px -34px rgba(0, 0, 0, 0.28);
+  --shadow-code-window: 0 34px 64px -34px rgba(20, 21, 26, 0.55);
+
+  /* Standard radii */
+  --radius-card:        14px;
+  --radius-card-inner:  12px;
+  --radius-button:      9px;
+  --radius-pill:        20px;
+  --radius-code-window: 14px;
+  --radius-inline-code: 4px;
+  --radius-progress:    3px;
 }
 
 [data-theme="dark"] {
-  --bg-base:        #13131a;
-  --bg-surface:     #1e1e2a;
-  --bg-subtle:      #252535;
-  --bg-accent:      #1c1a12;
+  --bg-base:        #0c0d11;
+  --bg-surface:     #15171e;
+  --bg-subtle:      #1b1d27;
+  --bg-accent:      #2a1f12;
 
-  --fg-base:        #e8e7e3;
-  --fg-muted:       #a09fa0;
-  /* AA-compliant: 5.97:1 on --bg-base, 4.86:1 on --bg-subtle */
-  --fg-subtle:      #9291a0;
+  --fg-base:        #ececf0;
+  --fg-muted:       #9aa0ad;
+  --fg-subtle:      #6b7180;
 
-  --brand:          #7c9ef7;
-  --brand-light:    #1e2e60;
-  --brand-hover:    #a0b4fa;
+  --brand:          #818cf8;
+  --brand-light:    #221f45;
+  --brand-hover:    #818cf8;
+  /* Filled buttons with white text */
+  --brand-solid:    #6366f1;
 
-  --code-bg:        #0f1117;
-  --code-fg:        #cdd6f4;
+  --code-bg:        #07080b;
+  --code-fg:        #c9cdd6;
+  --code-syntax-border: #1a1d27;
 
-  --border:         #2e2e3e;
-  --border-strong:  #3e3e50;
+  --border:         #232633;
+  --border-strong:  #2d3140;
 
   --progress-read:     #22c55e;
   --progress-exercise: #f59e0b;
   --progress-quiz:     #60a5fa;
+
+  --dot-incomplete:   #3a3f4e;
+  --quiz-correct-bg:  #0e2a18;
+  --quiz-wrong-bg:    #2a1416;
 
   --danger:        #fca5a5;
   --danger-border: #f87171;
@@ -172,9 +198,9 @@ body {
 .prose h6 { font-weight: 600; }
 
 .prose .prose-h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
-.prose .prose-h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; margin: 2.25rem 0 0.75rem; letter-spacing: -0.01em; }
-.prose .prose-h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; margin: 1.75rem 0 0.5rem; }
-.prose .prose-h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.375rem; }
+.prose .prose-h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; margin: 2.25rem 0 0.75rem; letter-spacing: -0.02em; }
+.prose .prose-h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; margin: 1.75rem 0 0.5rem; letter-spacing: -0.01em; }
+.prose .prose-h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.375rem; letter-spacing: -0.01em; }
 
 .prose p { margin: 0 0 1.125rem; }
 
@@ -230,12 +256,12 @@ body {
 
 /* ─── Shiki code block overrides ─────────────────────────────────────────── */
 .shiki {
-  border-radius: 6px;
+  border-radius: 0;
   overflow: auto;
-  padding: 1rem 1.25rem;
+  padding: 14px;
   font-family: var(--font-mono);
-  font-size: 0.875rem;
-  line-height: 1.65;
+  font-size: 0.8125rem;
+  line-height: 1.7;
 }
 
 .shiki code {

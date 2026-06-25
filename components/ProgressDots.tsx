@@ -55,7 +55,7 @@ function Dot({
         // Distinguish by shape (filled disc vs. hollow ring), not color alone,
         // so colorblind sighted users can tell done from not-done.
         background: filled ? color : "transparent",
-        border: filled ? `1px solid ${color}` : "1px solid var(--border-strong)",
+        border: filled ? `1px solid ${color}` : "1px solid var(--dot-incomplete)",
         boxSizing: "border-box",
         transition: "background 0.2s, border-color 0.2s",
       }}

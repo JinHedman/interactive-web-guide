@@ -115,36 +115,50 @@ export default function Quiz({ questions = [], chapterId }: QuizProps) {
     <section
       aria-label="Chapter quiz"
       style={{
-        margin: "2rem 0",
+        margin: "28px 0",
         background: "var(--bg-surface)",
         border: "1px solid var(--border)",
-        borderRadius: "10px",
+        borderRadius: "12px",
         overflow: "hidden",
       }}
     >
       {/* Header */}
       <div
         style={{
-          padding: "14px 20px",
+          padding: "13px 18px",
           background: "var(--brand-light)",
           borderBottom: "1px solid var(--border)",
           display: "flex",
           alignItems: "center",
-          gap: "10px",
+          gap: "9px",
         }}
       >
-        <span style={{ fontSize: "1.1rem" }} aria-hidden>
-          &#x2753;
+        <span
+          aria-hidden
+          style={{
+            width: "22px",
+            height: "22px",
+            borderRadius: "6px",
+            background: "var(--brand)",
+            color: "#fff",
+            display: "inline-flex",
+            alignItems: "center",
+            justifyContent: "center",
+            fontSize: "12px",
+            flexShrink: 0,
+          }}
+        >
+          ?
         </span>
         <span
-          style={{ fontWeight: 600, fontSize: "0.95rem", color: "var(--brand)" }}
+          style={{ fontWeight: 600, fontSize: "14px", color: "var(--brand)" }}
         >
           Quiz — {questions.length} question{questions.length !== 1 ? "s" : ""}
         </span>
       </div>
 
       {/* Questions */}
-      <div style={{ padding: "20px" }}>
+      <div style={{ padding: "18px" }}>
         {questions.map((q, qi) => {
           const qState = state.questions[qi];
           const isSubmitted = submitted.get(qi);
@@ -241,9 +255,9 @@ function QuestionItem({
       }}
     >
       <p
-        style={{ fontWeight: 500, marginBottom: "12px", fontSize: "0.95rem" }}
+        style={{ fontWeight: 500, marginBottom: "12px", fontSize: "14.5px" }}
       >
-        <span style={{ color: "var(--fg-muted)", marginRight: "6px" }}>
+        <span style={{ color: "var(--fg-subtle)", marginRight: "6px" }}>
           {qi + 1}.
         </span>
         {question.prompt}
@@ -292,13 +306,13 @@ function QuestionItem({
           role="status"
           aria-live="polite"
           style={{
-            marginTop: "10px",
+            marginTop: "12px",
             padding: "10px 14px",
-            borderRadius: "6px",
-            fontSize: "0.875rem",
+            borderRadius: "8px",
+            fontSize: "13px",
             background: isCorrect
-              ? "color-mix(in srgb, var(--progress-read) 12%, transparent)"
-              : "color-mix(in srgb, var(--danger) 12%, transparent)",
+              ? "var(--quiz-correct-bg)"
+              : "var(--quiz-wrong-bg)",
             color: isCorrect ? "var(--progress-read)" : "var(--danger)",
             border: `1px solid ${isCorrect ? "var(--progress-read)" : "var(--danger-border)"}`,
           }}
@@ -345,8 +359,8 @@ function McOptions({
         let borderColor = "var(--border)";
         let bgColor = "transparent";
         if (submitted) {
-          if (isAnswer) { borderColor = "var(--progress-read)"; bgColor = "color-mix(in srgb, var(--progress-read) 10%, transparent)"; }
-          else if (isSelected && !isAnswer) { borderColor = "#ef4444"; bgColor = "color-mix(in srgb, #ef4444 10%, transparent)"; }
+          if (isAnswer) { borderColor = "var(--progress-read)"; bgColor = "var(--quiz-correct-bg)"; }
+          else if (isSelected && !isAnswer) { borderColor = "var(--danger-border)"; bgColor = "var(--quiz-wrong-bg)"; }
         } else if (isSelected) {
           borderColor = "var(--brand)";
           bgColor = "var(--brand-light)";
@@ -360,12 +374,12 @@ function McOptions({
               display: "flex",
               alignItems: "center",
               gap: "10px",
-              padding: "8px 12px",
-              borderRadius: "6px",
+              padding: "9px 13px",
+              borderRadius: "8px",
               border: `1px solid ${borderColor}`,
               background: bgColor,
               cursor: submitted ? "default" : "pointer",
-              fontSize: "0.9rem",
+              fontSize: "14px",
               transition: "border-color 0.12s, background 0.12s",
             }}
           >
@@ -381,7 +395,7 @@ function McOptions({
             />
             <span>{opt}</span>
             {submitted && isAnswer && (
-              <span style={{ marginLeft: "auto", color: "var(--progress-read)", fontWeight: 600, fontSize: "0.8rem" }}>
+              <span style={{ marginLeft: "auto", color: "var(--progress-read)", fontWeight: 600, fontSize: "12px" }}>
                 Correct
               </span>
             )}
@@ -504,22 +518,22 @@ function useMapState<T>(count: number) {
 // ─── Shared button styles ─────────────────────────────────────────────────────
 const primaryBtn: React.CSSProperties = {
   padding: "9px 18px",
-  background: "var(--brand)",
+  background: "var(--brand-solid)",
   color: "#fff",
   border: "none",
-  borderRadius: "6px",
+  borderRadius: "9px",
   fontWeight: 600,
-  fontSize: "0.875rem",
+  fontSize: "13px",
   cursor: "pointer",
 };
 
 const secondaryBtn: React.CSSProperties = {
-  padding: "7px 14px",
+  padding: "8px 16px",
   background: "none",
   color: "var(--brand)",
   border: "1px solid var(--brand)",
-  borderRadius: "6px",
+  borderRadius: "8px",
   fontWeight: 500,
-  fontSize: "0.875rem",
+  fontSize: "13px",
   cursor: "pointer",
 };

@@ -13,34 +13,36 @@ export default function PrevNext({ prev, next }: Props) {
       style={{
         display: "flex",
         justifyContent: "space-between",
-        gap: "16px",
-        marginTop: "48px",
-        paddingTop: "24px",
+        alignItems: "center",
+        gap: "14px",
+        marginTop: "32px",
+        paddingTop: "22px",
         borderTop: "1px solid var(--border)",
         flexWrap: "wrap",
       }}
     >
-      <div style={{ flex: "0 0 auto" }}>
+      <div style={{ flex: "0 1 auto", minWidth: 0 }}>
         {prev && (
           <Link
             href={prev.href}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "3px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "6px",
               textDecoration: "none",
-              color: "var(--fg-base)",
-              padding: "12px 16px",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              transition: "border-color 0.15s",
-              maxWidth: "220px",
+              color: "var(--fg-subtle)",
+              fontSize: "13px",
+              transition: "color 0.15s",
             }}
           >
-            <span style={{ fontSize: "0.75rem", color: "var(--fg-muted)" }}>
-              ← Previous
-            </span>
-            <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
+            <span aria-hidden>←</span>
+            <span
+              style={{
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap",
+              }}
+            >
               {prev.frontmatter.title}
             </span>
           </Link>
@@ -51,25 +53,20 @@ export default function PrevNext({ prev, next }: Props) {
           <Link
             href={next.href}
             style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "3px",
+              display: "inline-flex",
+              alignItems: "center",
+              gap: "8px",
               textDecoration: "none",
-              color: "var(--fg-base)",
-              padding: "12px 16px",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              transition: "border-color 0.15s",
-              textAlign: "right",
-              maxWidth: "220px",
+              background: "var(--brand-solid)",
+              color: "#fff",
+              padding: "10px 18px",
+              borderRadius: "9px",
+              fontSize: "13px",
+              fontWeight: 600,
             }}
           >
-            <span style={{ fontSize: "0.75rem", color: "var(--fg-muted)" }}>
-              Next →
-            </span>
-            <span style={{ fontSize: "0.9rem", fontWeight: 500 }}>
-              {next.frontmatter.title}
-            </span>
+            <span>Next: {next.frontmatter.title}</span>
+            <span aria-hidden>→</span>
           </Link>
         )}
       </div>

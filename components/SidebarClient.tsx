@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
 import ProgressDots from "./ProgressDots";
+import Logo from "@/components/Logo";
 import type { ChapterMeta } from "@/lib/types";
 
 const MODULE_LABELS: Record<string, string> = {
@@ -43,7 +44,7 @@ export default function SidebarClient({ chapters, modules }: Props) {
       {/* Header / logo */}
       <div
         style={{
-          padding: "20px 20px 16px",
+          padding: "18px 18px 15px",
           borderBottom: "1px solid var(--border)",
         }}
       >
@@ -55,24 +56,7 @@ export default function SidebarClient({ chapters, modules }: Props) {
             color: "var(--fg-base)",
           }}
         >
-          <div
-            style={{
-              fontWeight: 700,
-              fontSize: "1.05rem",
-              letterSpacing: "-0.01em",
-            }}
-          >
-            Programming Guide
-          </div>
-          <div
-            style={{
-              fontSize: "0.75rem",
-              color: "var(--fg-muted)",
-              marginTop: "2px",
-            }}
-          >
-            HTML · CSS · JavaScript
-          </div>
+          <Logo subtitle="HTML · CSS · JavaScript" />
         </Link>
       </div>
 
@@ -92,8 +76,8 @@ export default function SidebarClient({ chapters, modules }: Props) {
             <div key={mod} style={{ marginBottom: "8px" }}>
               <div
                 style={{
-                  padding: "6px 20px 4px",
-                  fontSize: "0.7rem",
+                  padding: "12px 18px 4px",
+                  fontSize: "10.5px",
                   fontWeight: 700,
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
@@ -115,8 +99,8 @@ export default function SidebarClient({ chapters, modules }: Props) {
                           display: "flex",
                           alignItems: "center",
                           justifyContent: "space-between",
-                          padding: "7px 20px",
-                          fontSize: "0.875rem",
+                          padding: "7px 18px",
+                          fontSize: "13px",
                           textDecoration: "none",
                           color: isActive
                             ? "var(--brand)"

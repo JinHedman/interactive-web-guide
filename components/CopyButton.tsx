@@ -23,20 +23,28 @@ export default function CopyButton({ code }: { code: string }) {
         display: "inline-flex",
         alignItems: "center",
         justifyContent: "center",
+        gap: "5px",
         minHeight: "26px",
         background: "none",
-        border: "1px solid var(--border)",
+        border: "none",
         borderRadius: "4px",
-        padding: "4px 10px",
+        padding: "2px 4px",
         cursor: "pointer",
-        fontSize: "0.72rem",
-        color: copied ? "var(--progress-read)" : "var(--fg-muted)",
+        fontSize: "12px",
+        color: copied ? "var(--progress-read)" : "var(--fg-subtle)",
         fontFamily: "var(--font-sans)",
-        transition: "color 0.15s, border-color 0.15s",
+        transition: "color 0.15s",
         whiteSpace: "nowrap",
       }}
     >
-      {copied ? "Copied!" : "Copy"}
+      {copied ? (
+        "Copied!"
+      ) : (
+        <>
+          <span aria-hidden>&#x29C9;</span>
+          <span>Copy</span>
+        </>
+      )}
     </button>
   );
 }
