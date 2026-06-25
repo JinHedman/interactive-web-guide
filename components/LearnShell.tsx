@@ -22,10 +22,12 @@ const COLLAPSE_KEY = "guide:sidebar-collapsed";
 
 export default function LearnShell({ sidebar, children }: Props) {
   const [open, setOpen] = useState(false);
-  // Desktop-only collapse (CSS hides/shows the column per the data attribute;
-  // on mobile the drawer is driven by `open` instead). Starts expanded so SSR
-  // and the first client paint match, then upgrades from the stored preference
-  // on mount — a brief flash on a hard reload, never a hydration mismatch.
+  // Desktop-only collapse. The persisted state is applied *before paint* by the
+  // inline script in the root layout (it sets `data-sidebar-collapsed` on
+  // <html>, which the CSS keys off) — so there is no flash on reload. This React
+  // state only mirrors that attribute so the toggle buttons' aria-expanded is
+  // correct; it starts `false` to match SSR, then syncs from the attribute on
+  // mount. On mobile the drawer is driven by `open` instead.
   const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const drawerId = useId();
@@ -37,21 +39,23 @@ export default function LearnShell({ sidebar, children }: Props) {
     setOpen(false);
   }, [pathname]);
 
-  // Restore the persisted desktop collapse preference after mount.
+  // Sync React state from the attribute the pre-paint script already set (no
+  // visual change here — the sidebar is already in its persisted state).
   useEffect(() => {
-    try {
-      if (localStorage.getItem(COLLAPSE_KEY) === "true") setCollapsed(true);
-    } catch {
-      // ignore (private mode / disabled storage)
-    }
+    setCollapsed(
+      document.documentElement.getAttribute("data-sidebar-collapsed") === "true"
+    );
   }, []);
 
   function setCollapsedPersisted(next: boolean) {
     setCollapsed(next);
+    const root = document.documentElement;
+    if (next) root.setAttribute("data-sidebar-collapsed", "true");
+    else root.removeAttribute("data-sidebar-collapsed");
     try {
       localStorage.setItem(COLLAPSE_KEY, next ? "true" : "false");
     } catch {
-      // ignore
+      // ignore (private mode / disabled storage)
     }
   }
 
@@ -110,7 +114,7 @@ export default function LearnShell({ sidebar, children }: Props) {
   }
 
   return (
-    <div className="learn-shell" data-collapsed={collapsed ? "true" : undefined}>
+    <div className="learn-shell">
       {/* Desktop-only: re-open the collapsed sidebar. Visible only while
           collapsed (CSS), floats over the top-left of the reading column. */}
       <button

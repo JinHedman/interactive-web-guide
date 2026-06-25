@@ -17,7 +17,10 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
-        {/* Inline script to apply saved theme before paint — prevents flash */}
+        {/* Inline script to apply saved theme + sidebar state before paint —
+            sets attributes on <html> while the document is still parsing, so the
+            UI renders in its persisted state with no flash and no hydration
+            mismatch (CSS keys off these attributes; React reads them on mount). */}
         <script
           dangerouslySetInnerHTML={{
             __html: `
@@ -25,6 +28,9 @@ export default function RootLayout({
                 var t = localStorage.getItem('guide:theme');
                 if (t === 'dark' || (!t && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                   document.documentElement.setAttribute('data-theme', 'dark');
+                }
+                if (localStorage.getItem('guide:sidebar-collapsed') === 'true') {
+                  document.documentElement.setAttribute('data-sidebar-collapsed', 'true');
                 }
               } catch(e) {}
             `,

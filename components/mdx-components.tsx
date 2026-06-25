@@ -8,8 +8,14 @@ import Quiz from "./Quiz";
 import ExerciseServer from "./ExerciseServer";
 import ReadMore from "./ReadMore";
 import DocsLinks from "./DocsLinks";
+import DocRef from "./DocRef";
+import { lookupReference } from "@/lib/references";
 
 export function getMDXComponents(chapterId: string) {
+  // Chapter module ("html" | "css" | "javascript" | …) disambiguates inline-code
+  // doc references (a bare token can be both a CSS property and a JS identifier).
+  const module = chapterId.split("/")[0];
+
   return {
     // Custom components available in .mdx files
     CodeExample: (props: React.ComponentProps<typeof CodeExample>) => (
@@ -43,21 +49,29 @@ export function getMDXComponents(chapterId: string) {
     h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
       <h5 className="prose-h4" {...props} />
     ),
-    // Prose element overrides for in-prose `code` blocks (inline)
-    code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
-      <code
-        style={{
-          fontFamily: "var(--font-mono)",
-          fontSize: "0.875em",
-          background: "var(--bg-subtle)",
-          border: "1px solid var(--border)",
-          borderRadius: "4px",
-          padding: "0.1em 0.35em",
-        }}
-        {...props}
-      >
-        {children}
-      </code>
-    ),
+    // Inline `code` in prose. If the token is a known HTML tag / CSS property /
+    // JS reference, render the interactive <DocRef> (links to MDN + W3Schools);
+    // otherwise render plain styled inline code.
+    code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => {
+      if (typeof children === "string") {
+        const ref = lookupReference(children, module);
+        if (ref) return <DocRef text={children} reference={ref} />;
+      }
+      return (
+        <code
+          style={{
+            fontFamily: "var(--font-mono)",
+            fontSize: "0.875em",
+            background: "var(--bg-subtle)",
+            border: "1px solid var(--border)",
+            borderRadius: "4px",
+            padding: "0.1em 0.35em",
+          }}
+          {...props}
+        >
+          {children}
+        </code>
+      );
+    },
   };
 }

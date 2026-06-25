@@ -20,21 +20,34 @@ function useProgressVersion(): number {
   return useSyncExternalStore(subscribe, getVersion, getServerVersion);
 }
 
-// Live per-chapter progress. Returns empty progress on the server and the first
-// client paint, then the real stored value once mounted/subscribed.
+const EMPTY_PROGRESS: ChapterProgress = {
+  read: false,
+  exercisesDone: [],
+  quizScore: null,
+};
+
+// Live per-chapter progress. CRITICAL for hydration: localStorage only exists on
+// the client, so the server renders empty progress. We must return that SAME
+// empty value on the first client render (during hydration) and only swap to the
+// real stored value after mount — otherwise the first client paint reads real
+// localStorage, diverges from the server markup, and React throws a hydration
+// mismatch (and regenerates the tree). `useHasMounted()` is false on the server
+// and the first client render, true thereafter; the version subscription then
+// drives live updates on every write/reset (this tab or another).
 export function useChapterProgress(chapterId: string): ChapterProgress {
   const v = useProgressVersion();
-  // `v` participates in the dependency by being read each render; recompute
-  // directly so a version bump (any write/reset/storage event) re-reads.
   void v;
-  return getProgress(chapterId);
+  const mounted = useHasMounted();
+  return mounted ? getProgress(chapterId) : EMPTY_PROGRESS;
 }
 
-// Live "continue where you left off" target. null until mounted or if no history.
+// Live "continue where you left off" target. null on the server and first client
+// render (hydration-safe, see useChapterProgress), real value once mounted.
 export function useLastVisited(): string | null {
   const v = useProgressVersion();
   void v;
-  return getLastVisited();
+  const mounted = useHasMounted();
+  return mounted ? getLastVisited() : null;
 }
 
 // True once the component has mounted on the client; false on the server and

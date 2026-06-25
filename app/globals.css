@@ -455,12 +455,14 @@ body {
   }
 
   /* Collapsed: remove the column entirely so the reading area takes the full
-     width, and surface the floating "expand" affordance. */
-  .learn-shell[data-collapsed="true"] .sidebar {
+     width, and surface the floating "expand" affordance. Keyed off the <html>
+     attribute set by the pre-paint script in the root layout, so a reload
+     restores the collapsed state with no flash (the sidebar never paints). */
+  html[data-sidebar-collapsed="true"] .sidebar {
     display: none;
   }
 
-  .learn-shell[data-collapsed="true"] .sidebar-expand {
+  html[data-sidebar-collapsed="true"] .sidebar-expand {
     display: inline-flex;
     align-items: center;
     justify-content: center;
