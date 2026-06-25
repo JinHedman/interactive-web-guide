@@ -20,10 +20,14 @@ export default function CopyButton({ code }: { code: string }) {
       onClick={handleCopy}
       aria-label={copied ? "Copied!" : "Copy code"}
       style={{
+        display: "inline-flex",
+        alignItems: "center",
+        justifyContent: "center",
+        minHeight: "26px",
         background: "none",
         border: "1px solid var(--border)",
         borderRadius: "4px",
-        padding: "3px 9px",
+        padding: "4px 10px",
         cursor: "pointer",
         fontSize: "0.72rem",
         color: copied ? "var(--progress-read)" : "var(--fg-muted)",

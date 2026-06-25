@@ -2,11 +2,11 @@
 
 Teaches HTML, CSS, JavaScript, and HTML+JS integration to learners who have **some prior coding exposure** but no real HTML/CSS/JS yet. Tooling: VS Code + Live Server + Prettier, GitHub Desktop.
 
-**Chapter id format**: `<module>/<order>-<slug>`. Modules in order: `setup` → `html` → `css` → `javascript` → `integration`.
+**Chapter id format**: `<module>/<order>-<slug>`. Modules in order: `setup` → `html` → `css` → `javascript` → `integration` → `workflow`.
 
 **Ordering rule**: no chapter references a concept before it is taught. Prerequisites below are dependency-safe and verified against this rule.
 
-**Chapter counts**: setup 1 · html 8 · css 4 · javascript 8 · integration 6 · **total 27**.
+**Chapter counts**: setup 1 · html 8 · css 5 · javascript 9 · integration 7 · workflow 3 · **total 33**.
 
 ---
 
@@ -256,6 +256,26 @@ Lighter touch — enough to style and lay out the Module 1 page without over-exp
 - **concepts**: viewport meta tag, `@media`, breakpoints, mobile-first, fluid sizing, `max-width`
 - **readMore**: Tailwind CSS (utility classes that read a bit like inline styles), CSS-in-JS, and Sass — how teams write CSS today without large hand-managed stylesheets.
 
+### css/5-grid-in-depth
+
+- **module**: css
+- **order**: 5
+- **slug**: grid-in-depth
+- **title**: CSS Grid in depth
+- **goal**: Build real two-dimensional layouts with CSS Grid, and choose between Grid and flexbox with confidence.
+- **objectives**:
+  - Turn an element into a grid with `display: grid`.
+  - Define columns and rows with `grid-template-columns`, the `fr` unit, and `repeat()`.
+  - Space the tracks with `gap`.
+  - Place items across columns and rows with `grid-column` and `grid-row` span.
+  - Name regions with `grid-template-areas`.
+  - Build a responsive grid with `repeat(auto-fit, minmax(...))`.
+  - Decide between Grid (2D) and flexbox (1D).
+- **prerequisites**: ["css/3-layout-and-flexbox"]
+- **estMinutes**: 40
+- **concepts**: `display: grid`, grid items, `grid-template-columns`, `fr` unit, `repeat()`, `gap`, `grid-column`/`grid-row` span, `grid-template-areas`, `grid-area`, `repeat(auto-fit, minmax())`, grid vs flexbox
+- **readMore**: subgrid and container queries — newer grid features now supported across modern browsers, for aligning nested grids and letting components respond to their container's size.
+
 ---
 
 ## Module 3 — javascript
@@ -401,6 +421,24 @@ Pure JavaScript language fundamentals. No DOM work until the bridge chapter, whi
 - **concepts**: DOM, DOM tree, nodes, `document`, live document, HTML-to-DOM relationship
 - **readMore**: none
 
+### javascript/9-devtools-and-debugging
+
+- **module**: javascript
+- **order**: 9
+- **slug**: devtools-and-debugging
+- **title**: DevTools and debugging
+- **goal**: Use browser DevTools to inspect the page, run JavaScript in the console, read common error messages, and debug with `console.log` and breakpoints.
+- **objectives**:
+  - Open DevTools and find the Elements and Console panels.
+  - Inspect and live-edit the DOM and CSS in the Elements panel.
+  - Run JavaScript and read errors in the Console.
+  - Recognize common error messages like `ReferenceError` and `TypeError`.
+  - Take a first look at breakpoints in the Sources panel.
+- **prerequisites**: ["javascript/1-what-is-js-and-running-it", "javascript/8-dom-concept"]
+- **estMinutes**: 30
+- **concepts**: DevTools, Elements/Inspector panel, live DOM editing, Console as a JS prompt, reading errors, `ReferenceError`, `TypeError`, breakpoints, Sources/Debugger panel, Scope pane, debugging workflow
+- **readMore**: none
+
 ---
 
 ## Module 4 — integration
@@ -510,3 +548,79 @@ HTML + JS together via the DOM. Builds to a capstone that combines every prior m
 - **estMinutes**: 60
 - **concepts**: app state in an array, render-from-state, event-driven updates, composing all prior modules
 - **readMore**: Why frameworks exist — manual DOM updates vs React's declarative state and virtual DOM, and where Next.js fits.
+
+### integration/7-json-fetch-apis
+
+- **module**: integration
+- **order**: 7
+- **slug**: json-fetch-apis
+- **title**: JSON, fetch, and APIs
+- **goal**: Fetch JSON data from a public API and render it into the page, reusing the render-from-array pattern.
+- **objectives**:
+  - Explain what an API is and what it returns.
+  - Read JSON and tie it back to JavaScript objects and arrays.
+  - Make a request with `fetch()` using `async`/`await`.
+  - Turn a response into data with `response.json()`.
+  - Render fetched data into the DOM with the render-from-array pattern.
+  - Add one line of error handling with `.catch` / `try...catch`.
+- **prerequisites**: ["integration/6-capstone-interactive-app", "javascript/4-arrays-and-objects", "javascript/8-dom-concept"]
+- **estMinutes**: 45
+- **concepts**: API, JSON, `fetch()`, promise, `async`/`await`, `Response` object, `response.json()`, render-from-array, `try...catch`, `.catch`
+- **readMore**: promises and `async`/`await` underneath — the promise model (pending/fulfilled/rejected) and `.then()` chaining that `await` is sugar over, which generalizes to every future async API.
+
+---
+
+## Module 5 — workflow (Git & Collaboration)
+
+The everyday collaboration loop in GitHub Desktop and VS Code: branch, commit, open a pull request, and resolve a conflict. Runs on the project the learner already has; Git terms are named under each button.
+
+### workflow/1-branches-and-commits
+
+- **module**: workflow
+- **order**: 1
+- **slug**: branches-and-commits
+- **title**: Branches and focused commits
+- **goal**: Create and switch branches in GitHub Desktop, make focused commits with clear messages, and publish a branch to GitHub.
+- **objectives**:
+  - Explain what a branch is and why you would make one.
+  - Create and switch branches with the Current Branch dropdown.
+  - Make small, focused commits with clear messages.
+  - Publish a branch to GitHub so it can be shared.
+- **prerequisites**: ["setup/1-tools-and-first-page"]
+- **estMinutes**: 25
+- **concepts**: branch, `main`, Current Branch dropdown, creating/switching branches, focused commits, commit messages, publishing a branch
+- **readMore**: none
+
+### workflow/2-pull-requests
+
+- **module**: workflow
+- **order**: 2
+- **slug**: pull-requests
+- **title**: Pull requests: review and merge
+- **goal**: Open a pull request from a published branch, understand its purpose, merge it on GitHub, and pull the merged result back.
+- **objectives**:
+  - Explain what a pull request is for.
+  - Open a pull request from a published branch via GitHub Desktop.
+  - Review the changes and merge the pull request on github.com.
+  - Pull the merged `main` branch back to your computer.
+- **prerequisites**: ["workflow/1-branches-and-commits"]
+- **estMinutes**: 25
+- **concepts**: pull request (PR), diff, review/comments, base branch, merge, Preview/Create Pull Request, Files changed tab, Fetch origin, Pull origin
+- **readMore**: none
+
+### workflow/3-merge-conflicts
+
+- **module**: workflow
+- **order**: 3
+- **slug**: merge-conflicts
+- **title**: Resolving merge conflicts
+- **goal**: Understand what causes a merge conflict, read the conflict markers, and resolve one in VS Code, then commit the resolution from GitHub Desktop.
+- **objectives**:
+  - Explain what causes a merge conflict.
+  - Recognize how GitHub Desktop surfaces a conflict.
+  - Read the conflict markers and pick the right result in VS Code.
+  - Commit the resolution and finish the merge.
+- **prerequisites**: ["workflow/2-pull-requests"]
+- **estMinutes**: 25
+- **concepts**: merge conflict, conflicting lines, conflict markers (`<<<<<<< HEAD`, `=======`, `>>>>>>>`), Accept Current/Incoming/Both, resolving in VS Code, committing the resolution
+- **readMore**: none

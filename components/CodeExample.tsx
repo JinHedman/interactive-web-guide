@@ -81,18 +81,9 @@ export default async function CodeExample({
       </div>
 
       {/* Pane layout */}
-      <div
-        style={
-          canPreview
-            ? {
-                display: "grid",
-                gridTemplateColumns: "1fr 1fr",
-              }
-            : undefined
-        }
-      >
+      <div className={canPreview ? "code-example-panes" : undefined}>
         {/* Code pane */}
-        <div style={{ position: "relative" }}>
+        <div style={{ position: "relative", minWidth: 0 }}>
           {canPreview && (
             <div
               style={{
@@ -110,7 +101,7 @@ export default async function CodeExample({
             </div>
           )}
           <div
-            style={{ overflowX: "auto" }}
+            className="code-pane-scroll"
             dangerouslySetInnerHTML={{ __html: html }}
           />
         </div>
@@ -118,10 +109,12 @@ export default async function CodeExample({
         {/* Preview pane */}
         {canPreview && (
           <div
+            className="preview-pane"
             style={{
               borderLeft: "1px solid var(--border)",
               display: "flex",
               flexDirection: "column",
+              minWidth: 0,
             }}
           >
             <div

@@ -40,12 +40,12 @@ The browser turns it into a tree shaped like this:
 {`// A rough sketch of the DOM tree for the HTML above:
 //
 // body
-//  ├─ header
-//  │   └─ h1  ("My hobbies")
-//  └─ main
-//      └─ ul
-//          ├─ li ("Reading")
-//          └─ li ("Cycling")`}
+// |- header
+// |    |- h1  ("My hobbies")
+// |- main
+//      |- ul
+//           |- li ("Reading")
+//           |- li ("Cycling")`}
 </CodeExample>
 
 Every box in that tree is a **node**. Element nodes (`<h1>`, `<ul>`, `<li>`) hold the page's structure; text nodes hold the words inside them. The nesting in the tree matches the nesting in your HTML exactly.
@@ -177,6 +177,19 @@ Every one of those builds directly on the JavaScript you already know — variab
     options: ["tags", "nodes", "selectors", "scripts"],
     answer: 1,
     explanation: "Each item in the DOM tree is a node — element nodes for tags, text nodes for the text inside them."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Recall from earlier chapters: to render a list of items onto the page, which JavaScript tools will you most likely combine?",
+    options: [
+      "A loop to visit each item and a function to do the work for each",
+      "Only a single if statement",
+      "A media query and a breakpoint",
+      "A while loop with no exit condition"
+    ],
+    answer: 0,
+    explanation: "Lists are built by looping over an array (for...of or forEach) and running a function per item — exactly the pieces the integration module puts to work on the DOM."
   }
 ]} />
 

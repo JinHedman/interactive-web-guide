@@ -256,6 +256,19 @@ A fast way to catch validity errors is to paste your HTML into the [W3C validato
     answer: "W3C",
     accept: ["W3C", "w3c", "W3C validator", "validator"],
     explanation: "The W3C validator at validator.w3.org flags unclosed tags, misplaced elements, and missing attributes."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Recall from earlier chapters: the profile photo in the header is decorative duplicate of the name beside it. What alt value fits, and why use <em>/<strong> over <i>/<b> for the bio text?",
+    options: [
+      "alt=\"image\"; and <i>/<b> are required for italics",
+      "alt=\"\" so a screen reader skips a redundant image; <em>/<strong> carry meaning (emphasis/importance), while <i>/<b> only look italic or bold",
+      "Omit alt entirely; <i>/<b> are newer than <em>/<strong>",
+      "alt=\"photo\"; the choice of emphasis tag makes no difference"
+    ],
+    answer: 1,
+    explanation: "A purely decorative or redundant image gets alt=\"\" to be skipped. <em> and <strong> convey meaning to assistive tech; <i> and <b> are presentational only."
   }
 ]} />
 

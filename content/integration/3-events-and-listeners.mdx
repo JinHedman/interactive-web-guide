@@ -40,6 +40,8 @@ Call `addEventListener` on an element. You give it two things: the name of the e
 
 Click the button in the preview. Each click runs the handler again, so the count goes up. The script set up the listener once; the browser calls your function every time the event happens after that.
 
+The handler here is written as a full `function () { ... }` for readability. An arrow function — `() => { ... }` — works identically as a handler, and you will see both styles across this module; pick whichever reads more clearly.
+
 ## Listen for typing with input
 
 The `input` event fires every time the value of an input field changes — on every keystroke. It is how you respond to a user as they type.

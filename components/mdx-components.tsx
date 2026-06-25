@@ -23,6 +23,22 @@ export function getMDXComponents(chapterId: string) {
     ReadMore: (props: React.ComponentProps<typeof ReadMore>) => (
       <ReadMore {...props} />
     ),
+    // Heading remap: the lesson page <h1> (frontmatter title) is the single
+    // authoritative h1. MDX `#`..`####` are shifted down one semantic level so
+    // document outline stays logical, while keeping their original visual rank
+    // via the .prose-h* classes.
+    h1: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h2 className="prose-h1" {...props} />
+    ),
+    h2: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h3 className="prose-h2" {...props} />
+    ),
+    h3: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h4 className="prose-h3" {...props} />
+    ),
+    h4: (props: React.HTMLAttributes<HTMLHeadingElement>) => (
+      <h5 className="prose-h4" {...props} />
+    ),
     // Prose element overrides for in-prose `code` blocks (inline)
     code: ({ children, ...props }: React.HTMLAttributes<HTMLElement>) => (
       <code

@@ -36,7 +36,7 @@ Every element has a `textContent` property. Read it to get the text inside, or a
 </html>`}
 </CodeExample>
 
-Assigning to `textContent` replaces everything inside the element with plain text. It treats the value as text, not HTML — so `"<b>hi</b>"` would show those angle brackets literally, never bold text. That is exactly what you want when displaying something a user typed.
+Assigning to `textContent` replaces everything inside the element with plain text. It treats the value as text, not HTML — so `"<b>hi</b>"` would show those angle brackets literally, never bold text. There is a sibling property, `innerHTML`, that *does* parse its value as HTML — and that is exactly why `textContent` is safer for anything a user typed: with `innerHTML`, a malicious string like `"<script>...</script>"` could inject markup or scripts into your page, while `textContent` always shows it as harmless text. Reach for `textContent` for user-provided data.
 
 ## Toggle and swap classes with classList
 
@@ -215,5 +215,18 @@ When you want to change appearance, reach for `classList` first. A class keeps a
     ],
     answer: 1,
     explanation: "Classes keep design in your stylesheet and let one toggle change a whole look at once, which is cleaner and easier to maintain."
+  },
+  {
+    id: "q6",
+    type: "multiple-choice",
+    prompt: "An <li> starts with no done class. You run li.classList.toggle('done') twice. Does the element end up with the done class?",
+    options: [
+      "Yes — each toggle adds it",
+      "No — the first toggle adds it, the second removes it, so it ends without",
+      "Yes — toggle only ever adds, never removes",
+      "It throws an error on the second call"
+    ],
+    answer: 1,
+    explanation: "toggle flips the class each call: absent then present then absent. Two toggles from a clean start leave it as it began — without the class."
   }
 ]} />

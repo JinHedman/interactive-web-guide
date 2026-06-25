@@ -19,6 +19,7 @@ export default function Home() {
       }}
     >
       <main
+        id="main-content"
         style={{
           maxWidth: "600px",
           width: "100%",

@@ -16,6 +16,7 @@ export const MODULE_ORDER = [
   "css",
   "javascript",
   "integration",
+  "workflow",
 ] as const;
 
 export type ModuleId = (typeof MODULE_ORDER)[number];

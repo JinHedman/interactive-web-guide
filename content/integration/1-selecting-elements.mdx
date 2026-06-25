@@ -80,7 +80,7 @@ Because it takes a CSS selector, you write `".title"` with the dot for a class, 
 </html>`}
 </CodeExample>
 
-`querySelectorAll` always returns a list, even if only one element matches (or none). You loop over it with `forEach`, just like an array. Each `item` in the loop is one element you can work with.
+`querySelectorAll` always returns a list, even if only one element matches (or none). You loop over it with `forEach`, just like an array. This is the same `forEach` from the loops chapter, now written with the arrow-function form `(item) => { ... }` from the functions chapter. Each `item` in the loop is one element you can work with.
 
 ## Store the result and check for null
 
@@ -105,7 +105,7 @@ Selecting an element gives you back a value. Store it in a `const` so you can us
 </html>`}
 </CodeExample>
 
-Guarding against `null` is a habit worth building now. A typo in a selector, or a script that runs before the element exists, both produce `null` — and a clear check saves you a confusing crash later.
+In real apps you guard against missing elements, because a typo in a selector or a script that runs before the element exists both produce `null`, and trying to use `null` throws an error. The elements we select in the rest of this module are known to exist in the page we wrote, so we keep it simple and skip the check — but it is good to know the value you get back when nothing matches.
 
 <Exercise
   title="Select the parts of your to-do page"

@@ -1,0 +1,166 @@
+---
+title: "Branches and focused commits"
+module: "workflow"
+order: 1
+goal: "Create and switch branches in GitHub Desktop, make focused commits with clear messages, and publish a branch to GitHub."
+objectives:
+  - "Explain what a branch is and why you would make one"
+  - "Create and switch branches with the Current Branch dropdown"
+  - "Make small, focused commits with clear messages"
+  - "Publish a branch to GitHub so it can be shared"
+estMinutes: 25
+prerequisites: ["setup/1-tools-and-first-page"]
+---
+
+In the setup chapter you committed straight to `main` and pushed it to GitHub. That is fine for a solo first page, but real work — and any work shared with other people — happens on **branches**. This short module teaches the everyday collaboration loop: branch, commit, open a pull request, and resolve a conflict when one appears. You will run all of it on the `profile-page` project you already have, using GitHub Desktop's buttons. The Git terms underneath each button are named as we go.
+
+## What a branch is
+
+A branch is a separate line of work in your repository. `main` is the branch you have used so far — the one that holds the version you trust. When you start a new piece of work, you make a branch off `main` and commit there instead. Your changes stay isolated until you decide to bring them back.
+
+Why bother? Three reasons:
+
+- **`main` stays safe and working.** Half-finished work sits on the branch, not on the version other people (or a live site) depend on.
+- **One branch, one job.** A branch named `add-contact-form` holds only the contact-form work. That keeps changes easy to review and easy to undo.
+- **It is how teams avoid stepping on each other.** Two people can work on two branches at once without overwriting each other's files.
+
+Think of `main` as the clean copy and a branch as a sandbox that you can always merge back or throw away.
+
+## Create a branch in GitHub Desktop
+
+You manage branches from the **Current Branch** dropdown at the top of GitHub Desktop. It shows which branch you are on right now — most likely `main`.
+
+1. Make sure you are on `main` and have no uncommitted changes.
+2. Click the **Current Branch** dropdown, then click **New Branch**.
+3. Name it for the work you are about to do — for example `add-skills-section`. Use short, hyphenated, descriptive names.
+4. Confirm the branch is based on `main`, then click **Create Branch**.
+
+GitHub Desktop creates the branch and switches you to it. The Current Branch dropdown now shows your new branch name. Anything you commit from here lands on this branch, not on `main`.
+
+## Switch between branches
+
+To move back to `main` or to another branch, open the **Current Branch** dropdown and pick the branch you want. GitHub Desktop swaps the files in your folder to match that branch — your editor and Live Server preview update to show that branch's version. If you still have uncommitted changes, GitHub Desktop asks whether to leave them behind or bring them along; commit first to keep things tidy.
+
+## Make focused commits
+
+A commit is a labelled snapshot, as you saw in setup. The skill to build now is making commits **focused**: each one captures a single, complete change.
+
+A good commit message says *what changed*, in plain words, written as a short instruction. Compare:
+
+<CodeExample language="bash">
+{`# Vague — what did this actually do?
+update stuff
+fixed it
+asdf
+
+# Focused and clear
+Add skills section with a list of three skills
+Fix typo in the page title
+Link the contact section from the nav`}
+</CodeExample>
+
+Two habits make this easy:
+
+- **Commit often.** When one small thing works, commit it. A row of small commits is far easier to read — and to undo — than one giant commit at the end of the day.
+- **Write the summary first, then commit only what matches it.** If your message needs the word "and," you are probably bundling two changes that deserve two commits.
+
+In GitHub Desktop, you commit exactly as before: review the changed files under **Changes**, write a summary in the box at the bottom left, and click **Commit to** *your-branch-name*. Notice the button now names your branch, not `main` — proof the commit is landing on the branch.
+
+## Publish the branch
+
+Your branch and its commits live only on your computer until you publish them. **Publishing** uploads the branch to GitHub for the first time (in Git terms, it pushes the branch and links it to a remote copy).
+
+Click **Publish branch** at the top of GitHub Desktop. After that, the button becomes **Push origin**, just like on `main` — use it to send any later commits up. Once the branch is on GitHub, you can open a pull request from it, which is the next chapter.
+
+<Exercise
+  title="Start a feature branch and commit to it"
+  goal="Create a branch on your profile-page project, make two focused commits, and publish the branch to GitHub."
+  steps={[
+    "Open profile-page in GitHub Desktop and confirm the Current Branch dropdown shows main with no uncommitted changes.",
+    "Click Current Branch, then New Branch, name it add-skills-section, and click Create Branch.",
+    "In VS Code, add a heading like <h2>Skills</h2> and a short <ul> of three skills to index.html, then save.",
+    "In GitHub Desktop, commit with the message 'Add skills section with three skills' — note the button says Commit to add-skills-section.",
+    "Make one more small edit (for example, fix or improve the page title), save, and commit it separately with its own clear message.",
+    "Click Publish branch, then check github.com — your add-skills-section branch now appears in the repository's branch list."
+  ]}
+  expected="Two separate commits on a branch named add-skills-section, and that branch visible on GitHub. The main branch is unchanged."
+  solution={`<!-- The new markup added to the body of index.html -->
+<h2>Skills</h2>
+<ul>
+  <li>HTML</li>
+  <li>CSS</li>
+  <li>JavaScript</li>
+</ul>
+
+<!--
+GitHub Desktop steps (no code to "solve"):
+1. Current Branch -> New Branch -> name: add-skills-section -> Create Branch
+2. Edit and save in VS Code
+3. Commit "Add skills section with three skills" (button: Commit to add-skills-section)
+4. Edit again, save, commit "Improve the page title" separately
+5. Publish branch
+-->`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the main reason to do new work on a branch instead of on main?",
+    options: [
+      "Branches make commits upload faster",
+      "It isolates unfinished work so main stays clean and working",
+      "Only branches can be pushed to GitHub",
+      "main cannot hold more than one commit"
+    ],
+    answer: 1,
+    explanation: "A branch keeps in-progress changes separate from main, the version you and others rely on. You merge it back only when it is ready."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "In GitHub Desktop, where do you create and switch branches?",
+    options: [
+      "The Repository menu",
+      "The Current Branch dropdown at the top",
+      "The Changes tab on the left",
+      "The Push origin button"
+    ],
+    answer: 1,
+    explanation: "The Current Branch dropdown shows the branch you are on and holds New Branch plus the list of branches you can switch to."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which is the better commit message?",
+    options: [
+      "update stuff",
+      "asdf",
+      "Add a contact form with name and email fields",
+      "changes"
+    ],
+    answer: 2,
+    explanation: "A good message says what changed in plain words, written as a short instruction. Vague messages make history hard to read later."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "You created a branch and committed to it. Why can't a teammate see the branch on GitHub yet?",
+    options: [
+      "Branches are always private",
+      "You have not published the branch yet",
+      "The branch needs to be merged first",
+      "GitHub Desktop only syncs main"
+    ],
+    answer: 1,
+    explanation: "A new branch lives only on your computer until you click Publish branch, which uploads it to GitHub."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "What is the name of the default branch that holds your trusted, working version?",
+    answer: "main",
+    accept: ["main", "the main branch"],
+    explanation: "main is the default branch. You branch off it for new work and merge finished work back into it."
+  }
+]} />

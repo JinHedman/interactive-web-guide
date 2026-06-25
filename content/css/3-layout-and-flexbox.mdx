@@ -143,6 +143,8 @@ A few properties on the flex container do most of the work:
 
 `justify-content: space-between` pushes the name to the left and the links to the right; `align-items: center` keeps them vertically centered. This row-with-something-on-each-end pattern is everywhere on the web.
 
+Interactive elements like these links should also react to the pointer and keyboard. A selector with `:hover` (e.g. `.links a:hover { text-decoration: underline; }`) styles an element while the mouse is over it, and `:focus` styles it while it is keyboard-focused — add both so the navigation gives clear feedback to mouse and keyboard users alike.
+
 ## A peek at grid
 
 Flexbox excels at laying out items in *one* direction — a row or a column. When you need to control rows **and** columns at the same time — a true two-dimensional layout like a photo gallery or a dashboard — `display: grid` is the better tool.
@@ -281,5 +283,18 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
     answer: "gap",
     accept: ["gap", "gap property"],
     explanation: "gap sets the spacing between flex (and grid) items, replacing fiddly margins."
+  },
+  {
+    id: "q6",
+    type: "multiple-choice",
+    prompt: "A flex row has exactly two items, A then B, and justify-content: space-between. Where do they end up?",
+    options: [
+      "Both bunched together at the left edge",
+      "Both centered with the space split around them",
+      "A pinned to the left edge and B pinned to the right edge, with the gap between them",
+      "A on the right and B on the left (order reversed)"
+    ],
+    answer: 2,
+    explanation: "space-between puts the first item at the start and the last at the end, distributing all remaining space between them — so A is left, B is right."
   }
 ]} />

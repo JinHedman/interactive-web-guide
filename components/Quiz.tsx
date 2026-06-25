@@ -298,9 +298,9 @@ function QuestionItem({
             fontSize: "0.875rem",
             background: isCorrect
               ? "color-mix(in srgb, var(--progress-read) 12%, transparent)"
-              : "color-mix(in srgb, #ef4444 12%, transparent)",
-            color: isCorrect ? "var(--progress-read)" : "#dc2626",
-            border: `1px solid ${isCorrect ? "var(--progress-read)" : "#fca5a5"}`,
+              : "color-mix(in srgb, var(--danger) 12%, transparent)",
+            color: isCorrect ? "var(--progress-read)" : "var(--danger)",
+            border: `1px solid ${isCorrect ? "var(--progress-read)" : "var(--danger-border)"}`,
           }}
         >
           <strong>{isCorrect ? "Correct!" : "Not quite."}</strong>

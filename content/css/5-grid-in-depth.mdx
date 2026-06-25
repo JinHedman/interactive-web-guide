@@ -1,0 +1,379 @@
+---
+title: "CSS Grid in depth"
+module: "css"
+order: 5
+goal: "Build real two-dimensional layouts with CSS Grid, and choose between Grid and flexbox with confidence."
+objectives:
+  - "Turn an element into a grid with display: grid"
+  - "Define columns and rows with grid-template-columns, the fr unit, and repeat()"
+  - "Space the tracks with gap"
+  - "Place items across columns and rows with grid-column and grid-row span"
+  - "Name regions with grid-template-areas"
+  - "Build a responsive grid with repeat(auto-fit, minmax(...))"
+  - "Decide between Grid (2D) and flexbox (1D)"
+prerequisites: ["css/3-layout-and-flexbox"]
+estMinutes: 40
+---
+
+In the flexbox chapter you got a peek at `display: grid` and saw three equal columns with one line of CSS. Flexbox lays things out in *one* direction — a row or a column. **Grid** lays things out in *two* directions at once — rows **and** columns — which is exactly what a photo gallery, a card grid, or a full page layout needs. This chapter turns that peek into a working tool: defining tracks, placing items, naming regions, and making the whole thing responsive.
+
+## Turning an element into a grid
+
+Set `display: grid` on a container and its direct children become **grid items**. On its own that does little — the real work is telling the grid how many columns to make with `grid-template-columns`. Each value is the width of one column.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .grid {
+        display: grid;
+        grid-template-columns: 120px 120px 120px;
+        gap: 0.5rem;
+      }
+      .grid div {
+        background: navy;
+        color: white;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+      <div>6</div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+`grid-template-columns: 120px 120px 120px` defines three columns of 120px each. The six items flow into them left to right, wrapping onto a new row automatically once a row is full. You never wrote anything about rows — the grid created them for you as items overflowed.
+
+## The fr unit and repeat()
+
+Fixed pixel columns do not adapt to the container. The **`fr` unit** ("fraction") solves this: it splits the *available* space into shares. `1fr 1fr 1fr` means three columns that each take an equal share of whatever width is left after gaps. Typing the same value three times is noisy, so **`repeat()`** writes it once: `repeat(3, 1fr)` means "three tracks of `1fr`."
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.5rem;
+      }
+      .grid div {
+        background: navy;
+        color: white;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="grid">
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+      <div>6</div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+Now the three columns stretch to fill the container and stay equal as it resizes. You can mix units too: `grid-template-columns: 200px 1fr` makes a fixed 200px sidebar next to a column that takes the rest — a classic sidebar-and-content shape.
+
+`gap` works just like it does in flexbox: it sets the space *between* tracks, with no margins on the items. Use `gap: 1rem 0.5rem` for different row and column gaps (row gap first), or a single value for both.
+
+## Placing items across columns and rows
+
+By default each item fills one cell. To make an item span more, use **`grid-column`** and **`grid-row`** with the `span` keyword. `grid-column: span 2` tells an item to occupy two columns; `grid-row: span 2` makes it two rows tall. This is how you build a feature tile that is bigger than its neighbors.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 0.5rem;
+      }
+      .gallery div {
+        background: navy;
+        color: white;
+        padding: 1rem;
+        border-radius: 6px;
+        text-align: center;
+      }
+      .feature {
+        grid-column: span 2;
+        grid-row: span 2;
+        background: #1d4ed8;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gallery">
+      <div class="feature">Featured</div>
+      <div>1</div>
+      <div>2</div>
+      <div>3</div>
+      <div>4</div>
+      <div>5</div>
+      <div>6</div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+The `.feature` tile covers a two-by-two block in the top-left, and the rest of the items flow around it into the remaining cells. Grid handles the reflow; you only declare the span. This kind of mixed-size layout is awkward in flexbox but natural in grid.
+
+## Naming regions with grid-template-areas
+
+For a whole-page layout, spans get hard to track. **`grid-template-areas`** lets you draw the layout as a little ASCII map instead. You give each item a name with `grid-area`, then arrange those names in rows of strings. It reads almost like the layout it produces.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .page {
+        display: grid;
+        grid-template-columns: 160px 1fr;
+        grid-template-areas:
+          "header header"
+          "sidebar main"
+          "footer footer";
+        gap: 0.5rem;
+        min-height: 320px;
+      }
+      .page > * {
+        background: navy;
+        color: white;
+        padding: 1rem;
+        border-radius: 6px;
+      }
+      .page header { grid-area: header; }
+      .page nav    { grid-area: sidebar; }
+      .page main   { grid-area: main; background: #1d4ed8; }
+      .page footer { grid-area: footer; }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header>Header</header>
+      <nav>Sidebar</nav>
+      <main>Main content</main>
+      <footer>Footer</footer>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+Each quoted string is one row of the grid; each word is a column cell. Repeating a name (`"header header"`) makes that area span those columns. The header and footer stretch across both columns, while the sidebar and main content share the middle row. To rearrange the page you just rewrite the map — no need to renumber column lines.
+
+## A responsive grid in one line
+
+Media queries (next chapter) can change the column count at set breakpoints, but grid can also adapt on its own. The pattern `repeat(auto-fit, minmax(180px, 1fr))` means: "fit as many columns as you can, each at least 180px wide, growing to share the leftover space." Add columns when there is room, drop to fewer when there is not — no breakpoints required.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 0.75rem;
+      }
+      .cards article {
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+      .cards h2 { font-size: 1rem; margin: 0 0 0.25rem; }
+      .cards p { margin: 0; color: #444; font-size: 0.9rem; }
+    </style>
+  </head>
+  <body>
+    <div class="cards">
+      <article><h2>Algorithms</h2><p>Step-by-step recipes.</p></article>
+      <article><h2>Looms</h2><p>Punch cards weave patterns.</p></article>
+      <article><h2>Engines</h2><p>Machines that compute.</p></article>
+      <article><h2>Notes</h2><p>The first program.</p></article>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+Resize the preview pane (or your browser window) and watch the cards reflow: wide enough for four across, then three, then two, then one — all from a single `grid-template-columns` line. This is the go-to pattern for card galleries and product grids.
+
+## Grid vs flexbox: which one?
+
+Both lay out children, so when do you reach for each? The dividing line is dimensions.
+
+- **Flexbox is one-dimensional.** It arranges items along a single axis — a row *or* a column. Reach for it when content drives the layout: a navbar, a row of buttons, a toolbar, tags that wrap. You care how items line up along one line.
+- **Grid is two-dimensional.** It controls rows *and* columns together. Reach for it when the layout drives the content: card galleries, dashboards, image mosaics, whole-page templates. You care how things align across a grid in both directions.
+
+A quick test: if you can describe what you want as "a row of…" or "a column of…", use flexbox. If you find yourself saying "rows and columns" or sketching a grid on paper, use grid. They also nest happily — a grid of cards where each card is a flex column is completely normal, and very common.
+
+<ReadMore title="Going further: subgrid and container queries">
+Two newer grid features are worth knowing the names of. **Subgrid** lets a grid item adopt its parent's tracks, so nested grids can line up to the same column lines — handy for keeping card contents aligned across a gallery. **Container queries** let an element respond to the size of its *container* instead of the whole viewport, which pairs naturally with reusable grid components. Both are now supported across modern browsers. You do not need them yet, but they are the next step once the basics here feel comfortable.
+
+- [MDX — CSS grid layout guide (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
+- [A Complete Guide to CSS Grid (CSS-Tricks)](https://css-tricks.com/snippets/css/complete-guide-grid/)
+</ReadMore>
+
+<Exercise
+  title="Build a responsive project gallery with a feature tile"
+  goal="Lay out a gallery of project cards with CSS Grid: a responsive grid of cards, plus one larger feature card that spans two columns."
+  steps={[
+    "In VS Code, open your project and create gallery.html (or add a section to your existing page).",
+    "Add a div class=\"gallery\" containing six article elements; give the first one class=\"feature\" and a short heading and sentence in each.",
+    "In a style block (or styles.css), set .gallery to display: grid with grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)) and gap: 1rem.",
+    "Style the article cards with padding, a background, and border-radius so the layout is visible.",
+    "Make the feature card span two columns with grid-column: span 2.",
+    "Open with Live Server and drag the window narrower and wider to watch the columns reflow.",
+    "Commit in GitHub Desktop with a message like \"Add responsive project gallery\"."
+  ]}
+  expected="A gallery of cards that fits as many columns as the width allows and reflows to fewer as the window narrows, with one wider feature card spanning two columns."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Project Gallery</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+      }
+      .gallery article {
+        background: #f3f4f6;
+        border-radius: 8px;
+        padding: 1rem;
+      }
+      .gallery h2 { font-size: 1rem; margin: 0 0 0.25rem; }
+      .gallery p { margin: 0; color: #444; font-size: 0.9rem; }
+      .feature {
+        grid-column: span 2;
+        background: #1d4ed8;
+        color: white;
+      }
+      .feature p { color: #dbeafe; }
+    </style>
+  </head>
+  <body>
+    <div class="gallery">
+      <article class="feature">
+        <h2>Analytical Engine</h2>
+        <p>A general-purpose mechanical computer.</p>
+      </article>
+      <article><h2>Notes G</h2><p>The first algorithm.</p></article>
+      <article><h2>Bernoulli</h2><p>Computing the numbers.</p></article>
+      <article><h2>Looms</h2><p>Punch-card patterns.</p></article>
+      <article><h2>Diagrams</h2><p>Flow of operations.</p></article>
+      <article><h2>Letters</h2><p>Correspondence with Babbage.</p></article>
+    </div>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does grid-template-columns: repeat(3, 1fr) create?",
+    options: [
+      "Three rows of equal height",
+      "Three columns that each take an equal share of the available width",
+      "One column repeated three times vertically",
+      "Three columns of exactly 1 pixel each"
+    ],
+    answer: 1,
+    explanation: "repeat(3, 1fr) is shorthand for 1fr 1fr 1fr — three columns that split the available width equally."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What does the fr unit measure?",
+    options: [
+      "A fixed number of pixels",
+      "A fraction of the available space in the grid",
+      "A font-relative size like em",
+      "A percentage of the viewport height"
+    ],
+    answer: 1,
+    explanation: "fr means fraction: each fr track takes a share of the space left after fixed sizes and gaps are accounted for."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "How do you make a grid item span two columns?",
+    options: [
+      "width: 200%",
+      "grid-column: span 2",
+      "flex: 2",
+      "colspan=\"2\""
+    ],
+    answer: 1,
+    explanation: "grid-column: span 2 tells the item to occupy two column tracks. (colspan is for HTML tables, not CSS grid.)"
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "You need a layout with a header across the top, a sidebar and main area in the middle, and a footer across the bottom. Which feature names those regions most readably?",
+    options: [
+      "flex-direction: column",
+      "grid-template-areas",
+      "justify-content: space-between",
+      "display: inline-block"
+    ],
+    answer: 1,
+    explanation: "grid-template-areas lets you name regions and arrange them as a visual map of strings, ideal for whole-page layouts."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "You want a row of navbar links that wrap onto a new line when space runs out. Grid or flexbox?",
+    options: [
+      "Grid, because it is two-dimensional",
+      "Flexbox, because it lays items out along one axis",
+      "Neither — use margins by hand",
+      "Both are equally wrong for this"
+    ],
+    answer: 1,
+    explanation: "A single row of items that may wrap is a one-dimensional problem — flexbox's specialty. Reach for grid when you control rows and columns together."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Which value of grid-template-columns fits as many columns as fit, each at least 180px and growing to fill: repeat(______, minmax(180px, 1fr))?",
+    answer: "auto-fit",
+    accept: ["auto-fit", "auto-fill"],
+    explanation: "repeat(auto-fit, minmax(180px, 1fr)) packs in as many columns as fit and lets them grow to share leftover space — a responsive grid with no media query. (auto-fill behaves similarly but keeps empty tracks.)"
+  }
+]} />

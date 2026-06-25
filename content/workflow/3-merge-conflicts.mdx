@@ -1,0 +1,161 @@
+---
+title: "Resolving merge conflicts"
+module: "workflow"
+order: 3
+goal: "Understand what causes a merge conflict, read the conflict markers, and resolve one in VS Code, then commit the resolution from GitHub Desktop."
+objectives:
+  - "Explain what causes a merge conflict"
+  - "Recognize how GitHub Desktop surfaces a conflict"
+  - "Read the conflict markers and pick the right result in VS Code"
+  - "Commit the resolution and finish the merge"
+estMinutes: 25
+prerequisites: ["workflow/2-pull-requests"]
+---
+
+Sooner or later a merge will stop and report a **conflict**. This is not a bug or a disaster — it is Git asking a question it cannot answer alone. This chapter shows what triggers a conflict, how GitHub Desktop tells you, and how to resolve one calmly in VS Code. The key mindset: a conflict means Git needs *you* to decide which version of a few lines is correct.
+
+## What causes a conflict
+
+Most merges are automatic. Git is good at combining changes that touch different parts of a file, or different files entirely. A conflict happens only in one specific situation:
+
+> Two branches changed **the same lines** of the same file in different ways, and Git cannot tell which version you want.
+
+A common way to hit one: you edit the page title on a branch, and meanwhile `main` already changed that exact title (maybe from another merged PR). When you try to merge or pull, Git sees two different rewrites of the same line and stops to ask you.
+
+You cannot really prevent conflicts, and you should not fear them. Small, focused commits and pulling `main` often make them rarer and smaller — but knowing how to resolve one is the real skill.
+
+## How GitHub Desktop surfaces it
+
+When a merge or pull hits a conflict, GitHub Desktop stops and tells you plainly. You will see a message listing the conflicted files, and a warning sits above the merge button — you cannot finish the merge until every conflict is resolved. GitHub Desktop offers to **Open in Visual Studio Code** so you can fix the files there. Nothing is broken and nothing is lost; the merge is simply paused, waiting for your decision.
+
+## Read the conflict markers
+
+Open the conflicted file in VS Code. Git has edited the conflicting spot in place, inserting three markers around the two competing versions:
+
+<CodeExample language="bash">
+{`<<<<<<< HEAD
+    <title>My Profile</title>
+=======
+    <title>Ada Lovelace — Profile</title>
+>>>>>>> add-skills-section`}
+</CodeExample>
+
+Read it as two stacked versions with dividers:
+
+- `<<<<<<< HEAD` marks the start of the version already on the branch you are merging **into** (here, `main`).
+- `=======` is the divider between the two versions.
+- `>>>>>>> add-skills-section` marks the end, and names the branch whose change is **coming in**.
+
+So the top block is "what `main` has," and the bottom block is "what the incoming branch has." Your job is to make those lines read the way you actually want — then delete all three marker lines.
+
+## Resolve it in VS Code
+
+VS Code recognizes these markers and shows small clickable links above the block: **Accept Current Change**, **Accept Incoming Change**, **Accept Both Changes**, and **Compare Changes**. You have two ways to resolve:
+
+1. **Click a choice.** *Accept Current* keeps the top (`main`) version; *Accept Incoming* keeps the bottom (branch) version; *Accept Both* keeps them one after another.
+2. **Edit by hand.** Sometimes the right answer is neither version exactly — maybe a blend. Just type the line you want, then delete the `<<<<<<<`, `=======`, and `>>>>>>>` lines yourself.
+
+Either way, the finished result must contain **no marker lines at all**. For the example above, suppose you decide the new title is correct:
+
+<CodeExample language="html">
+{`    <title>Ada Lovelace — Profile</title>`}
+</CodeExample>
+
+Clean, with all three markers gone. Repeat for every conflicted spot, in every conflicted file, then save.
+
+## Commit the resolution
+
+Once all markers are gone and the files are saved, return to GitHub Desktop. The conflict warning clears, and the button to finish the merge becomes available — click it to **commit the merge**. GitHub Desktop writes a commit that records the resolution. Push it (and, if this conflict came up while merging a pull request, the PR updates and can now be merged cleanly).
+
+That is the whole loop: Git pauses, you decide, you delete the markers, you commit. A conflict is just a short conversation about a few lines — handle it once and it stops being scary.
+
+<Exercise
+  title="Create and resolve a merge conflict on purpose"
+  goal="Deliberately make two branches change the same line, then resolve the conflict in VS Code and commit the result."
+  steps={[
+    "On main in GitHub Desktop, edit the <title> in index.html to 'Profile — main version', commit it, and push.",
+    "Create a new branch named edit-title off main, and in VS Code change the same <title> line to 'Profile — branch version'. Commit it on the branch.",
+    "Switch the Current Branch back to main, then from the Branch menu choose to merge edit-title into main (or open a PR and try to merge it).",
+    "When GitHub Desktop reports a conflict, click Open in Visual Studio Code.",
+    "Find the <<<<<<<, =======, and >>>>>>> markers around the title. Decide on a final title, delete all three marker lines so only your chosen line remains, and save.",
+    "Back in GitHub Desktop, confirm the conflict warning is gone and click the button to commit the merge."
+  ]}
+  expected="A single, marker-free <title> line of your choosing, and a merge commit recording that you resolved the conflict."
+  solution={`Before resolving, VS Code shows:
+
+<<<<<<< HEAD
+    <title>Profile — main version</title>
+=======
+    <title>Profile — branch version</title>
+>>>>>>> edit-title
+
+After resolving (markers deleted, one chosen line kept):
+
+    <title>Profile — branch version</title>
+
+Then in GitHub Desktop: the conflict warning clears, and you click the
+button to commit the merge.`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What actually causes a merge conflict?",
+    options: [
+      "Any time two branches are merged",
+      "Two branches changed the same lines of the same file differently",
+      "Forgetting to push before merging",
+      "Having more than one branch published"
+    ],
+    answer: 1,
+    explanation: "Git merges most changes automatically. A conflict only arises when both sides changed the same lines and Git cannot pick a winner."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "In the conflict markers, what does the block between <<<<<<< HEAD and ======= represent?",
+    options: [
+      "The version coming in from the other branch",
+      "The version on the branch you are merging into",
+      "A backup Git made automatically",
+      "Lines that should always be deleted"
+    ],
+    answer: 1,
+    explanation: "The top block (after <<<<<<< HEAD) is the current branch's version; the bottom block (before >>>>>>>) is the incoming branch's version."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "After deciding which lines to keep, what must be true before you commit?",
+    options: [
+      "At least one marker line should stay as a record",
+      "All three marker lines (<<<<<<<, =======, >>>>>>>) must be removed",
+      "You must delete the whole file",
+      "You must rename the branch"
+    ],
+    answer: 1,
+    explanation: "The resolved file must contain none of the conflict markers — only the final lines you want to keep."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "How does GitHub Desktop help you fix a conflicted file?",
+    options: [
+      "It auto-resolves and merges without asking",
+      "It offers Open in Visual Studio Code and blocks the merge until conflicts are resolved",
+      "It deletes the conflicting branch",
+      "It reverts main to an earlier commit"
+    ],
+    answer: 1,
+    explanation: "GitHub Desktop lists the conflicted files, warns you above the merge button, and offers Open in Visual Studio Code so you can resolve them."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which marker line divides the two conflicting versions in a file?",
+    answer: "=======",
+    accept: ["=======", "the ======= line", "equals signs"],
+    explanation: "======= sits between the current-branch version above it and the incoming-branch version below it."
+  }
+]} />

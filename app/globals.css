@@ -11,7 +11,8 @@
   /* Foregrounds */
   --fg-base:        #1a1916;
   --fg-muted:       #6b6a65;
-  --fg-subtle:      #9e9d97;
+  /* AA-compliant: 4.77:1 on --bg-base, 5.11:1 on --bg-surface */
+  --fg-subtle:      #6f6e69;
 
   /* Brand (a calm teal-indigo) */
   --brand:          #3d63dd;
@@ -31,6 +32,10 @@
   --progress-exercise: #d97706;
   --progress-quiz:     #2563eb;
 
+  /* Feedback (theme-aware danger; AA on tinted surface) */
+  --danger:        #c81e1e;
+  --danger-border: #dc2626;
+
   /* Typography scale */
   --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
@@ -45,7 +50,8 @@
 
   --fg-base:        #e8e7e3;
   --fg-muted:       #a09fa0;
-  --fg-subtle:      #6b6a70;
+  /* AA-compliant: 5.97:1 on --bg-base, 4.86:1 on --bg-subtle */
+  --fg-subtle:      #9291a0;
 
   --brand:          #7c9ef7;
   --brand-light:    #1e2e60;
@@ -60,6 +66,9 @@
   --progress-read:     #22c55e;
   --progress-exercise: #f59e0b;
   --progress-quiz:     #60a5fa;
+
+  --danger:        #fca5a5;
+  --danger-border: #f87171;
 }
 
 /* ─── Tailwind v4 theme mapping ─────────────────────────────────────────── */
@@ -99,6 +108,44 @@ body {
   font-family: var(--font-sans);
   line-height: 1.7;
   margin: 0;
+  /* Never allow the page itself to scroll sideways; inner regions opt in. */
+  overflow-x: hidden;
+}
+
+/* ─── Reduced motion ──────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ─── Skip link (visible on focus) ────────────────────────────────────────── */
+.skip-link {
+  position: absolute;
+  left: 12px;
+  top: -48px;
+  z-index: 100;
+  padding: 8px 16px;
+  background: var(--brand);
+  color: #fff;
+  border-radius: 6px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: top 0.15s ease;
+}
+.skip-link:focus-visible {
+  top: 12px;
+  outline: 2px solid var(--fg-base);
+  outline-offset: 2px;
 }
 
 /* ─── Focus ring (keyboard navigation) ───────────────────────────────────── */
@@ -114,10 +161,20 @@ body {
   max-width: 72ch;
 }
 
-.prose h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
-.prose h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; margin: 2.25rem 0 0.75rem; letter-spacing: -0.01em; }
-.prose h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; margin: 1.75rem 0 0.5rem; }
-.prose h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.375rem; }
+/* Heading sizes are driven by visual rank, decoupled from the semantic tag.
+   Lesson MDX `#` is rendered as <h2> (the page <h1> is authoritative) but
+   keeps the visual weight of a top-level section heading via .prose-h1, etc. */
+.prose h1,
+.prose h2,
+.prose h3,
+.prose h4,
+.prose h5,
+.prose h6 { font-weight: 600; }
+
+.prose .prose-h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
+.prose .prose-h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; margin: 2.25rem 0 0.75rem; letter-spacing: -0.01em; }
+.prose .prose-h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; margin: 1.75rem 0 0.5rem; }
+.prose .prose-h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.375rem; }
 
 .prose p { margin: 0 0 1.125rem; }
 
@@ -186,4 +243,184 @@ body {
   border: none;
   padding: 0;
   font-size: inherit;
+}
+
+/* ─── Responsive learn layout ─────────────────────────────────────────────── */
+/* Layout shell: sidebar + main side-by-side on wide screens. */
+.learn-shell {
+  display: flex;
+  min-height: 100vh;
+  min-height: 100dvh;
+  background: var(--bg-base);
+}
+
+.learn-main {
+  flex: 1;
+  min-width: 0; /* allow children to shrink; prevents code from forcing overflow */
+  display: flex;
+  flex-direction: column;
+}
+
+/* Mobile top bar with hamburger — hidden on desktop. */
+.learn-topbar {
+  display: none;
+}
+
+/* Backdrop behind the mobile drawer. */
+.sidebar-backdrop {
+  display: none;
+}
+
+/* Sidebar: a sticky column on desktop. */
+.sidebar {
+  width: 260px;
+  min-width: 260px;
+  max-width: 260px;
+  background: var(--bg-surface);
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  height: 100dvh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+}
+
+/* Tablet / phone: collapse sidebar into an off-canvas drawer. */
+@media (max-width: 768px) {
+  .learn-shell {
+    flex-direction: column;
+  }
+
+  .learn-topbar {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 16px;
+    background: var(--bg-surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 40;
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    height: 100vh;
+    height: 100dvh;
+    width: min(85vw, 300px);
+    min-width: 0;
+    max-width: 320px;
+    z-index: 60;
+    transform: translateX(-100%);
+    transition: transform 0.2s ease;
+    box-shadow: 2px 0 16px rgba(0, 0, 0, 0.18);
+  }
+
+  .sidebar[data-open="true"] {
+    transform: translateX(0);
+  }
+
+  .sidebar-backdrop[data-open="true"] {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* Hamburger / drawer-toggle button. */
+.nav-toggle {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0 10px;
+  background: none;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--fg-base);
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* Close button inside the drawer header (mobile only). */
+.sidebar-close {
+  display: none;
+}
+@media (max-width: 768px) {
+  .sidebar-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    margin-left: auto;
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--fg-base);
+    font-size: 1.1rem;
+    cursor: pointer;
+  }
+}
+
+/* ─── Lesson article responsive padding ───────────────────────────────────── */
+.lesson-article {
+  max-width: 820px;
+  margin: 0 auto;
+  padding: 40px 32px 64px;
+  width: 100%;
+}
+@media (max-width: 768px) {
+  .lesson-article {
+    padding: 24px 18px 56px;
+  }
+}
+@media (max-width: 400px) {
+  .lesson-article {
+    padding: 20px 14px 48px;
+  }
+}
+
+/* Long words / URLs in prose must not force horizontal overflow. */
+.prose {
+  overflow-wrap: break-word;
+}
+.prose pre,
+.shiki {
+  overflow-x: auto;
+  max-width: 100%;
+}
+
+/* ─── CodeExample responsive panes ────────────────────────────────────────── */
+.code-example-panes {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+/* Each pane must be allowed to shrink so its code scrolls internally. */
+.code-example-panes > * {
+  min-width: 0;
+}
+.code-pane-scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+@media (max-width: 700px) {
+  /* Stack Code over Result; drop the vertical divider, add a horizontal one. */
+  .code-example-panes {
+    grid-template-columns: 1fr;
+  }
+  .code-example-panes .preview-pane {
+    border-left: none !important;
+    border-top: 1px solid var(--border);
+  }
 }

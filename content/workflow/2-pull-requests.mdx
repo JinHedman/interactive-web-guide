@@ -1,0 +1,143 @@
+---
+title: "Pull requests: review and merge"
+module: "workflow"
+order: 2
+goal: "Open a pull request from a published branch, understand its purpose, merge it on GitHub, and pull the merged result back."
+objectives:
+  - "Explain what a pull request is for"
+  - "Open a pull request from a published branch via GitHub Desktop"
+  - "Review the changes and merge the pull request on github.com"
+  - "Pull the merged main branch back to your computer"
+estMinutes: 25
+prerequisites: ["workflow/1-branches-and-commits"]
+---
+
+You have a published branch with a couple of focused commits. Now you need to bring that work back into `main` — but not blindly. A **pull request** (PR) is the moment where work is proposed, looked over, discussed, and only then merged. This chapter takes your branch from "published" to "merged into `main`," then back down to your computer.
+
+## What a pull request is for
+
+A pull request says: *"Here are my commits on this branch. I want to merge them into `main`. Please review."* It is not just a merge button — it is a place for conversation.
+
+A PR gives you:
+
+- **A clear diff.** GitHub shows exactly which lines were added and removed, so a reviewer can read the change without running anything.
+- **Discussion and review.** Teammates can comment on specific lines, ask questions, request changes, or approve. On a solo project you are your own reviewer — reading your own diff catches surprising numbers of mistakes.
+- **A record.** Every PR is a titled, described, linked history of why a change was made, kept long after the branch is gone.
+
+Even working alone, PRs are worth the habit: they force a last look before anything touches `main`.
+
+## Open a pull request
+
+Right after you publish a branch, GitHub Desktop offers to start a PR from it.
+
+1. With your branch selected as the Current Branch, click **Preview Pull Request**. GitHub Desktop shows the diff between your branch and `main` so you can sanity-check what you are about to propose.
+2. If it looks right, click **Create Pull Request**. (You can also use the dropdown next to the button to go straight to **Create Pull Request** without the preview.)
+3. GitHub Desktop opens your browser on github.com, on the "Open a pull request" page, with your branch already set to merge into `main`.
+4. On github.com, type a **title** and a short **description** of what the change does and why, then click **Create pull request**.
+
+The PR now exists on GitHub. Underneath, it is simply a request to merge your branch's commits into the base branch — but wrapped in a page built for review.
+
+## Review the changes
+
+On the PR page, click the **Files changed** tab. This is the diff: green lines were added, red lines were removed. Read it as if you were a teammate seeing the work for the first time. Ask:
+
+- Does every change belong to this branch's one job?
+- Did anything sneak in by accident — a stray edit, a debugging line, a misspelling?
+- Is the result something you would be happy to find on `main`?
+
+On a team, a reviewer leaves comments here and clicks **Review changes** to approve or request changes. Solo, you do the same read yourself. If you spot a problem, you do not abandon the PR — you switch back to the branch in GitHub Desktop, commit a fix, and push. The PR updates automatically, because it always reflects the branch's latest commits.
+
+## Merge the pull request
+
+When the change is approved and GitHub reports no conflicts, click the green **Merge pull request** button on the PR's **Conversation** tab, then **Confirm merge**. GitHub combines your branch's commits into `main`. After merging, GitHub offers a **Delete branch** button — once a branch is merged, deleting it keeps the branch list clean. The work lives on in `main`; the branch has done its job.
+
+## Pull the merged result back
+
+Here is the step people forget. The merge happened on GitHub, in the cloud. Your computer's `main` does not know about it yet.
+
+1. In GitHub Desktop, switch the **Current Branch** dropdown back to `main`.
+2. Click **Fetch origin** to check GitHub for new commits, then click **Pull origin** to download them.
+
+**Pulling** brings GitHub's commits down to your computer — the mirror image of pushing. After pulling, your local `main` contains the merged work, and you are ready to branch off it again for the next task. That cycle — branch, commit, publish, pull request, merge, pull `main` — is the everyday rhythm of working with Git.
+
+<Exercise
+  title="Open and merge a pull request"
+  goal="Turn your published add-skills-section branch into a merged pull request, then pull the result into your local main."
+  steps={[
+    "In GitHub Desktop, make sure add-skills-section is the Current Branch and is published.",
+    "Click Preview Pull Request, review the diff, then click Create Pull Request.",
+    "On github.com, give the PR a title like 'Add skills section' and a one-line description, then click Create pull request.",
+    "Open the Files changed tab and read your diff. Confirm only the skills-section work is included.",
+    "Back on the Conversation tab, click Merge pull request, then Confirm merge. Optionally click Delete branch.",
+    "In GitHub Desktop, switch the Current Branch to main, click Fetch origin, then Pull origin, and confirm your skills section is now on local main."
+  ]}
+  expected="A merged pull request on GitHub, the skills section now part of main, and your local main updated after pulling."
+  solution={`Pull request title:  Add skills section
+Pull request body:   Adds a Skills heading and a list of three skills to the profile page.
+
+GitHub Desktop / github.com steps (no code to "solve"):
+1. Current Branch = add-skills-section (published)
+2. Preview Pull Request -> review diff -> Create Pull Request
+3. On github.com: add title + description -> Create pull request
+4. Files changed tab -> read the diff
+5. Conversation tab -> Merge pull request -> Confirm merge -> (optional) Delete branch
+6. Back in GitHub Desktop: Current Branch -> main -> Fetch origin -> Pull origin`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is a pull request mainly for?",
+    options: [
+      "Backing up a single file",
+      "Proposing a branch's changes for review before merging into main",
+      "Renaming the main branch",
+      "Formatting your code automatically"
+    ],
+    answer: 1,
+    explanation: "A PR proposes merging a branch into a base branch and provides a place to review and discuss the diff before it lands."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "After clicking Create Pull Request in GitHub Desktop, where do you finish opening the PR?",
+    options: [
+      "Inside GitHub Desktop's Changes tab",
+      "In VS Code",
+      "On github.com, where GitHub Desktop opens your browser",
+      "In the terminal"
+    ],
+    answer: 2,
+    explanation: "GitHub Desktop opens your browser on github.com's 'Open a pull request' page, where you add a title and description and create the PR."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which tab on a pull request shows exactly which lines were added and removed?",
+    options: ["Conversation", "Files changed", "Commits", "Checks"],
+    answer: 1,
+    explanation: "The Files changed tab is the diff: added lines in green, removed lines in red — what a reviewer reads."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "You merged the PR on github.com. Why isn't the change on your computer's main yet?",
+    options: [
+      "Merging deletes your local copy",
+      "The merge happened on GitHub; you must pull to bring it down",
+      "You need to publish main",
+      "Merged changes never sync to local"
+    ],
+    answer: 1,
+    explanation: "The merge updates main on GitHub. Switch to main in GitHub Desktop and click Pull origin to download the merged commits."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which GitHub Desktop action downloads new commits from GitHub to your computer?",
+    answer: "pull",
+    accept: ["pull", "pull origin", "Pull origin"],
+    explanation: "Pulling (Pull origin) brings remote commits down to your local repository — the opposite of pushing."
+  }
+]} />

@@ -12,6 +12,7 @@ const MODULE_LABELS: Record<string, string> = {
   css: "CSS",
   javascript: "JavaScript",
   integration: "Putting It Together",
+  workflow: "Git & Collaboration",
 };
 
 interface Props {
@@ -31,19 +32,12 @@ export default function SidebarClient({ chapters, modules }: Props) {
   }
 
   return (
-    <aside
+    <div
       style={{
-        width: "260px",
-        minWidth: "260px",
-        maxWidth: "260px",
-        background: "var(--bg-surface)",
-        borderRight: "1px solid var(--border)",
         display: "flex",
         flexDirection: "column",
-        height: "100vh",
-        position: "sticky",
-        top: 0,
-        overflowY: "auto",
+        flex: 1,
+        minHeight: 0,
       }}
     >
       {/* Header / logo */}
@@ -169,6 +163,6 @@ export default function SidebarClient({ chapters, modules }: Props) {
       >
         <ThemeToggle />
       </div>
-    </aside>
+    </div>
   );
 }

@@ -1,0 +1,251 @@
+---
+title: "DevTools and debugging"
+module: "javascript"
+order: 9
+goal: "Use browser DevTools to inspect the page, run JavaScript in the console, read common error messages, and debug with console.log and breakpoints."
+objectives:
+  - "Open DevTools and find the Elements and Console panels"
+  - "Inspect and live-edit the DOM and CSS in the Elements panel"
+  - "Run JavaScript and read errors in the Console"
+  - "Recognize common error messages like ReferenceError and TypeError"
+  - "Take a first look at breakpoints in the Sources panel"
+estMinutes: 30
+prerequisites: ["javascript/1-what-is-js-and-running-it", "javascript/8-dom-concept"]
+---
+
+You have used `console.log` to peek at your code, and you know the DOM is a live tree the browser builds from your HTML. **DevTools** is the control room for all of that — a panel built into every browser where you inspect the page, run JavaScript, read errors, and pause your code mid-run. Learning to read DevTools turns "it's broken and I don't know why" into a quick, methodical check. This chapter is your tour.
+
+## Opening DevTools
+
+You met this briefly in the first JavaScript chapter. To recap, on your own machine:
+
+- **Chrome / Edge**: press `F12`, or right-click the page and choose *Inspect*.
+- **Firefox**: press `F12`.
+- **Safari**: enable the Develop menu in Settings, then press `Option` + `Cmd` + `C`.
+
+A panel opens, docked to the side or bottom of the page, with a row of tabs across the top. Three matter most right now: **Elements** (Firefox calls it *Inspector*), **Console**, and **Sources** (Firefox: *Debugger*).
+
+## The Elements panel: inspect and live-edit
+
+The **Elements** panel shows the live DOM — the tree from the DOM chapter, rendered as something you can click through. It is not your HTML file on disk; it is the page *as it exists right now*, including anything JavaScript has changed.
+
+Try this on any page:
+
+1. Open DevTools and click the **Elements** tab.
+2. Click the small arrow/cursor icon (top-left of DevTools), then click any element on the page. The tree jumps to that element and highlights it.
+3. Expand and collapse nodes with the triangles, exactly like the DOM tree you sketched earlier.
+
+You can also **edit live**. Double-click the text inside an element and type something new — the page updates instantly. On the right, the **Styles** pane shows the CSS rules hitting the selected element; you can toggle a property off with its checkbox, or type a new value and watch the page change. These edits are temporary — a reload throws them away — which makes the Elements panel a perfect scratchpad for "what if I made this margin bigger?" without touching your files.
+
+## The Console: run code and read output
+
+The **Console** is the same panel your `console.log` output lands in — but it is also a live JavaScript prompt. Click the Console tab, click next to the `>` prompt, type an expression, and press Enter to run it immediately.
+
+<CodeExample language="js" preview>
+{`// Anything you can write in a script, you can type at the console prompt:
+console.log(2 + 2);
+console.log("hi".toUpperCase());
+
+// On a real page, you can inspect the live DOM right here, e.g.:
+// document.querySelectorAll("li").length`}
+</CodeExample>
+
+This is the fastest way to test a single line, check a value, or poke at the DOM (`document.title`, `document.querySelectorAll("p")`) without editing a file. And crucially: **errors print here too**, in red. Keeping the Console open while you work means you see problems the instant they happen.
+
+## Reading error messages
+
+An error in the Console looks alarming, but it is structured information. Read it as: *type of error*, *a short description*, and a *file:line* link you can click to jump to the exact spot. Two errors come up constantly.
+
+A **ReferenceError** means you used a name that does not exist — usually a typo or a variable you never declared:
+
+<CodeExample language="js" preview>
+{`let total = 5;
+// Misspelled the variable name on the next line:
+console.log(totl);
+// Uncaught ReferenceError: totl is not defined`}
+</CodeExample>
+
+The fix is in the message: `totl is not defined`. You meant `total`. ReferenceError almost always points at a misspelled or missing name.
+
+A **TypeError** means a value exists but you used it in a way its type does not allow — often calling something that is not a function, or reaching into something that is `undefined`:
+
+<CodeExample language="js" preview>
+{`const user = { name: "Ada" };
+// greet is not a property of user, so it is undefined — and undefined is not callable:
+user.greet();
+// Uncaught TypeError: user.greet is not a function`}
+</CodeExample>
+
+`user.greet is not a function` tells you exactly what went wrong: there is no `greet` to call. The other classic is `Cannot read properties of null (reading '...')`, which in DOM code usually means a selector returned `null` because the element was not found — the very reason the integration module teaches you to check for `null`.
+
+The habit to build: **read the whole first line**, then **click the file:line link** to land on the exact statement. The error is telling you where to look.
+
+## Debug this
+
+Here is a small broken program. Read the error, then the fix.
+
+<CodeExample language="js" preview>
+{`function priceWithTax(price) {
+  const tax = price * 0.2;
+  return price + tax;
+}
+
+const items = [10, 20, 30];
+let total = 0;
+
+// Bug: calling the function with the array, not each number.
+total = priceWithTax(items);
+console.log("Total:", total);
+// Logs "Total: 10,20,30NaN" — nonsense, but no crash. A quiet, wrong result.`}
+</CodeExample>
+
+No red error here — and that is the point. Not every bug throws. Multiplying the *array* by `0.2` quietly produces nonsense. A `console.log` of `price` inside the function would have shown `[10, 20, 30]` instead of a single number, exposing the mistake at once. The fix is to loop and call `priceWithTax` on each item:
+
+<CodeExample language="js" preview>
+{`function priceWithTax(price) {
+  return price + price * 0.2;
+}
+
+const items = [10, 20, 30];
+let total = 0;
+
+for (const item of items) {
+  total = total + priceWithTax(item);
+}
+
+console.log("Total:", total); // Total: 72`}
+</CodeExample>
+
+## A first look at breakpoints
+
+`console.log` is the workhorse of debugging, but the **Sources** panel (Firefox: *Debugger*) offers a sharper tool: a **breakpoint** pauses your code on a chosen line so you can look around while it is frozen.
+
+The idea, without the full mechanics:
+
+1. In **Sources**, open your `.js` file and click a line number. A marker appears — that is a breakpoint.
+2. Reload or trigger the code. Execution **pauses** right before that line runs.
+3. While paused, hover any variable to see its current value, or read the **Scope** pane listing every variable in reach. You can then step forward one line at a time.
+
+Where `console.log` shows you one value after the fact, a breakpoint lets you freeze time and inspect *everything* at that moment. You do not need it for small scripts, but when a bug hides in a loop or a chain of functions, it is the fastest way to catch the exact step where things go wrong.
+
+## A practical debugging workflow
+
+When something misbehaves, work in this order instead of guessing:
+
+1. **Open the Console first.** Is there a red error? Read its whole first line and click the file:line link.
+2. **If it is a crash**, the error names the cause — a `ReferenceError` is a name problem, a `TypeError` is a "wrong type / it's undefined or null" problem. Go to that line.
+3. **If there is no error but the result is wrong**, drop a `console.log` just before the suspect line to print the values going in. Confirm each is what you expect; the first surprising value is your bug.
+4. **For something deeper**, set a breakpoint on the suspect line and inspect the variables while paused.
+5. **Fix one thing, re-run, and remove your debugging logs** once it works.
+
+Most bugs fall to steps 1–3. The console is not a last resort — it is the first place you look.
+
+<Exercise
+  title="Hunt a bug with the console"
+  goal="Use DevTools to find why a small script produces the wrong result, fix it, and confirm with a console.log."
+  steps={[
+    "In VS Code, create debug.html with the basic skeleton and a script tag before </body> (or a linked debug.js).",
+    "Paste this buggy code into the script: const nums = [2, 4, 6]; let sum = 0; for (let i = 0; i <= nums.length; i++) { sum = sum + nums[i]; } console.log('Sum:', sum);",
+    "Open the page with Live Server and open the DevTools Console. Note the result is NaN, not 12.",
+    "Add console.log(i, nums[i]) inside the loop, reload, and read the output. Spot the final pass where nums[i] is undefined.",
+    "Fix the loop condition from i <= nums.length to i < nums.length, reload, and confirm the console now logs Sum: 12.",
+    "Remove the debugging console.log inside the loop, leaving only the final result line."
+  ]}
+  expected="The console logs Sum: 12, and you can explain that the original <= ran one extra time, reading nums[3] which is undefined and turning the sum into NaN."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Debug</title>
+  </head>
+  <body>
+    <h1>Debugging demo</h1>
+
+    <script>
+      const nums = [2, 4, 6];
+      let sum = 0;
+      // Fixed: i < nums.length stops at the last real index.
+      for (let i = 0; i < nums.length; i++) {
+        sum = sum + nums[i];
+      }
+      console.log("Sum:", sum); // Sum: 12
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does the Elements (Inspector) panel show?",
+    options: [
+      "Your HTML file exactly as saved on disk",
+      "The live DOM, including changes JavaScript has made",
+      "Only the CSS, never the HTML",
+      "A list of network requests"
+    ],
+    answer: 1,
+    explanation: "Elements shows the live DOM as it exists right now, reflecting any updates JavaScript has applied — not the static file."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "You see 'Uncaught ReferenceError: totl is not defined'. What is the most likely cause?",
+    options: [
+      "A misspelled or undeclared variable name",
+      "Calling a number as if it were a function",
+      "A missing CSS file",
+      "The DOM has not loaded"
+    ],
+    answer: 0,
+    explanation: "A ReferenceError means you used a name that does not exist — usually a typo (totl instead of total) or a variable you never declared."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What does 'TypeError: user.greet is not a function' tell you?",
+    options: [
+      "user does not exist at all",
+      "greet exists and works fine",
+      "You tried to call greet, but it is not a function (here, it is undefined)",
+      "The page failed to load"
+    ],
+    answer: 2,
+    explanation: "A TypeError means a value exists but was used in a way its type does not allow — here, calling user.greet when there is no such function."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "A breakpoint set in the Sources panel lets you...",
+    options: [
+      "Permanently delete a line of code",
+      "Pause execution on that line and inspect variables while frozen",
+      "Format the file with Prettier",
+      "Reload the page faster"
+    ],
+    answer: 1,
+    explanation: "A breakpoint pauses code right before that line runs, so you can hover variables and read the Scope pane to see the current state."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Your script runs with no red error but the result is wrong. What is the best next step?",
+    options: [
+      "Rewrite the whole file from scratch",
+      "Add a console.log just before the suspect line to print the values going in",
+      "Set every line as a breakpoint",
+      "Assume the browser is broken"
+    ],
+    answer: 1,
+    explanation: "Not every bug throws. Logging the values feeding the suspect line surfaces the first surprising value — that is usually the bug."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Which DevTools panel is both where console.log output appears and a live prompt where you can run JavaScript?",
+    answer: "Console",
+    accept: ["Console", "the Console", "console"],
+    explanation: "The Console shows console.log output and errors, and also runs any JavaScript you type at its prompt."
+  }
+]} />

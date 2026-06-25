@@ -93,7 +93,7 @@ Click the button and the second item disappears. In a to-do app, each task will 
 
 ## Render a list from an array
 
-Here is the pattern your capstone is built on. Keep your data in an **array**, then loop over it to build the matching elements. When the data changes, you clear the list and rebuild it — so what you see always reflects the data.
+Here is the pattern your capstone is built on. Keep your data in an **array**, then loop over it to build the matching elements. When the data changes, you clear the list and rebuild it — so what you see always reflects the data. Notice the shape of the data: each task is an **object** like `{ text: "Buy milk" }`, not a bare string. That gives each task room to grow more fields later (the capstone adds a `done` flag), so we use that shape from the start.
 
 <CodeExample language="html" preview>
 {`<!doctype html>
@@ -102,13 +102,17 @@ Here is the pattern your capstone is built on. Keep your data in an **array**, t
     <ul id="taskList"></ul>
     <script>
       const list = document.getElementById("taskList");
-      const tasks = ["Buy milk", "Walk the dog", "Write some code"];
+      const tasks = [
+        { text: "Buy milk" },
+        { text: "Walk the dog" },
+        { text: "Write some code" },
+      ];
 
       function render() {
         list.textContent = "";
         for (const task of tasks) {
           const li = document.createElement("li");
-          li.textContent = task;
+          li.textContent = task.text;
           list.append(li);
         }
       }
@@ -119,18 +123,18 @@ Here is the pattern your capstone is built on. Keep your data in an **array**, t
 </html>`}
 </CodeExample>
 
-Read the `render` function closely. It first empties the list with `list.textContent = ""`, then loops over `tasks` and creates one `<li>` per item. Call `render` again any time `tasks` changes and the page redraws itself from the current data. This "data in an array, render from the array" idea is the whole engine of the capstone — and, as you will see at the end of the module, the core idea behind modern frameworks too.
+Read the `render` function closely. It first empties the list with `list.textContent = ""`, then loops over `tasks` and creates one `<li>` per item, reading the text out of each object with `task.text`. Call `render` again any time `tasks` changes and the page redraws itself from the current data. This "data in an array, render from the array" idea is the whole engine of the capstone — and, as you will see at the end of the module, the core idea behind modern frameworks too.
 
 <Exercise
   title="Render tasks from an array and add new ones"
   goal="Combine everything so far: keep tasks in an array, render them as list items, and add a new task on submit by pushing to the array and re-rendering."
   steps={[
     "Open your todo.html with the form (id taskForm), input (id taskInput), and an empty ul (id taskList).",
-    "In the script, create an array named tasks holding two starter strings.",
-    "Write a render function that clears the list with list.textContent = \"\", then loops over tasks with for...of, creating an li for each and appending it.",
+    "In the script, create an array named tasks holding two starter objects, each shaped { text: \"...\" }.",
+    "Write a render function that clears the list with list.textContent = \"\", then loops over tasks with for...of, creating an li for each (using task.text) and appending it.",
     "Call render() once so the starter tasks show.",
     "In the submit handler, after preventDefault, read const text = input.value.trim() and return early if it is empty.",
-    "Push text onto the tasks array, clear the input, then call render() again.",
+    "Push a new { text } object onto the tasks array, clear the input, then call render() again.",
     "Open with Live Server. Confirm the starter tasks appear, then add a few and watch the list grow."
   ]}
   expected="The page shows the starter tasks on load, and each submitted task appears at the bottom of the list while the input clears."
@@ -154,13 +158,16 @@ Read the `render` function closely. It first empties the list with `list.textCon
       const input = document.getElementById("taskInput");
       const list = document.getElementById("taskList");
 
-      const tasks = ["Buy milk", "Walk the dog"];
+      const tasks = [
+        { text: "Buy milk" },
+        { text: "Walk the dog" },
+      ];
 
       function render() {
         list.textContent = "";
         for (const task of tasks) {
           const li = document.createElement("li");
-          li.textContent = task;
+          li.textContent = task.text;
           list.append(li);
         }
       }
@@ -171,7 +178,7 @@ Read the `render` function closely. It first empties the list with `list.textCon
         if (text === "") {
           return;
         }
-        tasks.push(text);
+        tasks.push({ text: text });
         input.value = "";
         render();
       });

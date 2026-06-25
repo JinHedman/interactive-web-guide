@@ -36,14 +36,7 @@ export default async function LessonPage({ params }: PageProps) {
   const components = getMDXComponents(chapterId);
 
   return (
-    <article
-      style={{
-        maxWidth: "820px",
-        margin: "0 auto",
-        padding: "40px 32px 64px",
-        width: "100%",
-      }}
-    >
+    <article className="lesson-article">
       {/* Mark as read on load */}
       <MarkRead chapterId={chapterId} />
 
