@@ -13,7 +13,7 @@ estMinutes: 50
 prerequisites: ["integration/7-json-fetch-apis"]
 ---
 
-This is an extra practice set for the whole Integration module — no new concepts, just reps. Each build uses a fresh theme (not the to-do app) so the skills transfer. Work each exercise in VS Code with Live Server, reveal the solution only after you have a working version, and commit as you go. The first five run in the preview boxes; the last one uses `fetch`, so you run it in your own browser the way you did in the previous chapter.
+This is an extra practice set for the whole Integration module — no new concepts, just reps. Each build uses a fresh theme (not the to-do app) so the skills transfer. Build each one in VS Code with Live Server, reveal the solution only after you have a working version, and commit as you go. The last build uses `fetch`, so you run it in your own browser the way you did in the previous chapter.
 
 <Exercise
   title="Counter with +, −, and reset (clamped at 0)"
@@ -92,57 +92,6 @@ render();`
   ]}
 />
 
-<CodeExample preview files={[
-  {
-    name: "index.html",
-    lang: "html",
-    code: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <p>Count: <span id="count">0</span></p>
-    <button id="minus">−</button>
-    <button id="plus">+</button>
-    <button id="reset">Reset</button>
-    <script src="script.js"></script>
-  </body>
-</html>`
-  },
-  {
-    name: "styles.css",
-    lang: "css",
-    code: `body {
-  font-family: system-ui, sans-serif;
-}`
-  },
-  {
-    name: "script.js",
-    lang: "js",
-    code: `const display = document.getElementById("count");
-let count = 0;
-function render() { display.textContent = count; }
-
-document.getElementById("plus").addEventListener("click", function () {
-  count = count + 1;
-  render();
-});
-document.getElementById("minus").addEventListener("click", function () {
-  if (count > 0) { count = count - 1; }
-  render();
-});
-document.getElementById("reset").addEventListener("click", function () {
-  count = 0;
-  render();
-});
-render();`
-  }
-]} />
-
-The page links its stylesheet in the `<head>` and its script just before `</body>` — exactly how you wired files together in earlier chapters. The inline `style` attribute is gone; the font now lives in `styles.css`.
-
 <Exercise
   title="Dark-mode toggle that also swaps its label"
   goal="Build one button that flips the whole page between light and dark, and changes its own label to match."
@@ -205,54 +154,6 @@ toggle.addEventListener("click", function () {
     }
   ]}
 />
-
-<CodeExample preview files={[
-  {
-    name: "index.html",
-    lang: "html",
-    code: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <h1>Reading mode</h1>
-    <p>Toggle the theme to suit the room you are in.</p>
-    <button id="toggle">Dark mode</button>
-    <script src="script.js"></script>
-  </body>
-</html>`
-  },
-  {
-    name: "styles.css",
-    lang: "css",
-    code: `body {
-  font-family: system-ui, sans-serif;
-  background: #fff;
-  color: #111;
-  padding: 1.5rem;
-}
-body.dark {
-  background: #111;
-  color: #f5f5f5;
-}
-button {
-  padding: 0.5rem 1rem;
-}`
-  },
-  {
-    name: "script.js",
-    lang: "js",
-    code: `const toggle = document.getElementById("toggle");
-toggle.addEventListener("click", function () {
-  const isDark = document.body.classList.toggle("dark");
-  toggle.textContent = isDark ? "Light mode" : "Dark mode";
-});`
-  }
-]} />
-
-The dark theme is a CSS class. JavaScript only flips that class on `<body>`; the look of dark mode stays in `styles.css` where styling belongs.
 
 <Exercise
   title="FAQ accordion — one panel open at a time"
@@ -350,80 +251,6 @@ questions.forEach(function (question) {
   ]}
 />
 
-<CodeExample preview files={[
-  {
-    name: "index.html",
-    lang: "html",
-    code: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <div class="item">
-      <button class="question">Do I need to install anything?</button>
-      <p class="answer">Only a browser and a text editor. No build tools.</p>
-    </div>
-    <div class="item">
-      <button class="question">Is the course free?</button>
-      <p class="answer">Yes — every chapter and exercise is free.</p>
-    </div>
-    <div class="item">
-      <button class="question">Can I use the previews offline?</button>
-      <p class="answer">Most of them, yes. The fetch builds need a live server.</p>
-    </div>
-    <script src="script.js"></script>
-  </body>
-</html>`
-  },
-  {
-    name: "styles.css",
-    lang: "css",
-    code: `body {
-  font-family: system-ui, sans-serif;
-  max-width: 36rem;
-  margin: 1rem auto;
-}
-.item {
-  border-bottom: 1px solid #ddd;
-}
-.item button {
-  width: 100%;
-  text-align: left;
-  padding: 0.7rem 0;
-  background: none;
-  border: none;
-  font-size: 1rem;
-  cursor: pointer;
-}
-.item .answer {
-  display: none;
-  padding-bottom: 0.7rem;
-  color: #444;
-}
-.item.open .answer {
-  display: block;
-}`
-  },
-  {
-    name: "script.js",
-    lang: "js",
-    code: `document.querySelectorAll(".question").forEach(function (question) {
-  question.addEventListener("click", function () {
-    const item = question.parentElement;
-    const alreadyOpen = item.classList.contains("open");
-    document.querySelectorAll(".item").forEach(function (other) {
-      other.classList.remove("open");
-    });
-    if (!alreadyOpen) { item.classList.add("open"); }
-  });
-});`
-  }
-]} />
-
-The show/hide rules (`.item .answer` and `.item.open .answer`) stay entirely in CSS. JavaScript decides *which* item is open by adding and removing the `open` class — it never touches `display` directly.
-
 <Exercise
   title="Live filter a list as you type"
   goal="Build a search box that hides any list item whose text does not contain what you typed, updating on every keystroke."
@@ -500,65 +327,6 @@ search.addEventListener("input", function () {
     }
   ]}
 />
-
-<CodeExample preview files={[
-  {
-    name: "index.html",
-    lang: "html",
-    code: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <input id="search" placeholder="Filter fruit...">
-    <ul id="list">
-      <li>Apple</li>
-      <li>Banana</li>
-      <li>Cherry</li>
-      <li>Grapefruit</li>
-      <li>Mango</li>
-      <li>Pineapple</li>
-    </ul>
-    <script src="script.js"></script>
-  </body>
-</html>`
-  },
-  {
-    name: "styles.css",
-    lang: "css",
-    code: `body {
-  font-family: system-ui, sans-serif;
-  max-width: 24rem;
-  margin: 1rem auto;
-}
-input {
-  width: 100%;
-  padding: 0.5rem;
-  box-sizing: border-box;
-}
-.hidden {
-  display: none;
-}`
-  },
-  {
-    name: "script.js",
-    lang: "js",
-    code: `const search = document.getElementById("search");
-const items = document.querySelectorAll("#list li");
-search.addEventListener("input", function () {
-  const query = search.value.toLowerCase();
-  items.forEach(function (item) {
-    const text = item.textContent.toLowerCase();
-    const match = text.includes(query);
-    item.classList.toggle("hidden", !match);
-  });
-});`
-  }
-]} />
-
-Hiding is a CSS job: the `.hidden` rule owns `display: none`. The script only decides *which* items carry that class with `classList.toggle("hidden", !match)` — it never sets `item.style.display` from JavaScript. This is the class-based approach the rest of the module teaches.
 
 <Exercise
   title="Sign-up form with on-page validation"
@@ -682,98 +450,6 @@ form.addEventListener("submit", function (event) {
     }
   ]}
 />
-
-<CodeExample preview files={[
-  {
-    name: "index.html",
-    lang: "html",
-    code: `<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <link rel="stylesheet" href="styles.css">
-  </head>
-  <body>
-    <form id="form" novalidate>
-      <label>Name <input type="text" id="name"></label>
-      <p class="error" id="nameError"></p>
-      <label>Email <input type="email" id="email"></label>
-      <p class="error" id="emailError"></p>
-      <label><input type="checkbox" id="agree"> I agree to the terms</label>
-      <p class="error" id="agreeError"></p>
-      <button type="submit">Create account</button>
-    </form>
-    <p class="success" id="success"></p>
-    <script src="script.js"></script>
-  </body>
-</html>`
-  },
-  {
-    name: "styles.css",
-    lang: "css",
-    code: `body {
-  font-family: system-ui, sans-serif;
-  max-width: 22rem;
-  margin: 1rem auto;
-}
-label {
-  display: block;
-  margin-top: 0.7rem;
-}
-input[type="text"],
-input[type="email"] {
-  width: 100%;
-  padding: 0.4rem;
-  box-sizing: border-box;
-}
-.error {
-  color: #b00020;
-  font-size: 0.85rem;
-  min-height: 1rem;
-}
-.success {
-  color: #0a7d28;
-  margin-top: 1rem;
-}`
-  },
-  {
-    name: "script.js",
-    lang: "js",
-    code: `const form = document.getElementById("form");
-form.addEventListener("submit", function (event) {
-  event.preventDefault();
-  const name = document.getElementById("name");
-  const email = document.getElementById("email");
-  const agree = document.getElementById("agree");
-  const success = document.getElementById("success");
-
-  document.getElementById("nameError").textContent = "";
-  document.getElementById("emailError").textContent = "";
-  document.getElementById("agreeError").textContent = "";
-  success.textContent = "";
-
-  let valid = true;
-  if (name.value.trim() === "") {
-    document.getElementById("nameError").textContent = "Please enter your name.";
-    valid = false;
-  }
-  if (!email.value.trim().includes("@")) {
-    document.getElementById("emailError").textContent = "Please enter a valid email.";
-    valid = false;
-  }
-  if (!agree.checked) {
-    document.getElementById("agreeError").textContent = "You must agree to continue.";
-    valid = false;
-  }
-  if (valid) {
-    success.textContent = "Account created!";
-    form.reset();
-  }
-});`
-  }
-]} />
-
-The validation feedback (`.error`, `.success`) is styled once in CSS; the script only fills in the message text and decides whether to show success. Markup, styling, and behavior each live in their own file.
 
 <Exercise
   title="Fix this: the accordion that opens but never closes"
