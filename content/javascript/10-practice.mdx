@@ -1,0 +1,196 @@
+---
+title: "JavaScript — Practice drills"
+module: "javascript"
+order: 10
+goal: "Cement the JavaScript basics with extra drills — build FizzBuzz, debug a runaway loop, and predict what code prints before you run it."
+objectives:
+  - "Combine loops, modulo, and conditionals to build FizzBuzz"
+  - "Find and explain an off-by-one and an infinite-loop bug"
+  - "Write small functions that return values you log"
+  - "Predict the output of short snippets involving coercion, equality, and indexing"
+estMinutes: 35
+prerequisites: ["javascript/9-devtools-and-debugging"]
+---
+
+This is an optional bonus chapter: pure practice, no new material. Each drill below re-applies what you already covered in chapters 1–9, using fresh scenarios so nothing repeats the per-chapter exercises. Every build task logs its result with `console.log` so it runs in the in-page preview, or you can do it in your own editor and check it in the DevTools Console. Work through as many as you like, reveal a solution only after you have tried, then finish with the predict-the-output quiz.
+
+<Exercise
+  title="FizzBuzz from 1 to 20"
+  goal="Loop from 1 to 20 and log Fizz, Buzz, FizzBuzz, or the number, following the classic rules."
+  steps={[
+    "Create fizzbuzz.js and write a for loop that counts i from 1 to 20.",
+    "Inside the loop, check the both-multiples case first: if i is divisible by 3 AND by 5, log 'FizzBuzz'.",
+    "Else if i is divisible by 3, log 'Fizz'. Else if i is divisible by 5, log 'Buzz'.",
+    "Otherwise log the number itself.",
+    "Use the modulo operator i % 3 === 0 to test divisibility. Run it and check the pattern.",
+    "Commit in GitHub Desktop with the message 'Add FizzBuzz drill'."
+  ]}
+  expected="Twenty lines: 1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, ... up to 20."
+  solution={`for (let i = 1; i <= 20; i++) {
+  // Check the combined case first — order matters.
+  if (i % 3 === 0 && i % 5 === 0) {
+    console.log("FizzBuzz");
+  } else if (i % 3 === 0) {
+    console.log("Fizz");
+  } else if (i % 5 === 0) {
+    console.log("Buzz");
+  } else {
+    console.log(i);
+  }
+}`}
+/>
+
+<Exercise
+  title="Fix this: the loop that never stops (and reads too far)"
+  goal="Two loops are broken — one runs forever, one reads past the end of the array. Find both bugs, fix them, and explain each in a comment."
+  steps={[
+    "Create loop-fix.js and paste the buggy code from the solution's first version (or read it below before revealing).",
+    "Bug 1: the while loop logs the same value forever because the counter is never updated. Add the missing step so it moves toward the exit.",
+    "Bug 2: the for loop uses i <= nums.length, so on the last pass it reads nums at an index that does not exist (undefined). Change the condition so it stops at the last real index.",
+    "Run it: the while loop should count down and stop, and the for loop should print only real values — no undefined.",
+    "Add a one-line comment on each fix saying what went wrong."
+  ]}
+  expected="The while loop prints 3, 2, 1 and stops; the for loop prints 10, 20, 30 with no trailing undefined."
+  solution={`// Bug 1 fixed: without count-- the condition stays true forever (infinite loop).
+let count = 3;
+while (count > 0) {
+  console.log(count);
+  count--; // moves toward the exit — without this the page would freeze
+}
+// 3, 2, 1
+
+const nums = [10, 20, 30];
+// Bug 2 fixed: i < nums.length, not <=. With <= the last pass read nums[3],
+// which does not exist, logging undefined.
+for (let i = 0; i < nums.length; i++) {
+  console.log(nums[i]);
+}
+// 10, 20, 30`}
+/>
+
+<Exercise
+  title="Find the largest number without Math.max"
+  goal="Walk an array with a loop and a running 'best so far' variable to find and log the maximum."
+  steps={[
+    "Create largest.js and declare const nums = [12, 7, 25, 3, 19];.",
+    "Declare let largest = nums[0]; — start with the first value as the best guess.",
+    "Use a for...of loop over nums. If the current value is greater than largest, update largest.",
+    "After the loop, log largest. It should be 25.",
+    "Stretch: in the same loop, track a let smallest the same way and log it too (it should be 3)."
+  ]}
+  expected="The console logs 25 (the largest). With the stretch, it also logs 3 (the smallest)."
+  solution={`const nums = [12, 7, 25, 3, 19];
+
+let largest = nums[0];
+let smallest = nums[0];
+
+for (const n of nums) {
+  if (n > largest) {
+    largest = n;
+  }
+  if (n < smallest) {
+    smallest = n;
+  }
+}
+
+console.log(largest);  // 25
+console.log(smallest); // 3`}
+/>
+
+<Exercise
+  title="Word and character counter"
+  goal="Inspect a sentence string with string methods and log three facts about it."
+  steps={[
+    "Create counter.js and declare const sentence = 'I am learning JavaScript today';.",
+    "Log the character count with sentence.length.",
+    "Log the word count by splitting on spaces: sentence.split(' ').length.",
+    "Log whether it mentions JavaScript, case-insensitively: sentence.toLowerCase().includes('javascript').",
+    "Run it and confirm the three lines: a character count, a word count, and the boolean true."
+  ]}
+  expected="Three lines — the character count (30), the word count (5), and true."
+  solution={`const sentence = "I am learning JavaScript today";
+
+console.log(sentence.length);                              // 30
+console.log(sentence.split(" ").length);                   // 5
+console.log(sentence.toLowerCase().includes("javascript")); // true`}
+/>
+
+<Exercise
+  title="Average of an array (a reusable function)"
+  goal="Write a function that takes an array, sums it with a loop, and returns the mean — then log one call."
+  steps={[
+    "Create average.js and declare function average(numbers) { ... }.",
+    "Inside, start let sum = 0; and loop over numbers with for...of, adding each to sum.",
+    "Return sum / numbers.length — return the value, do not console.log inside the function.",
+    "Call it: console.log(average([4, 8, 15, 16, 23, 42]));.",
+    "Run it. Because the function returns, the caller is what logs the result.",
+    "Reveal the solution only after your version prints 18 (the mean of those six numbers)."
+  ]}
+  expected="The console logs 18 — the average of 4, 8, 15, 16, 23, 42."
+  solution={`function average(numbers) {
+  let sum = 0;
+  for (const n of numbers) {
+    sum += n;
+  }
+  return sum / numbers.length; // return, so the caller can use the result
+}
+
+console.log(average([4, 8, 15, 16, 23, 42])); // 18`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Predict the output: console.log(typeof (10 + \"5\"));",
+    options: ["\"number\"", "\"string\"", "\"15\"", "\"NaN\""],
+    answer: 1,
+    explanation: "The + operator with a string coerces the number to a string, so 10 + \"5\" is \"105\", and typeof of a string is \"string\"."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Predict the output: console.log(1 === \"1\", 1 == \"1\");",
+    options: ["true true", "false false", "false true", "true false"],
+    answer: 2,
+    explanation: "=== is strict: 1 and \"1\" are different types, so false. == coerces \"1\" to 1 first, so true. Prefer === to avoid this surprise."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Predict the output: let s = \"hello\"; s.toUpperCase(); console.log(s);",
+    options: ["\"HELLO\"", "\"hello\"", "undefined", "An error"],
+    answer: 1,
+    explanation: "String methods return a new string; they never change the original. The return value of s.toUpperCase() was discarded, so s is still \"hello\"."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Predict the output: const a = [10, 20, 30]; console.log(a[3]);",
+    options: ["30", "undefined", "An error", "10"],
+    answer: 1,
+    explanation: "Arrays are zero-based, so the valid indexes are 0, 1, 2. Reading the missing index 3 gives undefined, not an error."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Predict the output: let n = 0; for (let i = 1; i <= 4; i++) { n += i; } console.log(n);",
+    options: ["6", "10", "4", "15"],
+    answer: 1,
+    explanation: "The loop runs for i = 1, 2, 3, 4 and adds each to n: 1 + 2 + 3 + 4 = 10."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "A function that runs but has no return statement evaluates to ___ when you call it.",
+    answer: "undefined",
+    accept: ["undefined", "undefined."],
+    explanation: "With no return, a function still runs its body but hands back undefined as its value."
+  }
+]} />
+
+<DocsLinks links={[
+  { label: "MDN – Looping code", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Loops" },
+  { label: "javascript.info – Comparisons", href: "https://javascript.info/comparison" },
+  { label: "javascript.info – Tasks with full solutions (every article)", href: "https://javascript.info/function-basics" }
+]} />

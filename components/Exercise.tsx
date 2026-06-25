@@ -1,8 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { markExerciseDone } from "@/lib/progress";
+import { useEffect, useState } from "react";
+import { markExerciseDone, type ProgressEventDetail } from "@/lib/progress";
 import { useChapterProgress } from "@/lib/useProgress";
+import BlurReveal from "./BlurReveal";
 
 export interface ExerciseProps {
   title: string;
@@ -30,6 +31,22 @@ export default function Exercise({
   function handleMarkDone() {
     if (chapterId) markExerciseDone(chapterId);
   }
+
+  // Re-blur the solution when this chapter is reset (per-chapter "Reset this
+  // section" or the global "Reset all progress"), matching how the Quiz resets
+  // itself on the same `guide:progress` event channel.
+  useEffect(() => {
+    function onProgress(e: Event) {
+      const detail = (e as CustomEvent<ProgressEventDetail>).detail;
+      if (!detail) return;
+      const affectsUs =
+        detail.kind === "clear-all" ||
+        (detail.kind === "reset-chapter" && detail.chapterId === chapterId);
+      if (affectsUs) setShowSolution(false);
+    }
+    window.addEventListener("guide:progress", onProgress);
+    return () => window.removeEventListener("guide:progress", onProgress);
+  }, [chapterId]);
 
   return (
     <section
@@ -160,22 +177,25 @@ export default function Exercise({
 
         {/* Action buttons */}
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>
-          <button
-            onClick={() => setShowSolution((s) => !s)}
-            style={{
-              padding: "8px 16px",
-              background: "none",
-              color: "var(--fg-muted)",
-              border: "1px solid var(--border-strong)",
-              borderRadius: "8px",
-              fontWeight: 500,
-              fontSize: "13px",
-              cursor: "pointer",
-            }}
-            aria-expanded={showSolution}
-          >
-            {showSolution ? "Hide solution" : "Reveal solution"}
-          </button>
+          {showSolution && (
+            <button
+              type="button"
+              onClick={() => setShowSolution(false)}
+              style={{
+                padding: "8px 16px",
+                background: "none",
+                color: "var(--fg-muted)",
+                border: "1px solid var(--border-strong)",
+                borderRadius: "8px",
+                fontWeight: 500,
+                fontSize: "13px",
+                cursor: "pointer",
+              }}
+              aria-expanded={showSolution}
+            >
+              Hide solution
+            </button>
+          )}
 
           {!done && (
             <button
@@ -196,9 +216,28 @@ export default function Exercise({
           )}
         </div>
 
-        {/* Solution (revealed on demand) */}
-        {showSolution && (
-          <div style={{ marginTop: "16px" }}>
+        {/* Solution — always rendered, but spoiler-safe: heavily blurred,
+            non-selectable and hidden from assistive tech until the learner
+            deliberately presses "Reveal solution" (a real button overlay). */}
+        <div style={{ marginTop: "16px" }}>
+          <strong
+            style={{
+              display: "block",
+              fontSize: "10.5px",
+              letterSpacing: "0.06em",
+              textTransform: "uppercase",
+              color: "var(--fg-subtle)",
+              marginBottom: "8px",
+            }}
+          >
+            Solution
+          </strong>
+          <BlurReveal
+            revealed={showSolution}
+            onReveal={() => setShowSolution(true)}
+            revealLabel="Reveal solution"
+            hiddenLabel={`Solution for ${title}`}
+          >
             <pre
               style={{
                 background: "var(--code-bg)",
@@ -214,8 +253,8 @@ export default function Exercise({
             >
               <code>{solution}</code>
             </pre>
-          </div>
-        )}
+          </BlurReveal>
+        </div>
       </div>
     </section>
   );

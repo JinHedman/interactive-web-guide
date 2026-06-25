@@ -1,0 +1,198 @@
+---
+title: "Workflow — Practice & recovery"
+module: "workflow"
+order: 4
+goal: "Recover from common Git mistakes in GitHub Desktop — undo, revert, and discard — keep junk out of the repo with .gitignore, and read a project's history to tell what happened."
+objectives:
+  - "Undo a not-yet-pushed commit and keep the work"
+  - "Revert a pushed commit safely with a new commit"
+  - "Discard uncommitted changes back to the last commit"
+  - "Use .gitignore to keep untracked junk out of the repo"
+  - "Read the History tab to tell what each commit did"
+estMinutes: 30
+prerequisites: ["workflow/3-merge-conflicts"]
+---
+
+The three lessons taught you to write history: branch, commit, open a pull request, resolve a conflict. This practice set covers the other half — what to do when something goes wrong, and how to read history after the fact. Every drill runs on your existing `profile-page` project using GitHub Desktop's buttons, no terminal required. The first rule of recovering from mistakes: stay calm. Git is built to undo things, and almost nothing is truly lost.
+
+The key is matching the situation to the right tool. A bad commit you have not pushed yet is **undone**. A bad commit already pushed and shared is **reverted**. Edits you never committed are **discarded**. Work through the drills in order, then take the quiz.
+
+<Exercise
+  title="Undo a not-yet-pushed commit"
+  goal="Make a commit with a bad message, undo it in GitHub Desktop before pushing, and re-commit cleanly — without losing the edit."
+  steps={[
+    "On a branch (create one named practice-recovery if you like), make a small edit to index.html in VS Code and save.",
+    "In GitHub Desktop, commit it with a deliberately bad message: asdf. Do NOT push.",
+    "Open the History tab and confirm the asdf commit is there. Then find the Undo button at the bottom of the sidebar, next to the last commit, and click it.",
+    "Switch back to the Changes tab: your edit is back in the list of uncommitted changes, exactly as before the commit.",
+    "Re-commit the same change with a clear message, for example 'Add tagline under the heading'."
+  ]}
+  expected="The asdf commit is gone from History, your edit is preserved, and there is one new commit with a clear message. Nothing was pushed, so no one else ever saw the mistake."
+  solution={`Undo lives at the very bottom of the left sidebar, beside the most
+recent commit's summary. Clicking it:
+
+1. Removes the last commit from History.
+2. Returns that commit's changes to the Changes tab as uncommitted edits.
+
+So your work is never thrown away — it is just lifted back out of the
+commit. Re-commit with a better message:
+
+  Add tagline under the heading
+
+Important: Undo rewrites history. Only use it on commits you have NOT
+pushed yet. For a commit you already pushed and shared, use Revert
+(the next drill) instead.`}
+/>
+
+<Exercise
+  title="Revert a pushed commit"
+  goal="Undo a commit that is already on a shared branch by creating a new commit that reverses it — leaving the original in history."
+  steps={[
+    "On main (or your published branch), edit the tagline in index.html to something wrong on purpose, for example 'I sell used cars'. Commit it and push.",
+    "Realize it was wrong. Open the History tab and find that commit.",
+    "Right-click the commit and choose Revert Changes in Commit.",
+    "Watch GitHub Desktop create a NEW commit that undoes the change. The tagline returns to its previous value; the original wrong commit STAYS in history.",
+    "Push the revert so the shared branch is corrected."
+  ]}
+  expected={`A new commit titled 'Revert "..."' appears at the top of History, the tagline is back to its correct value, and History shows both the original commit and the revert. Nothing was rewritten.`}
+  solution={`In the History tab, right-click the commit you want to reverse and
+choose Revert Changes in Commit. GitHub Desktop then:
+
+1. Creates a brand-new commit whose contents are the exact opposite of
+   the one you reverted.
+2. Leaves the original commit untouched in history.
+
+That is why revert is the safe choice for anything already pushed: it
+adds to history instead of rewriting it, so teammates who already pulled
+the original are not disrupted. After it appears, push it like any
+other commit.
+
+Mental model: Undo erases a mistake (safe only before pushing). Revert
+cancels a mistake out in the open (safe even after pushing).`}
+/>
+
+<Exercise
+  title="Discard uncommitted changes"
+  goal="Throw away local edits you have decided you do not want, returning the file to its last-committed state."
+  steps={[
+    "In VS Code, make a few edits to index.html that you decide you do not want — delete a paragraph, mangle a heading, whatever. Save the file.",
+    "In GitHub Desktop, look at the Changes tab. Your unwanted edits are listed there as uncommitted changes.",
+    "Right-click the file and choose Discard changes (or Discard all changes to abandon every uncommitted edit at once). Confirm when prompted.",
+    "Open the file again in VS Code: it has snapped back to its last-committed state, as if the edits never happened."
+  ]}
+  expected="The working file is restored to its last commit and disappears from the Changes list. You can state the difference: discard throws away uncommitted edits, while undo and revert deal with commits."
+  solution={`Right-click the file in the Changes tab and choose Discard changes;
+confirm in the dialog. The file reverts to whatever the last commit
+recorded.
+
+Discard only touches uncommitted changes in your working files. It does
+not affect any commit — for those you use Undo (not pushed) or Revert
+(pushed). The three tools, side by side:
+
+  Discard -> unwanted edits you never committed
+  Undo    -> a commit you have NOT pushed yet
+  Revert  -> a commit you HAVE pushed/shared`}
+/>
+
+<Exercise
+  title="Keep junk out of the repo with .gitignore"
+  goal="Stop an unwanted file from being tracked by adding it to .gitignore, then commit the rule so it is shared."
+  steps={[
+    "Create a file that should never be in the repo, for example notes.local.txt (on macOS a .DS_Store may also appear on its own). Save it in the project folder.",
+    "In GitHub Desktop, it shows up in the Changes tab. Right-click it and choose the Ignore file option, which adds a line for it to .gitignore. (If you do not see that menu item in your version, open or create a file named .gitignore in the project root in VS Code and add the filename on its own line.)",
+    "Confirm the junk file disappears from Changes, and a change to .gitignore appears in its place.",
+    "Open .gitignore in VS Code to read the rule you just added.",
+    "Commit .gitignore with a message like 'Ignore local notes file'. Now every collaborator who pulls shares the same ignore rule."
+  ]}
+  expected="A committed .gitignore containing the ignore rule, and the junk file no longer showing up as a change in GitHub Desktop."
+  solution={`A .gitignore file lists patterns for files Git should leave untracked.
+It lives in the repo root and is itself committed, so the whole team
+shares the rules. A minimal one for this drill:
+
+  # Local scratch files
+  notes.local.txt
+
+  # macOS folder metadata
+  .DS_Store
+
+One important limit: .gitignore only stops Git from tracking files it is
+not already tracking. If you committed a file earlier and then add it to
+.gitignore, it keeps showing up — because Git is still tracking it. The
+documented fix is to untrack it first, which a teammate would do from the
+terminal with:
+
+  git rm --cached <file>
+
+You do not need to run that here. The lesson is the concept: ignore
+files BEFORE you commit them, not after.`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "You made a commit with a typo in the message but have NOT pushed it. Which tool fixes this cleanly?",
+    options: [
+      "Discard changes",
+      "Undo",
+      "Revert Changes in Commit",
+      "Delete the branch"
+    ],
+    answer: 1,
+    explanation: "Undo lifts the last not-yet-pushed commit back into the Changes list so you can re-commit. Safe because no one has seen it yet."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "A wrong commit is already pushed to a shared branch. What is the safe way to undo it?",
+    options: [
+      "Use Undo to rewrite history and remove it",
+      "Discard the changes in the Changes tab",
+      "Right-click it in History and choose Revert Changes in Commit",
+      "Edit the file by hand and force-push"
+    ],
+    answer: 2,
+    explanation: "Revert creates a NEW commit that reverses the change and leaves the original in history, so teammates who already pulled it are not disrupted."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Revert creates a new commit and leaves the original commit in history. True or false?",
+    options: [
+      "True — that is exactly why it is safe on shared branches",
+      "False — it deletes the original commit",
+      "False — it only works before pushing",
+      "True — but only for merge commits"
+    ],
+    answer: 0,
+    explanation: "Revert adds to history instead of rewriting it. The original stays put; a new 'Revert ...' commit cancels its effect."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: ".DS_Store keeps reappearing in the Changes list and you never want to commit it. What is the fix?",
+    options: [
+      "Discard it every time before committing",
+      "Add it to .gitignore and commit the .gitignore",
+      "Undo the last commit",
+      "Delete the repository and start over"
+    ],
+    answer: 1,
+    explanation: "An untracked junk file should be listed in .gitignore. Commit .gitignore so the rule is shared with everyone who clones the repo."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "In GitHub Desktop, clicking a commit in the History tab shows its message, author, time, SHA, and a ____ of the files it changed.",
+    answer: "diff",
+    accept: ["diff", "a diff", "the diff"],
+    explanation: "The History tab is for reading: click any commit to see what it changed line by line in a diff, which is how you tell what happened in a project."
+  }
+]} />
+
+<DocsLinks links={[
+  { label: "GitHub Desktop – Undoing a commit", href: "https://docs.github.com/en/desktop/managing-commits/undoing-a-commit-in-github-desktop" },
+  { label: "GitHub Desktop – Reverting a commit", href: "https://docs.github.com/en/desktop/managing-commits/reverting-a-commit-in-github-desktop" },
+  { label: "GitHub Desktop – Viewing the branch history", href: "https://docs.github.com/en/desktop/making-changes-in-a-branch/viewing-the-branch-history-in-github-desktop" },
+  { label: "GitHub Docs – Ignoring files", href: "https://docs.github.com/en/get-started/git-basics/ignoring-files" }
+]} />

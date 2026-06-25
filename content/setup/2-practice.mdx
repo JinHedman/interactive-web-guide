@@ -1,0 +1,146 @@
+---
+title: "Setup — Practice & checks"
+module: "setup"
+order: 2
+goal: "Verify your VS Code and GitHub Desktop setup is correct, fix the common failure modes, and confirm a commit actually reached GitHub."
+objectives:
+  - "Audit that both extensions, Format On Save, and the clone are configured correctly"
+  - "Diagnose why Live Server stops reloading and why Prettier stops formatting"
+  - "Prove that a commit landed on GitHub, not just locally"
+estMinutes: 15
+prerequisites: ["setup/1-tools-and-first-page"]
+---
+
+You set the whole workflow up once in the previous chapter. This short practice set is about a different skill: telling whether your environment is actually correct, and fixing it when it is not. Each drill is diagnostic — no re-installing — and each one heads off a problem that would otherwise bite you in the HTML module.
+
+<Exercise
+  title="Run a setup-readiness check"
+  goal="Confirm all six parts of your environment are configured correctly, without re-installing anything."
+  steps={[
+    "In VS Code, open the Extensions view (Cmd/Ctrl + Shift + X) and filter by @installed. Confirm both Live Server and Prettier - Code formatter appear.",
+    "Open Settings (Cmd/Ctrl + ,), search format on save, and confirm Editor: Format On Save is on.",
+    "In the same Settings, search default formatter and confirm it is set to Prettier - Code formatter.",
+    "Confirm the folder open in VS Code is your cloned repo: the Source Control panel shows the repo (not 'no source control'), and a .git folder exists.",
+    "In GitHub Desktop, confirm the repo shows no uncommitted changes and the Push origin button has nothing to push.",
+    "In the VS Code status bar (bottom right), confirm you see Go Live, or the Live Server port while it is running."
+  ]}
+  expected="All six checks pass. If any fail, note which one — the next drill covers the Live Server and Prettier fixes."
+  solution={`Readiness checklist — all six should be true:
+1. Extensions (@installed): Live Server AND Prettier - Code formatter both present.
+2. Editor: Format On Save = on.
+3. Default Formatter = Prettier - Code formatter.
+4. The open folder is the clone: Source Control shows the repo; a .git folder exists.
+5. GitHub Desktop: no uncommitted changes; nothing to push.
+6. Status bar shows Go Live (or the active Live Server port).`}
+/>
+
+<Exercise
+  title="Fix the broken setup: no reload, no formatting"
+  goal="Diagnose the two most common setup failures — Live Server not reloading and Prettier not formatting on save — and correct each one."
+  steps={[
+    "Live Server: if saving index.html no longer refreshes the browser, check the address bar. If it shows a file:// path, you are not on the server. Right-click index.html and choose Open with Live Server, then confirm the address is 127.0.0.1:5500.",
+    "Confirm the file actually saved: an unsaved tab shows a dot instead of an X. Save with Cmd/Ctrl + S and watch the page reload.",
+    "Prettier: if saving does not tidy your code, open Settings and confirm Default Formatter is Prettier - Code formatter and Format On Save is on.",
+    "Prove Prettier works: mangle the indentation in index.html, save, and watch Prettier re-tidy it. You can also force a one-off format with Shift + Option + F (Mac) or Shift + Alt + F (Windows/Linux)."
+  ]}
+  expected="The browser reloads on save again, and a deliberately mis-indented file snaps back to clean spacing when you save."
+  solution={`Live Server not reloading — most likely causes:
+- The tab is a file:// path, not the http://127.0.0.1:5500/... server URL. Re-open via right-click > Open with Live Server.
+- The file was not saved (tab shows a dot). Save with Cmd/Ctrl + S.
+- The server was stopped (status bar shows Go Live instead of a port). Click Go Live to restart.
+
+Prettier not formatting on save — the two usual causes:
+- Default Formatter is not set to Prettier - Code formatter.
+- Format On Save is off.
+Fix whichever is wrong, then mangle indentation, save, and confirm it re-tidies. Force a one-off format with Shift + Option/Alt + F to prove Prettier itself works.`}
+/>
+
+<Exercise
+  title="Prove your commit reached GitHub"
+  goal="Confirm an edit is on the remote, not just committed locally — because commit does not mean pushed."
+  steps={[
+    "In VS Code, change the <title> in index.html to something new and save.",
+    "In GitHub Desktop, write a commit message like 'Update page title' and click Commit to main.",
+    "Click Push origin. When it is done, confirm the button shows nothing left to push.",
+    "Open History (Cmd + 2 on Mac) in GitHub Desktop and confirm your commit is listed.",
+    "Open the repo on github.com and confirm the same commit message appears there."
+  ]}
+  expected="The same commit message is visible in both GitHub Desktop's History and on github.com — proof it pushed, not just committed."
+  solution={`Commit is a local snapshot; push uploads it to GitHub. They are separate steps.
+To prove it landed on the remote:
+1. Commit to main in GitHub Desktop.
+2. Click Push origin — afterwards it should show nothing to push.
+3. History (Cmd + 2) lists the commit locally.
+4. The same message appears on github.com.
+If the commit shows in History but not on github.com, you committed but did not push.`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "These shortcuts are VS Code's defaults. Which one saves the current file?",
+    options: [
+      "Shift + Cmd/Ctrl + P",
+      "Cmd/Ctrl + S",
+      "Shift + Alt/Option + F",
+      "Cmd/Ctrl + Shift + X"
+    ],
+    answer: 1,
+    explanation: "Cmd/Ctrl + S saves. The others open the Command Palette, format the document, and open the Extensions view, respectively. Note these are defaults — a keymap extension can remap them."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "By default, which shortcut opens the Command Palette — the entry point to every command, including ones with no shortcut?",
+    options: [
+      "Cmd/Ctrl + ,",
+      "Shift + Cmd/Ctrl + P",
+      "Cmd/Ctrl + S",
+      "Shift + Alt/Option + F"
+    ],
+    answer: 1,
+    explanation: "Shift + Cmd/Ctrl + P opens the Command Palette, where any command is reachable by name."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Your edits save but the browser never refreshes. What is the most likely cause?",
+    options: [
+      "Prettier is not the default formatter",
+      "The browser tab is on a file:// path instead of the Live Server URL",
+      "You have not committed your changes",
+      "The viewport meta tag is missing"
+    ],
+    answer: 1,
+    explanation: "Live Server only reloads tabs served from 127.0.0.1:5500. A file:// tab will not auto-refresh — re-open with Open with Live Server."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Your commit shows in GitHub Desktop's History but not on github.com. What happened?",
+    options: [
+      "GitHub is down",
+      "You committed but have not pushed",
+      "The commit message was invalid",
+      "Live Server overwrote the file"
+    ],
+    answer: 1,
+    explanation: "A commit is local until you push. Click Push origin to upload it to the remote."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "What is the local address Live Server opens your page on?",
+    answer: "127.0.0.1:5500",
+    accept: ["127.0.0.1:5500", "http://127.0.0.1:5500", "localhost:5500", "http://localhost:5500"],
+    explanation: "Live Server serves on 127.0.0.1:5500 (localhost). A file:// path is not the server."
+  }
+]} />
+
+<DocsLinks links={[
+  { label: "VS Code – Extension Marketplace", href: "https://code.visualstudio.com/docs/configure/extensions/extension-marketplace" },
+  { label: "VS Code – Basic editing (Save & formatting)", href: "https://code.visualstudio.com/docs/editing/codebasics" },
+  { label: "VS Code – Keyboard shortcuts", href: "https://code.visualstudio.com/docs/configure/keybindings" },
+  { label: "GitHub Desktop – Committing & reviewing changes", href: "https://docs.github.com/en/desktop/making-changes-in-a-branch/committing-and-reviewing-changes-to-your-project-in-github-desktop" }
+]} />

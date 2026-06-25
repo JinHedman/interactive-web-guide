@@ -1,0 +1,366 @@
+---
+title: "CSS — Practice drills"
+module: "css"
+order: 6
+goal: "Sharpen the whole CSS module through extra hands-on drills: relationship selectors, interactive states, debugging broken layouts, and building a component from a spec."
+objectives:
+  - "Target elements by relationship with descendant, child, and grouped selectors"
+  - "Add :hover, :focus, and :nth-child() states to real interface elements"
+  - "Debug an overflowing box and a dead media query"
+  - "Build a responsive component from a written spec instead of step-by-step instructions"
+estMinutes: 45
+prerequisites: ["css/5-grid-in-depth"]
+---
+
+This is extra practice for the whole CSS module — five drills you can do in VS Code with Live Server, then a quiz. They are deliberately different from the guided profile card: you will target elements *by relationship*, add interactive states, **fix** two broken pages (something the main lessons never ask you to do), and build a component from a spec alone. Reveal each solution only after you have tried it. Work top to bottom or cherry-pick the ones that stretch you.
+
+<Exercise
+  title="Drill 1 — Style by relationship, not by adding classes"
+  goal="Style a card by its structure alone, using descendant, child, and grouped selectors — without touching the HTML."
+  steps={[
+    "In VS Code, create relationships.html and paste the markup from the solution's body (a section.card with an h2, an h3, a p, a nav with three links, and a ul of tags).",
+    "Add a <style> block. You may NOT add any class or id to the HTML — target everything by relationship.",
+    "Use a grouped selector to give both headings the same color (e.g. .card h2, .card h3).",
+    "Use a descendant selector (.card p) to style the paragraph text color.",
+    "Use a child selector (.card nav > a) so only links that are direct children of nav get spacing and a color — not links nested deeper.",
+    "Open with Live Server and confirm only the intended elements changed.",
+    "Commit in GitHub Desktop with a message like \"Practice relationship selectors\"."
+  ]}
+  expected="A styled card where both headings share a color, the paragraph is tinted, and the nav links are spaced and colored — all achieved without a single class or id in the markup."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Relationship selectors</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .card {
+        max-width: 360px;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1rem;
+      }
+      /* grouped: both headings, one rule */
+      .card h2, .card h3 { color: #1d4ed8; margin: 0 0 0.25rem; }
+      /* descendant: any p inside the card */
+      .card p { color: #555; }
+      /* child: only links that are DIRECT children of nav */
+      .card nav > a {
+        margin-right: 0.75rem;
+        color: #1d4ed8;
+        text-decoration: none;
+      }
+      .card ul { padding-left: 1.1rem; color: #888; }
+    </style>
+  </head>
+  <body>
+    <section class="card">
+      <h2>Analytical Engine</h2>
+      <h3>by Ada Lovelace</h3>
+      <p>A general-purpose mechanical computer with a list of related notes.</p>
+      <nav>
+        <a href="#notes">Notes</a>
+        <a href="#diagrams">Diagrams</a>
+        <a href="#letters">Letters</a>
+      </nav>
+      <ul>
+        <li>computing</li>
+        <li>algorithms</li>
+      </ul>
+    </section>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="Drill 2 — Interactive states with pseudo-classes"
+  goal="Add :hover and :focus to navigation links and zebra-stripe a list with :nth-child(even)."
+  steps={[
+    "Create states.html with a nav of three links and a ul of five rows (see the solution).",
+    "In a <style> block, give the links a base color, then add a :hover rule that changes the background or color on mouse-over.",
+    "Add a matching :focus rule so the SAME visible change happens when you Tab to a link with the keyboard — accessibility, not just mouse users.",
+    "Use li:nth-child(even) to tint every other row of the list.",
+    "Open with Live Server. Hover the links, then click the page and press Tab repeatedly to confirm the focus style shows.",
+    "Commit with a message like \"Practice hover, focus, and nth-child\"."
+  ]}
+  expected="Links that visibly change on mouse-over AND on keyboard focus, plus a list where every second row has a tinted background."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Interactive states</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      nav a {
+        display: inline-block;
+        padding: 0.4rem 0.7rem;
+        color: #1d4ed8;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+      /* same change for mouse AND keyboard users */
+      nav a:hover,
+      nav a:focus {
+        background: #1d4ed8;
+        color: white;
+        outline: none;
+      }
+      ul { list-style: none; padding: 0; max-width: 320px; }
+      li { padding: 0.5rem 0.75rem; }
+      li:nth-child(even) { background: #f3f4f6; }
+    </style>
+  </head>
+  <body>
+    <nav>
+      <a href="#one">Home</a>
+      <a href="#two">Projects</a>
+      <a href="#three">About</a>
+    </nav>
+    <ul>
+      <li>Row 1</li>
+      <li>Row 2</li>
+      <li>Row 3</li>
+      <li>Row 4</li>
+      <li>Row 5</li>
+    </ul>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="Drill 3 — Fix the overflowing box"
+  goal="Diagnose why three width: 33% cards wrap to a second line, and fix it with a single rule."
+  steps={[
+    "Create overflow.html and paste the BROKEN page below — three cards meant to sit side by side, each width: 33% with padding and a border.",
+    "Open it with Live Server. The third card has wrapped onto a second line.",
+    "Work out why: by default width: 33% sets only the CONTENT width, then padding and border are ADDED on top, so each card is wider than a third of the row.",
+    "Fix it by adding exactly one rule — * { box-sizing: border-box; } — so width includes padding and border.",
+    "Add a one-line comment above your fix naming the cause (content-box width math).",
+    "Confirm all three cards now sit on one row, then commit with \"Fix overflowing cards with border-box\"."
+  ]}
+  expected="Three cards sitting on a single row, fixed by one box-sizing: border-box rule, with a comment explaining the original cause."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fix the overflow</title>
+    <style>
+      /* THE FIX: width now includes padding + border instead of adding them on top */
+      * { box-sizing: border-box; }
+
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .row { display: flex; gap: 0; }
+      .col {
+        width: 33%;
+        padding: 1rem;
+        border: 2px solid #1d4ed8;
+        background: #eff6ff;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="row">
+      <div class="col">One</div>
+      <div class="col">Two</div>
+      <div class="col">Three</div>
+    </div>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="Drill 4 — Fix the broken media query"
+  goal="Find the bugs in a page whose layout never changes on resize, and make it switch correctly at 600px."
+  steps={[
+    "Create broken-responsive.html and paste the BROKEN page below. It is meant to stack on mobile and become a row at 600px, but it never changes.",
+    "Open it with Live Server and drag the window wide and narrow — nothing happens. There are two bugs.",
+    "Bug 1: the viewport meta tag is missing, so mobile devices lie about their width. Add <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"> to the head.",
+    "Bug 2: the media query has a syntax error — @media screen and (min-width 600px) is missing the colon. Correct it to (min-width: 600px).",
+    "Reload and resize: the layout should now switch from a column to a row at 600px. Use the DevTools device toolbar to double-check.",
+    "Add a comment listing both bugs you fixed, then commit with \"Fix broken media query\"."
+  ]}
+  expected="A page that stacks vertically below 600px and becomes a horizontal row at 600px and above, with a comment naming both bugs."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <!-- BUG 1 FIXED: viewport meta was missing, so phones never matched the breakpoint -->
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fix the media query</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .layout { display: flex; flex-direction: column; gap: 0.5rem; }
+      .layout div {
+        background: #1d4ed8; color: white;
+        padding: 1rem; border-radius: 6px; text-align: center;
+      }
+      /* BUG 2 FIXED: was (min-width 600px) with no colon, so the whole query was ignored */
+      @media screen and (min-width: 600px) {
+        .layout { flex-direction: row; }
+        .layout div { flex: 1; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="layout">
+      <div>A</div>
+      <div>B</div>
+      <div>C</div>
+    </div>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="Drill 5 — Build a pricing section from a spec (mini capstone)"
+  goal="Build a responsive pricing section from a written brief alone, combining selectors, the box model, flexbox, grid, and a media query."
+  steps={[
+    "Read the spec, then build it WITHOUT per-line guidance — this is the point of the drill. Spec: a pricing section with three plan cards; the cards sit in a grid that becomes a single column below 600px; each card is a flex column holding a plan name, a price, a feature list, and a button; the button has visible :hover and :focus states.",
+    "Create pricing.html. Use a grid container for the three cards (repeat(auto-fit, minmax(200px, 1fr)) works well).",
+    "Make each card display: flex with flex-direction: column so its button can sit at the bottom (margin-top: auto pushes it down).",
+    "Add a media query at max-width: 600px (or rely on auto-fit) so the cards stack to one column on narrow screens.",
+    "Give the button :hover and :focus styles that match, so keyboard users see the same feedback.",
+    "Test by resizing and by tabbing to the buttons, then commit with \"Build responsive pricing section\"."
+  ]}
+  expected="Three pricing cards in a responsive grid that collapses to one column on narrow screens; each card is a flex column with name, price, features, and a button that reacts to hover and keyboard focus."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pricing</title>
+    <style>
+      * { box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; padding: 1rem; color: #1f2937; }
+      .pricing {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        max-width: 760px;
+        margin: 0 auto;
+      }
+      .plan {
+        display: flex;
+        flex-direction: column;
+        border: 1px solid #e5e7eb;
+        border-radius: 10px;
+        padding: 1.25rem;
+      }
+      .plan h2 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+      .price { font-size: 1.8rem; font-weight: 700; margin: 0 0 0.75rem; }
+      .plan ul { list-style: none; padding: 0; margin: 0 0 1rem; color: #555; }
+      .plan li { padding: 0.2rem 0; }
+      .plan a {
+        margin-top: auto;
+        text-align: center;
+        padding: 0.6rem 1rem;
+        background: #1d4ed8;
+        color: white;
+        text-decoration: none;
+        border-radius: 6px;
+      }
+      .plan a:hover,
+      .plan a:focus {
+        background: #1e40af;
+        outline: 2px solid #93c5fd;
+      }
+      @media (max-width: 600px) {
+        .pricing { grid-template-columns: 1fr; }
+      }
+    </style>
+  </head>
+  <body>
+    <section class="pricing">
+      <article class="plan">
+        <h2>Starter</h2>
+        <p class="price">$0</p>
+        <ul><li>1 project</li><li>Community support</li></ul>
+        <a href="#starter">Choose Starter</a>
+      </article>
+      <article class="plan">
+        <h2>Pro</h2>
+        <p class="price">$12</p>
+        <ul><li>Unlimited projects</li><li>Email support</li></ul>
+        <a href="#pro">Choose Pro</a>
+      </article>
+      <article class="plan">
+        <h2>Team</h2>
+        <p class="price">$29</p>
+        <ul><li>Everything in Pro</li><li>Shared workspace</li></ul>
+        <a href="#team">Choose Team</a>
+      </article>
+    </section>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Given nav a { color: gray; } then nav > a { color: blue; }, what color is a link that is a direct child of <nav>?",
+    options: ["gray", "blue", "black", "It is an error"],
+    answer: 1,
+    explanation: "Both selectors match the direct-child link and have equal specificity, so source order decides — the later nav > a rule wins."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "A flex container has flex-direction: column. Which property now controls the HORIZONTAL alignment of the items?",
+    options: ["justify-content", "align-items", "flex-wrap", "gap"],
+    answer: 1,
+    explanation: "In a column the main axis runs top-to-bottom (justify-content), so the cross axis is horizontal and is controlled by align-items."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Three 33% cards with padding and a border overflow onto a second line. What single rule fixes it?",
+    options: [
+      "* { box-sizing: border-box; }",
+      "* { margin: 0; }",
+      ".card { width: 100%; }",
+      ".row { overflow: hidden; }"
+    ],
+    answer: 0,
+    explanation: "box-sizing: border-box makes width include padding and border, so each card stays at a true third of the row instead of growing past it."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "@media (max-width: 599px) { ... } applies on which screens?",
+    options: ["599px and wider", "600px and wider", "599px and narrower", "Exactly 599px only"],
+    answer: 2,
+    explanation: "max-width caps the upper bound, so the rules apply from 0 up to 599px — the opposite of the mobile-first min-width pattern."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "In a wide container holding only two items, how does repeat(auto-fit, minmax(180px, 1fr)) differ from repeat(auto-fill, ...)?",
+    options: [
+      "No difference at all",
+      "auto-fit collapses the empty tracks so the two items stretch to fill, while auto-fill keeps empty tracks and the items stay narrow",
+      "auto-fit adds more items to the grid",
+      "auto-fill is invalid CSS"
+    ],
+    answer: 1,
+    explanation: "auto-fill keeps the empty tracks it created; auto-fit collapses them to zero width, letting the present items grow to fill the row."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Write the selector that targets every <li> that is the first child of its parent.",
+    answer: "li:first-child",
+    accept: ["li:first-child", "li:nth-child(1)"],
+    explanation: "li:first-child matches an li only when it is the first child of its parent. li:nth-child(1) is an equivalent way to write it."
+  }
+]} />
+
+<DocsLinks links={[
+  { label: "MDN – Combinators (descendant, child, grouping)", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Combinators" },
+  { label: "MDN – Pseudo-classes and pseudo-elements", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Pseudo-classes_and_pseudo-elements" },
+  { label: "MDN – Debugging CSS", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Styling_basics/Debugging_CSS" },
+  { label: "web.dev – Specificity", href: "https://web.dev/learn/css/specificity" }
+]} />

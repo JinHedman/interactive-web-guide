@@ -1,0 +1,266 @@
+---
+title: "HTML — Practice drills"
+module: "html"
+order: 9
+goal: "Sharpen your HTML by debugging broken markup and reaching for a few elements the main lessons left out, all on fresh content."
+estMinutes: 35
+prerequisites: ["html/8-page-project"]
+---
+
+Extra reps, on content you have not seen before. These drills mix fix-this debugging with a handful of useful elements beyond the core lessons. Build each in a plain `.html` file, preview with Live Server, and validate at [validator.w3.org](https://validator.w3.org/) before you call it done.
+
+<Exercise
+  title="Fix the broken skeleton"
+  goal="Find and fix five planted bugs in a small HTML document so it becomes valid."
+  steps={[
+    "In VS Code, create a file named broken.html and paste the broken markup from the expected result below (the version with the bugs).",
+    "Bug 1: the file is missing its DOCTYPE on line 1 — add it.",
+    "Bug 2: the title sits inside the body — move it into the head where metadata belongs.",
+    "Bug 3: the charset meta is written with a closing tag — meta is an empty element, so remove the </meta>.",
+    "Bug 4: a paragraph is never closed — add the missing </p>.",
+    "Bug 5: the strong and em tags close in the wrong order — fix the nesting so tags close in reverse order.",
+    "Paste the result into validator.w3.org, confirm zero errors, then commit in GitHub Desktop with the message 'Fix broken HTML skeleton'."
+  ]}
+  expected="A document that passes the W3C validator with no errors. The starting (broken) version looks like this — your job is to repair it:"
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Tuesday Coding Meetup</title>
+  </head>
+  <body>
+    <h1>Tuesday Coding Meetup</h1>
+    <p>Doors open at <strong>6 <em>sharp</em></strong>.</p>
+    <p>Bring a laptop and a project you are stuck on.</p>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="De-div-ify a page"
+  goal="Replace div soup with real semantic landmarks, and leave the one div that is genuinely correct alone."
+  steps={[
+    "Create landmarks.html and start from the div-only version shown in the expected result below.",
+    "Swap div class=\"header\" for a header element.",
+    "Swap div class=\"nav\" for a nav element.",
+    "Swap div class=\"main\" for a main element (there must be exactly one per page).",
+    "Swap div class=\"footer\" for a footer element.",
+    "Leave the inner grouping div alone — it groups two inline pieces with no semantic meaning, which is exactly what a div is for.",
+    "Validate, then commit with the message 'Replace divs with semantic landmarks'."
+  ]}
+  expected="A page built from header, nav, main, and footer, with one justified generic div remaining. The starting div-only version is:"
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>City Library</title>
+  </head>
+  <body>
+    <header>
+      <h1>City Library</h1>
+    </header>
+    <nav>
+      <a href="#hours">Hours</a> ·
+      <a href="#events">Events</a>
+    </nav>
+    <main>
+      <h2 id="hours">Opening hours</h2>
+      <p>Open <div>Monday to Friday, 9 to 5</div></p>
+    </main>
+    <footer>
+      <p>123 Main Street</p>
+    </footer>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="A glossary with a description list"
+  goal="Use a description list (dl) — a list type the core lessons skip — to pair each web term with its definition."
+  steps={[
+    "Create glossary.html with a valid skeleton and an h1 reading 'Web Glossary'.",
+    "Add a dl element to hold the whole list.",
+    "For each of the four terms, add a dt with the term, immediately followed by a dd with its definition.",
+    "Cover these terms: HTML, element, attribute, tag.",
+    "A dl is the right tool here because the data is genuinely term then definition — not plain bullets, which would be a ul.",
+    "Validate, then commit with the message 'Add web glossary description list'."
+  ]}
+  expected="A page rendering four term/definition pairs, with each term slightly indented above its definition by default."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Web Glossary</title>
+  </head>
+  <body>
+    <h1>Web Glossary</h1>
+    <dl>
+      <dt>HTML</dt>
+      <dd>The language that describes the structure of a web page.</dd>
+      <dt>Element</dt>
+      <dd>A complete unit: an opening tag, content, and a closing tag.</dd>
+      <dt>Attribute</dt>
+      <dd>A name="value" pair inside an opening tag that configures the element.</dd>
+      <dt>Tag</dt>
+      <dd>The part written in angle brackets, such as opening and closing markers.</dd>
+    </dl>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="A native FAQ with details and summary"
+  goal="Build a collapsible FAQ using details and summary — interactive content with zero JavaScript."
+  steps={[
+    "Create faq.html with a valid skeleton and an h1 reading 'Plant Care FAQ'.",
+    "For each question, add a details element.",
+    "Inside each details, put the question in a summary element — that is the part that stays visible and toggles the panel.",
+    "After the summary, add a p with the answer; it shows and hides when the summary is clicked.",
+    "Add three questions in total, then open one with Live Server and confirm it expands and collapses on click.",
+    "Validate, then commit with the message 'Add collapsible plant care FAQ'."
+  ]}
+  expected="Three rows that each expand to reveal an answer when clicked and collapse when clicked again — no JavaScript involved."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Plant Care FAQ</title>
+  </head>
+  <body>
+    <h1>Plant Care FAQ</h1>
+    <details>
+      <summary>How often should I water a succulent?</summary>
+      <p>Roughly every two weeks, once the soil is fully dry.</p>
+    </details>
+    <details>
+      <summary>Why are the leaves turning yellow?</summary>
+      <p>Usually overwatering. Let the soil dry out before the next watering.</p>
+    </details>
+    <details>
+      <summary>How much light do they need?</summary>
+      <p>Bright, indirect light for most of the day.</p>
+    </details>
+  </body>
+</html>`}
+/>
+
+<Exercise
+  title="A data table with scope and a spanning cell"
+  goal="Extend a planet table with scope on its headers and one cell that spans multiple columns — both beyond the core table lesson."
+  steps={[
+    "Create planets.html with a valid skeleton and a table inside the body.",
+    "Add a caption describing the table, then a thead with a header row.",
+    "On each column header, add scope=\"col\" so assistive tech knows it labels the cells down its column.",
+    "In each data row, make the planet name a th with scope=\"row\" so it labels the cells across its row.",
+    "Add a final row whose single td uses colspan to span all the columns, holding a short summary line.",
+    "Validate, then commit with the message 'Add planet table with scope and colspan'."
+  ]}
+  expected="A captioned table where every data cell is tied to both a row header and a column header, ending with one cell stretched across all columns."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Planet Data</title>
+  </head>
+  <body>
+    <table>
+      <caption>Inner planets at a glance</caption>
+      <thead>
+        <tr>
+          <th scope="col">Planet</th>
+          <th scope="col">Moons</th>
+          <th scope="col">Day length (hours)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Mercury</th>
+          <td>0</td>
+          <td>4222</td>
+        </tr>
+        <tr>
+          <th scope="row">Earth</th>
+          <td>1</td>
+          <td>24</td>
+        </tr>
+        <tr>
+          <td colspan="3">Source: solar system fact sheets.</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "You typed three blank lines inside one <p> to space paragraphs apart, but the browser shows them as one block of text. Why?",
+    options: [
+      "The browser collapses runs of whitespace; use a separate <p> per paragraph",
+      "<p> is an empty element and cannot hold line breaks",
+      "You must add <br><br><br> instead",
+      "Blank lines only work if you add &nbsp;"
+    ],
+    answer: 0,
+    explanation: "HTML collapses consecutive whitespace to a single space, so paragraph separation comes from using distinct <p> elements, not blank lines."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "A comment under a blog post would still make sense if you lifted it out and pasted it elsewhere. Which element fits best?",
+    options: ["<section>", "<article>", "<div>", "<aside>"],
+    answer: 1,
+    explanation: "Self-contained, stand-alone content is an <article>. A <section> is a themed part of a larger whole."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which of these is an inline element by default?",
+    options: ["<p>", "<section>", "<span>", "<div>"],
+    answer: 2,
+    explanation: "<span> flows within a line of text; <p>, <section>, and <div> are block elements that start on a new line."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "A designer wants to drop the visible label and use only a placeholder to save space. What is the accessibility problem?",
+    options: [
+      "None — a placeholder counts as a label",
+      "The placeholder disappears as soon as the user types, so the field has no persistent accessible name",
+      "Placeholders are not valid HTML",
+      "Placeholders only work on <select>"
+    ],
+    answer: 1,
+    explanation: "A placeholder is a transient hint, not a label. The field loses its accessible name once typing begins, so a real <label> is still required."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "On a data table, what does <th scope=\"col\"> do?",
+    options: [
+      "Colors the whole column",
+      "Tells assistive tech that this header labels the cells down its column",
+      "Merges two columns into one",
+      "Sorts the column automatically"
+    ],
+    answer: 1,
+    explanation: "scope declares whether a <th> heads a column or a row, so screen readers announce the right header for each data cell. colspan is what merges columns."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Which element pairs with <dt> inside a description list to hold each definition?",
+    answer: "dd",
+    accept: ["dd", "<dd>", "dd element"],
+    explanation: "Inside a <dl>, each <dt> term is followed by a <dd> that holds its definition."
+  }
+]} />
+
+<DocsLinks links={[
+  { label: "MDN – Debugging HTML", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Debugging_HTML" },
+  { label: "MDN – Description lists", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Lists" },
+  { label: "MDN – <details> element", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details" },
+  { label: "MDN – HTML table accessibility", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Structuring_content/Table_accessibility" }
+]} />

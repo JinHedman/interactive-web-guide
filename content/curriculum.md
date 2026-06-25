@@ -6,7 +6,9 @@ Teaches HTML, CSS, JavaScript, and HTML+JS integration to learners who have **so
 
 **Ordering rule**: no chapter references a concept before it is taught. Prerequisites below are dependency-safe and verified against this rule.
 
-**Chapter counts**: setup 1 · html 8 · css 5 · javascript 9 · integration 7 · workflow 3 · **total 33**.
+**Chapter counts**: setup 2 · html 9 · css 6 · javascript 10 · integration 8 · workflow 4 · **total 39**.
+
+> **Practice chapters**: each module ends with a `*-practice` chapter. These are **extra practice (drills/builds), not new teaching** — they re-apply concepts already covered in their module on fresh scenarios. They introduce no new concepts that later chapters depend on, so they are optional and sit last in each module's ordering.
 
 ---
 
@@ -30,6 +32,24 @@ Get the toolchain working and ship one HTML file to the browser. Short on purpos
 - **prerequisites**: none
 - **estMinutes**: 25
 - **concepts**: VS Code, extensions, Live Server, Prettier, GitHub Desktop, clone/commit/push, `index.html`, browser reload
+- **readMore**: none
+
+### setup/2-practice
+
+> **Practice chapter — extra drills, not new teaching.** Re-applies the setup workflow on diagnostic checks; introduces no new concepts.
+
+- **module**: setup
+- **order**: 2
+- **slug**: practice
+- **title**: Setup — Practice & checks
+- **goal**: Verify your VS Code and GitHub Desktop setup is correct, fix the common failure modes, and confirm a commit actually reached GitHub.
+- **objectives**:
+  - Audit that both extensions, Format On Save, and the clone are configured correctly.
+  - Diagnose why Live Server stops reloading and why Prettier stops formatting.
+  - Prove that a commit landed on GitHub, not just locally.
+- **prerequisites**: ["setup/1-tools-and-first-page"]
+- **estMinutes**: 15
+- **concepts**: (practice — reinforces setup workflow: extensions, Format On Save, Live Server reload, Prettier formatting, clone verification, push confirmation)
 - **readMore**: none
 
 ---
@@ -180,6 +200,25 @@ In-depth. Build a real multi-section page by the end. One running example/theme 
 - **concepts**: composing a full page, in-page navigation, markup review, accessibility check
 - **readMore**: JSX/React components, web components, and templating — how modern tools build HTML from reusable pieces instead of one long file.
 
+### html/9-practice
+
+> **Practice chapter — extra drills, not new teaching.** Debugging reps plus a few useful elements beyond the core lessons, all on fresh content; nothing new that later chapters depend on.
+
+- **module**: html
+- **order**: 9
+- **slug**: practice
+- **title**: HTML — Practice drills
+- **goal**: Sharpen your HTML by debugging broken markup and reaching for a few elements the main lessons left out, all on fresh content.
+- **objectives**:
+  - Find and fix planted bugs in a broken HTML document until it validates.
+  - Replace `<div>` soup with real semantic landmarks, keeping the one justified `<div>`.
+  - Use a description list (`<dl>`/`<dt>`/`<dd>`) for term-and-definition data.
+  - Build a collapsible FAQ with `<details>` and `<summary>` — interactive content with no JavaScript.
+- **prerequisites**: ["html/8-page-project"]
+- **estMinutes**: 35
+- **concepts**: (practice — reinforces HTML module; lightly extends with `<dl>`/`<dt>`/`<dd>`, `<details>`/`<summary>`, debugging and validation workflow)
+- **readMore**: none
+
 ---
 
 ## Module 2 — css
@@ -275,6 +314,25 @@ Lighter touch — enough to style and lay out the Module 1 page without over-exp
 - **estMinutes**: 40
 - **concepts**: `display: grid`, grid items, `grid-template-columns`, `fr` unit, `repeat()`, `gap`, `grid-column`/`grid-row` span, `grid-template-areas`, `grid-area`, `repeat(auto-fit, minmax())`, grid vs flexbox
 - **readMore**: subgrid and container queries — newer grid features now supported across modern browsers, for aligning nested grids and letting components respond to their container's size.
+
+### css/6-practice
+
+> **Practice chapter — extra drills, not new teaching.** Reps across the whole CSS module (selectors, states, debugging, build-from-spec); introduces no new concepts that later chapters depend on.
+
+- **module**: css
+- **order**: 6
+- **slug**: practice
+- **title**: CSS — Practice drills
+- **goal**: Sharpen the whole CSS module through extra hands-on drills: relationship selectors, interactive states, debugging broken layouts, and building a component from a spec.
+- **objectives**:
+  - Target elements by relationship with descendant, child, and grouped selectors.
+  - Add `:hover`, `:focus`, and `:nth-child()` states to real interface elements.
+  - Debug an overflowing box and a dead media query.
+  - Build a responsive component from a written spec instead of step-by-step instructions.
+- **prerequisites**: ["css/5-grid-in-depth"]
+- **estMinutes**: 45
+- **concepts**: (practice — reinforces CSS module; lightly extends with relationship selectors, `:hover`/`:focus`/`:nth-child()`, layout debugging, build-from-spec)
+- **readMore**: none
 
 ---
 
@@ -439,6 +497,25 @@ Pure JavaScript language fundamentals. No DOM work until the bridge chapter, whi
 - **concepts**: DevTools, Elements/Inspector panel, live DOM editing, Console as a JS prompt, reading errors, `ReferenceError`, `TypeError`, breakpoints, Sources/Debugger panel, Scope pane, debugging workflow
 - **readMore**: none
 
+### javascript/10-practice
+
+> **Practice chapter — extra drills, not new teaching.** Re-applies chapters 1–9 on fresh scenarios (FizzBuzz, bug-hunting, predict-the-output); introduces no new concepts that later chapters depend on.
+
+- **module**: javascript
+- **order**: 10
+- **slug**: practice
+- **title**: JavaScript — Practice drills
+- **goal**: Cement the JavaScript basics with extra drills — build FizzBuzz, debug a runaway loop, and predict what code prints before you run it.
+- **objectives**:
+  - Combine loops, modulo, and conditionals to build FizzBuzz.
+  - Find and explain an off-by-one and an infinite-loop bug.
+  - Write small functions that return values you log.
+  - Predict the output of short snippets involving coercion, equality, and indexing.
+- **prerequisites**: ["javascript/9-devtools-and-debugging"]
+- **estMinutes**: 35
+- **concepts**: (practice — reinforces JS module: loops, modulo, conditionals, functions, equality/coercion, debugging; no new concepts)
+- **readMore**: none
+
 ---
 
 ## Module 4 — integration
@@ -568,6 +645,26 @@ HTML + JS together via the DOM. Builds to a capstone that combines every prior m
 - **concepts**: API, JSON, `fetch()`, promise, `async`/`await`, `Response` object, `response.json()`, render-from-array, `try...catch`, `.catch`
 - **readMore**: promises and `async`/`await` underneath — the promise model (pending/fulfilled/rejected) and `.then()` chaining that `await` is sugar over, which generalizes to every future async API.
 
+### integration/8-practice
+
+> **Practice chapter — extra drills, not new teaching.** Fresh mini-builds that re-apply the whole Integration module (counter, toggle, accordion, filter, validation, fetch-and-render); introduces no new concepts.
+
+- **module**: integration
+- **order**: 8
+- **slug**: practice
+- **title**: Integration — Practice builds
+- **goal**: Drill the DOM skills from this module on fresh mini-builds: a counter, a dark-mode toggle, an accordion, a live filter, form validation, and fetch-and-render.
+- **objectives**:
+  - Combine event listeners, shared state, and content/style changes in small builds.
+  - Build common UI patterns (counter, toggle, accordion, filter) with the DOM.
+  - Read form input, validate it, and show feedback in the page.
+  - Diagnose and fix a classic event/state bug.
+  - Fetch JSON and render it with a loading state.
+- **prerequisites**: ["integration/7-json-fetch-apis"]
+- **estMinutes**: 50
+- **concepts**: (practice — reinforces Integration module: selection, events, shared state, render-from-state, form validation, `fetch` + loading state; no new concepts)
+- **readMore**: none
+
 ---
 
 ## Module 5 — workflow (Git & Collaboration)
@@ -623,4 +720,24 @@ The everyday collaboration loop in GitHub Desktop and VS Code: branch, commit, o
 - **prerequisites**: ["workflow/2-pull-requests"]
 - **estMinutes**: 25
 - **concepts**: merge conflict, conflicting lines, conflict markers (`<<<<<<< HEAD`, `=======`, `>>>>>>>`), Accept Current/Incoming/Both, resolving in VS Code, committing the resolution
+- **readMore**: none
+
+### workflow/4-practice
+
+> **Practice chapter — extra drills, not new teaching.** Recovery reps on the existing project (undo/revert/discard, `.gitignore`, reading history); introduces no new concepts.
+
+- **module**: workflow
+- **order**: 4
+- **slug**: practice
+- **title**: Workflow — Practice & recovery
+- **goal**: Recover from common Git mistakes in GitHub Desktop — undo, revert, and discard — keep junk out of the repo with `.gitignore`, and read a project's history to tell what happened.
+- **objectives**:
+  - Undo a not-yet-pushed commit and keep the work.
+  - Revert a pushed commit safely with a new commit.
+  - Discard uncommitted changes back to the last commit.
+  - Use `.gitignore` to keep untracked junk out of the repo.
+  - Read the History tab to tell what each commit did.
+- **prerequisites**: ["workflow/3-merge-conflicts"]
+- **estMinutes**: 30
+- **concepts**: (practice — reinforces workflow module; lightly extends with undo, revert, discard changes, `.gitignore`, reading History)
 - **readMore**: none
