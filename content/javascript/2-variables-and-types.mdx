@@ -106,6 +106,25 @@ console.log(total); // 140`}
 
 These only work with `let`, since they reassign the variable.
 
+## Increment and decrement
+
+Adding or subtracting one is so common it has its own shorthand: `++` increases a variable by one, and `--` decreases it by one. You will see `i++` constantly in loops, where it steps a counter forward each pass.
+
+<CodeExample language="js" preview>
+{`let i = 0;
+
+i++; // same as i += 1
+console.log(i); // 1
+
+i++;
+console.log(i); // 2
+
+i--; // same as i -= 1
+console.log(i); // 1`}
+</CodeExample>
+
+Like the other assignment operators, `++` and `--` only work with `let`.
+
 <Exercise
   title="A tiny receipt"
   goal="Use variables and arithmetic operators to compute a small total, and log a clear result."

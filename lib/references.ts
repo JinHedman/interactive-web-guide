@@ -273,6 +273,56 @@ export const HTML_TAGS: Record<string, DocReference> = {
     mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/caption",
     w3schools: "https://www.w3schools.com/tags/tag_caption.asp",
   },
+  tfoot: {
+    title: "<tfoot> — table footer group",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/tfoot",
+    w3schools: "https://www.w3schools.com/tags/tag_tfoot.asp",
+  },
+  dl: {
+    title: "<dl> — description list",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dl",
+    w3schools: "https://www.w3schools.com/tags/tag_dl.asp",
+  },
+  dt: {
+    title: "<dt> — description term",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dt",
+    w3schools: "https://www.w3schools.com/tags/tag_dt.asp",
+  },
+  dd: {
+    title: "<dd> — description details",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/dd",
+    w3schools: "https://www.w3schools.com/tags/tag_dd.asp",
+  },
+  figure: {
+    title: "<figure> — self-contained content",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figure",
+    w3schools: "https://www.w3schools.com/tags/tag_figure.asp",
+  },
+  figcaption: {
+    title: "<figcaption> — figure caption",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/figcaption",
+    w3schools: "https://www.w3schools.com/tags/tag_figcaption.asp",
+  },
+  fieldset: {
+    title: "<fieldset> — group of form controls",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/fieldset",
+    w3schools: "https://www.w3schools.com/tags/tag_fieldset.asp",
+  },
+  legend: {
+    title: "<legend> — fieldset caption",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/legend",
+    w3schools: "https://www.w3schools.com/tags/tag_legend.asp",
+  },
+  details: {
+    title: "<details> — disclosure widget",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/details",
+    w3schools: "https://www.w3schools.com/tags/tag_details.asp",
+  },
+  summary: {
+    title: "<summary> — disclosure summary/label",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/HTML/Element/summary",
+    w3schools: "https://www.w3schools.com/tags/tag_summary.asp",
+  },
 };
 
 // Keyed by lowercase CSS property: "display", "flex-direction"
@@ -406,6 +456,36 @@ export const CSS_PROPS: Record<string, DocReference> = {
     title: "grid-row (CSS property)",
     mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/grid-row",
     w3schools: "https://www.w3schools.com/cssref/pr_grid-row.php",
+  },
+  flex: {
+    title: "flex (CSS shorthand property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/flex",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_flex.php",
+  },
+  "flex-grow": {
+    title: "flex-grow (CSS property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/flex-grow",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_flex-grow.php",
+  },
+  "flex-shrink": {
+    title: "flex-shrink (CSS property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/flex-shrink",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_flex-shrink.php",
+  },
+  "flex-basis": {
+    title: "flex-basis (CSS property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/flex-basis",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_flex-basis.php",
+  },
+  "align-self": {
+    title: "align-self (CSS property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/align-self",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_align-self.php",
+  },
+  order: {
+    title: "order (CSS property)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/CSS/order",
+    w3schools: "https://www.w3schools.com/cssref/css3_pr_order.php",
   },
 };
 
@@ -562,6 +642,11 @@ export const JS_REFS: Record<string, DocReference> = {
     mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/trim",
     w3schools: "https://www.w3schools.com/jsref/jsref_trim_string.asp",
   },
+  split: {
+    title: "String.prototype.split()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split",
+    w3schools: "https://www.w3schools.com/jsref/jsref_split.asp",
+  },
 
   // ---- Array methods ----
   foreach: {
@@ -598,6 +683,43 @@ export const JS_REFS: Record<string, DocReference> = {
     title: "Array.prototype.length",
     mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/length",
     w3schools: "https://www.w3schools.com/jsref/jsref_length_array.asp",
+  },
+  map: {
+    title: "Array.prototype.map()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map",
+    w3schools: "https://www.w3schools.com/jsref/jsref_map.asp",
+  },
+  filter: {
+    title: "Array.prototype.filter()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter",
+    w3schools: "https://www.w3schools.com/jsref/jsref_filter.asp",
+  },
+  reduce: {
+    title: "Array.prototype.reduce()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce",
+    w3schools: "https://www.w3schools.com/jsref/jsref_reduce.asp",
+  },
+  find: {
+    title: "Array.prototype.find()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/find",
+    w3schools: "https://www.w3schools.com/jsref/jsref_find.asp",
+  },
+  sort: {
+    title: "Array.prototype.sort()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/sort",
+    w3schools: "https://www.w3schools.com/jsref/jsref_sort.asp",
+  },
+  join: {
+    title: "Array.prototype.join()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/join",
+    w3schools: "https://www.w3schools.com/jsref/jsref_join.asp",
+  },
+
+  // ---- Object helpers ----
+  "object.entries": {
+    title: "Object.entries()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/entries",
+    w3schools: "https://www.w3schools.com/jsref/jsref_object_entries.asp",
   },
 
   // ---- DOM: document / element selection ----
@@ -663,6 +785,30 @@ export const JS_REFS: Record<string, DocReference> = {
     mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/classList",
     w3schools: "https://www.w3schools.com/jsref/prop_element_classlist.asp",
   },
+  toggle: {
+    title: "classList.toggle()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle",
+    w3schools: "https://www.w3schools.com/jsref/met_domtokenlist_toggle.asp",
+  },
+  "classlist.toggle": {
+    title: "classList.toggle()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/toggle",
+    w3schools: "https://www.w3schools.com/jsref/met_domtokenlist_toggle.asp",
+  },
+  contains: {
+    title: "classList.contains()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/contains",
+    w3schools: "https://www.w3schools.com/jsref/met_domtokenlist_contains.asp",
+  },
+  "classlist.contains": {
+    title: "classList.contains()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/DOMTokenList/contains",
+    w3schools: "https://www.w3schools.com/jsref/met_domtokenlist_contains.asp",
+  },
+  dataset: {
+    title: "HTMLElement.dataset (data-* attributes)",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/dataset",
+  },
   classname: {
     title: "Element.className",
     mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Element/className",
@@ -701,6 +847,11 @@ export const JS_REFS: Record<string, DocReference> = {
     mdn: "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/addEventListener",
     w3schools: "https://www.w3schools.com/jsref/met_element_addeventlistener.asp",
   },
+  removeeventlistener: {
+    title: "removeEventListener()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/EventTarget/removeEventListener",
+    w3schools: "https://www.w3schools.com/jsref/met_element_removeeventlistener.asp",
+  },
 
   // ---- Globals: console / window / fetch ----
   "console.log": {
@@ -727,6 +878,31 @@ export const JS_REFS: Record<string, DocReference> = {
   "response.json": {
     title: "Response.json()",
     mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Response/json",
+  },
+  "response.ok": {
+    title: "Response.ok",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Response/ok",
+  },
+  "response.status": {
+    title: "Response.status",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Response/status",
+  },
+
+  // ---- Web Storage ----
+  localstorage: {
+    title: "Window.localStorage",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Window/localStorage",
+    w3schools: "https://www.w3schools.com/js/js_api_web_storage.asp",
+  },
+  "localstorage.setitem": {
+    title: "localStorage.setItem()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Storage/setItem",
+    w3schools: "https://www.w3schools.com/jsref/met_storage_setitem.asp",
+  },
+  "localstorage.getitem": {
+    title: "localStorage.getItem()",
+    mdn: "https://developer.mozilla.org/en-US/docs/Web/API/Storage/getItem",
+    w3schools: "https://www.w3schools.com/jsref/met_storage_getitem.asp",
   },
 };
 

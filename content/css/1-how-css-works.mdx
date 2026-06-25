@@ -55,6 +55,57 @@ p {
 
 Reach for classes by default. They are reusable and keep your styling flexible. Use element selectors for broad defaults, and ids sparingly.
 
+## Combining selectors and reacting to the user
+
+The three selectors above target single things. You will often want to target an element *based on where it sits* or *style several selectors at once*.
+
+- **Descendant** — `.card p` matches any `<p>` *inside* an element with `class="card"` (at any depth). Write the two selectors with a space between them.
+- **Child** — `.card > p` matches only `<p>` that are *direct* children of `.card`, not deeper ones. The `>` is the difference.
+- **Grouping** — `h1, h2` applies the same declarations to several selectors. Separate them with commas.
+
+Two **pseudo-classes** let a rule respond to the user. `:hover` matches an element while the pointer is over it, and `:focus` matches it while it is keyboard-focused. Add both on interactive things like links and buttons so mouse and keyboard users get the same feedback.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ada Lovelace</h1>
+      <p>Hover or tab to the <a href="#">link</a> below.</p>
+      <a href="#">Read more</a>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1.5rem; }
+
+/* descendant: any p inside .card */
+.card p { color: #444; }
+
+/* grouping: same rule for both */
+h1, a { font-family: system-ui, sans-serif; }
+
+/* react to pointer and keyboard */
+a:hover,
+a:focus {
+  color: navy;
+  text-decoration: underline;
+}`
+  }
+]} />
+
+Move the mouse over the link, or press Tab to focus it, and the `:hover`/`:focus` rule turns it navy and underlines it.
+
 ## See selectors in action
 
 Here is the start of our profile card, split the way real projects keep it: an `index.html` for the markup and a `styles.css` for the rules. The HTML carries a `class` and an `id`, and links the stylesheet from the `<head>`; the stylesheet targets each selector.

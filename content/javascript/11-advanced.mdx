@@ -1,0 +1,519 @@
+---
+title: "Advanced: array methods, destructuring & modern syntax"
+module: "javascript"
+order: 11
+goal: "Transform data declaratively with map, filter, and reduce, and use modern syntax — destructuring, spread, optional chaining — to handle real-world data cleanly."
+objectives:
+  - "Transform an array with map, keep items with filter, and collapse to one value with reduce"
+  - "Reach for find, sort, and join when you need them"
+  - "Pull values out of arrays and objects with destructuring"
+  - "Copy and combine arrays and objects with the spread operator"
+  - "Read possibly-missing data safely with optional chaining and nullish coalescing"
+  - "Iterate an object's keys and values with Object.keys, Object.values, and Object.entries"
+estMinutes: 45
+prerequisites: ["javascript/7-functions", "javascript/4-arrays-and-objects"]
+---
+
+This is an **optional, deeper chapter**. Everything in chapters 1–10 stands on its own — you can already loop, branch, and write functions. But modern JavaScript leans hard on a smaller, sharper toolkit for handling data: a few array methods, some syntax shortcuts, and safe ways to read data that might be missing. These are the patterns you will see in almost every real codebase and every React tutorial. None of it is *new* power — you could do all of it with the loops you already know — but it is shorter, clearer, and the common language of the field.
+
+Each section teaches one tool with a runnable example, then you will drill them and finish with a quiz. Take it at your own pace.
+
+## map: transform every item
+
+You already know how to loop over an array and do something with each item (chapter 6, `for...of` and `forEach`). `map` is the same idea with a sharper purpose: **take an array, return a new array of the same length, with each item transformed.**
+
+It takes a function — a *callback* (chapter 7) — that runs once per item. Whatever that function returns becomes the matching item in the new array.
+
+<CodeExample language="js" preview>
+{`const prices = [4, 9, 2, 6];
+
+// The old way you already know:
+const withTaxLoop = [];
+for (const p of prices) {
+  withTaxLoop.push(p * 1.25);
+}
+
+// The same thing with map — shorter and clearer:
+const withTax = prices.map((p) => p * 1.25);
+
+console.log(withTax);     // [5, 11.25, 2.5, 7.5]
+console.log(prices);      // [4, 9, 2, 6] — unchanged`}
+</CodeExample>
+
+Two things to notice. First, `map` does not change the original array — it *returns a new one*, so `prices` is untouched. Second, the arrow callback `(p) => p * 1.25` runs for each item, and its return value fills the new array. `map` is the declarative version of the "build a new array in a loop" pattern.
+
+It shines on arrays of objects — pull one field out of each:
+
+<CodeExample language="js" preview>
+{`const people = [
+  { name: "Ada", age: 30 },
+  { name: "Grace", age: 45 },
+  { name: "Linus", age: 28 }
+];
+
+const names = people.map((person) => person.name);
+console.log(names); // ["Ada", "Grace", "Linus"]`}
+</CodeExample>
+
+## filter: keep only some items
+
+Where `map` returns one item per input, `filter` returns *fewer* items: it keeps only the ones for which your callback returns `true`. The callback is a **test**.
+
+<CodeExample language="js" preview>
+{`const prices = [4, 9, 2, 6];
+
+// Keep only the prices over 5:
+const expensive = prices.filter((p) => p > 5);
+console.log(expensive); // [9, 6]
+
+const people = [
+  { name: "Ada", age: 30 },
+  { name: "Grace", age: 45 },
+  { name: "Linus", age: 28 }
+];
+
+// Keep only people aged 30 or over:
+const thirtyPlus = people.filter((person) => person.age >= 30);
+console.log(thirtyPlus.length); // 2`}
+</CodeExample>
+
+Read the callback as a yes/no question for each item: "is this price over 5?" Items that answer `true` make it into the new array; the rest are dropped. Like `map`, `filter` never changes the original.
+
+`map` and `filter` *chain* — each returns an array, so you can call the next method right on the result:
+
+<CodeExample language="js" preview>
+{`const prices = [4, 9, 2, 6];
+
+// Keep the prices over 5, then add tax to those:
+const result = prices
+  .filter((p) => p > 5)
+  .map((p) => p * 1.25);
+
+console.log(result); // [11.25, 7.5]`}
+</CodeExample>
+
+## reduce: collapse to a single value
+
+`map` and `filter` give you back an array. `reduce` is for when you want **one value** out of a whole array — a total, a maximum, a joined-up string.
+
+`reduce` is the trickiest of the three, so go slow. Its callback takes *two* arguments: the **accumulator** (the running result so far) and the **current item**. You also pass a starting value as the second argument to `reduce`. Whatever the callback returns becomes the accumulator for the next item.
+
+<CodeExample language="js" preview>
+{`const prices = [4, 9, 2, 6];
+
+// Sum them. Start the running total at 0.
+const total = prices.reduce((runningTotal, price) => {
+  return runningTotal + price;
+}, 0);
+
+console.log(total); // 21`}
+</CodeExample>
+
+Walk through it: the accumulator starts at `0`. Then it becomes `0 + 4 = 4`, then `4 + 9 = 13`, then `13 + 2 = 15`, then `15 + 6 = 21`. The final accumulator is the answer.
+
+The same loop written the long way makes the pattern obvious — `reduce` is exactly "a running variable updated in a loop," packaged up:
+
+<CodeExample language="js" preview>
+{`const prices = [4, 9, 2, 6];
+
+// What reduce is doing under the hood:
+let total = 0;
+for (const price of prices) {
+  total = total + price;
+}
+console.log(total); // 21`}
+</CodeExample>
+
+`reduce` works on objects too. Total a shopping cart by reaching into each item:
+
+<CodeExample language="js" preview>
+{`const cart = [
+  { item: "book", price: 12 },
+  { item: "pen", price: 3 },
+  { item: "mug", price: 8 }
+];
+
+const grandTotal = cart.reduce((sum, product) => sum + product.price, 0);
+console.log(grandTotal); // 23`}
+</CodeExample>
+
+## find, sort, and join
+
+Three more everyday methods worth knowing.
+
+`find` returns the **first** item that passes a test — the whole item, not a new array. It is what you reach for to look something up by name or id.
+
+<CodeExample language="js" preview>
+{`const people = [
+  { name: "Ada", age: 30 },
+  { name: "Grace", age: 45 }
+];
+
+const grace = people.find((person) => person.name === "Grace");
+console.log(grace.age); // 45
+
+const missing = people.find((person) => person.name === "Nobody");
+console.log(missing); // undefined — find returns undefined if nothing matches`}
+</CodeExample>
+
+`sort` reorders an array. For numbers, pass a compare function: return a negative number to put `a` first, positive to put `b` first. `(a, b) => a - b` sorts ascending. Note that `sort` **changes the array in place**, so copy first (with spread, below) if you need the original order.
+
+<CodeExample language="js" preview>
+{`const scores = [42, 8, 100, 16];
+
+const ascending = [...scores].sort((a, b) => a - b);
+console.log(ascending); // [8, 16, 42, 100]
+
+const descending = [...scores].sort((a, b) => b - a);
+console.log(descending); // [100, 42, 16, 8]`}
+</CodeExample>
+
+`join` turns an array into a single string, with a separator you choose.
+
+<CodeExample language="js" preview>
+{`const names = ["Ada", "Grace", "Linus"];
+
+console.log(names.join(", ")); // "Ada, Grace, Linus"
+console.log(names.join(" — ")); // "Ada — Grace — Linus"`}
+</CodeExample>
+
+## Destructuring: pull values out by name
+
+You often want to copy a few fields out of an object into their own variables. The long way repeats the object name each time; **destructuring** does it in one line.
+
+<CodeExample language="js" preview>
+{`const person = { name: "Ada", age: 30, city: "London" };
+
+// The long way:
+const name1 = person.name;
+const age1 = person.age;
+
+// Destructuring — pull name and age out by their keys:
+const { name, age } = person;
+console.log(name); // Ada
+console.log(age);  // 30`}
+</CodeExample>
+
+The names in the braces must match the object's keys. Arrays destructure too, but **by position**, using square brackets:
+
+<CodeExample language="js" preview>
+{`const colors = ["red", "green", "blue"];
+
+const [first, second] = colors;
+console.log(first);  // red
+console.log(second); // green`}
+</CodeExample>
+
+Destructuring is especially tidy inside a callback — pull the fields you need straight from the parameter:
+
+<CodeExample language="js" preview>
+{`const people = [
+  { name: "Ada", age: 30 },
+  { name: "Grace", age: 45 }
+];
+
+// Destructure each person right in the map callback:
+const lines = people.map(({ name, age }) => \`\${name} is \${age}\`);
+console.log(lines); // ["Ada is 30", "Grace is 45"]`}
+</CodeExample>
+
+## Spread: copy and combine
+
+The spread operator `...` "spreads out" the items of an array or the keys of an object into a new one. It is the clean way to **copy** a collection or build a new one with extra items, without changing the original.
+
+<CodeExample language="js" preview>
+{`const tasks = ["write", "review"];
+
+// Build a NEW array with one more item — tasks is untouched:
+const more = [...tasks, "ship"];
+console.log(more);  // ["write", "review", "ship"]
+console.log(tasks); // ["write", "review"] — unchanged
+
+// Combine two arrays:
+const a = [1, 2];
+const b = [3, 4];
+console.log([...a, ...b]); // [1, 2, 3, 4]`}
+</CodeExample>
+
+Objects spread the same way. This is how you make a copy with one field changed — the pattern at the heart of updating state in React:
+
+<CodeExample language="js" preview>
+{`const person = { name: "Ada", age: 30 };
+
+// Copy person, but override age. The original is untouched.
+const older = { ...person, age: 31 };
+
+console.log(older);  // { name: "Ada", age: 31 }
+console.log(person); // { name: "Ada", age: 30 } — unchanged`}
+</CodeExample>
+
+Keys later in the literal win, so `{ ...person, age: 31 }` copies everything from `person` and then overrides `age`.
+
+## Optional chaining and nullish coalescing
+
+Real data is often incomplete — a person might have no address, an address might have no postcode. Reading `person.address.city` when `address` is missing throws the classic `Cannot read properties of undefined` error you met in the DevTools chapter.
+
+**Optional chaining** `?.` reads a property only if the thing before it exists. If any link in the chain is `null` or `undefined`, the whole expression stops and gives back `undefined` instead of crashing.
+
+<CodeExample language="js" preview>
+{`const ada = { name: "Ada", address: { city: "London" } };
+const grace = { name: "Grace" }; // no address
+
+console.log(ada.address?.city);   // "London"
+console.log(grace.address?.city); // undefined — no crash`}
+</CodeExample>
+
+Without the `?.`, `grace.address.city` would throw, because `grace.address` is `undefined` and you cannot read `.city` from `undefined`.
+
+**Nullish coalescing** `??` supplies a fallback when a value is `null` or `undefined`. Pair it with `?.` to read safely *and* default in one expression:
+
+<CodeExample language="js" preview>
+{`const grace = { name: "Grace" }; // no address
+
+const city = grace.address?.city ?? "Unknown";
+console.log(city); // "Unknown"`}
+</CodeExample>
+
+Why `??` and not `||`? `||` falls back on *any* falsy value, including `0` and `""` (empty string), which are often valid data. `??` falls back only on `null` or `undefined`, so a real `0` survives:
+
+<CodeExample language="js" preview>
+{`const count = 0;
+
+console.log(count || 5); // 5  — || treats 0 as "missing" (often wrong)
+console.log(count ?? 5); // 0  — ?? keeps a real 0`}
+</CodeExample>
+
+## Iterating objects: Object.keys, values, and entries
+
+Arrays loop naturally, but objects do not — there is no index. To walk an object's properties, turn it into an array first with one of three helpers, then use `map`, `filter`, or `for...of`.
+
+<CodeExample language="js" preview>
+{`const skills = { html: 5, css: 3, js: 4 };
+
+console.log(Object.keys(skills));   // ["html", "css", "js"]
+console.log(Object.values(skills)); // [5, 3, 4]
+console.log(Object.entries(skills)); // [["html", 5], ["css", 3], ["js", 4]]`}
+</CodeExample>
+
+`Object.entries` is the most useful: it gives an array of `[key, value]` pairs, which you can destructure in a loop to handle both at once.
+
+<CodeExample language="js" preview>
+{`const skills = { html: 5, css: 3, js: 4 };
+
+// Destructure each [key, value] pair:
+for (const [skill, level] of Object.entries(skills)) {
+  console.log(\`\${skill}: \${level}\`);
+}
+// html: 5
+// css: 3
+// js: 4
+
+// Or sum the values with map + reduce:
+const total = Object.values(skills).reduce((sum, n) => sum + n, 0);
+console.log(total); // 12`}
+</CodeExample>
+
+<Exercise
+  title="Render a list of people from data"
+  goal="Use map and join to turn an array of objects into a formatted text block — the same shape as rendering a list to the page."
+  steps={[
+    "Create render-list.js and declare an array of three people objects, each with a name (string) and age (number).",
+    "Use map to turn each person into a string like \"Ada (30)\" — destructure { name, age } in the callback.",
+    "You now have an array of strings. Use join with a newline separator '\\n' to combine them into one block.",
+    "Log the result. Confirm three lines, each \"Name (age)\".",
+    "Stretch: before mapping, filter to only people aged 30 or over, then map and join.",
+    "Commit in GitHub Desktop with the message 'Add render-list drill'."
+  ]}
+  expected="The console shows three lines like 'Ada (30)', 'Grace (45)', 'Linus (28)'. With the stretch, only the 30-and-over people appear."
+  solutionLang="js"
+  solution={`const people = [
+  { name: "Ada", age: 30 },
+  { name: "Grace", age: 45 },
+  { name: "Linus", age: 28 }
+];
+
+const lines = people
+  .map(({ name, age }) => \`\${name} (\${age})\`)
+  .join("\\n");
+
+console.log(lines);
+// Ada (30)
+// Grace (45)
+// Linus (28)
+
+// Stretch — filter first, then map and join:
+const thirtyPlus = people
+  .filter(({ age }) => age >= 30)
+  .map(({ name }) => name)
+  .join(", ");
+
+console.log(thirtyPlus); // "Ada, Grace"`}
+/>
+
+<Exercise
+  title="Total a shopping cart with reduce"
+  goal="Compute a single number — the cart total — from an array of product objects, then format it."
+  steps={[
+    "Create cart-total.js and declare const cart with four objects, each { item: string, price: number }.",
+    "Use reduce to sum the prices. The callback takes (sum, product) and returns sum + product.price; start the accumulator at 0.",
+    "Log the total.",
+    "Format it as money with two decimals using total.toFixed(2), and log a line like 'Total: $23.00'.",
+    "Stretch: use filter to drop any product whose price is 0 (a free sample) before reducing.",
+    "Reveal the solution only after your total matches a hand-added sum of your prices."
+  ]}
+  expected="The console logs the numeric total, then a formatted line such as 'Total: $23.00'."
+  solutionLang="js"
+  solution={`const cart = [
+  { item: "book", price: 12 },
+  { item: "pen", price: 3 },
+  { item: "mug", price: 8 },
+  { item: "sticker", price: 0 }
+];
+
+const total = cart
+  .filter((product) => product.price > 0) // stretch: drop free items
+  .reduce((sum, product) => sum + product.price, 0);
+
+console.log(total);                       // 23
+console.log(\`Total: $\${total.toFixed(2)}\`); // Total: $23.00`}
+/>
+
+<Exercise
+  title="Filter and sort a dataset"
+  goal="Chain filter, sort, and map to produce a ranked shortlist from an array of objects."
+  steps={[
+    "Create leaderboard.js and declare an array of five players, each { name: string, score: number }.",
+    "Filter to players with a score of 50 or more.",
+    "Sort the survivors by score, highest first — copy with spread first ([...players]) so the original order is kept, then sort with (a, b) => b.score - a.score.",
+    "Map the sorted players to strings like 'Ada: 90' and log the array.",
+    "Stretch: log the top scorer's name only, using find on the sorted array (the first item) or sorted[0].name."
+  ]}
+  expected="An array of 'name: score' strings for the qualifying players, ordered from highest score to lowest."
+  solutionLang="js"
+  solution={`const players = [
+  { name: "Ada", score: 90 },
+  { name: "Grace", score: 45 },
+  { name: "Linus", score: 70 },
+  { name: "Margaret", score: 55 },
+  { name: "Alan", score: 30 }
+];
+
+const ranked = [...players]
+  .filter((player) => player.score >= 50)
+  .sort((a, b) => b.score - a.score)
+  .map(({ name, score }) => \`\${name}: \${score}\`);
+
+console.log(ranked);
+// ["Ada: 90", "Linus: 70", "Margaret: 55"]
+
+// Stretch — the top scorer:
+const top = [...players].sort((a, b) => b.score - a.score)[0];
+console.log(top.name); // Ada`}
+/>
+
+<Exercise
+  title="Read possibly-missing data safely"
+  goal="Use optional chaining and nullish coalescing to read nested fields that may not exist, with sensible fallbacks."
+  steps={[
+    "Create safe-read.js and declare two user objects: one with a nested profile.address.city, one with no profile at all.",
+    "For each user, read profile?.address?.city and supply a fallback of 'Unknown' with ??. Log both.",
+    "Confirm the complete user logs its real city and the incomplete one logs 'Unknown' — with no error.",
+    "Add a function describe(user) that returns a string like 'Ada lives in London' using the safe read inside.",
+    "Stretch: show why || is wrong here — read a user whose city is the empty string '' and confirm ?? keeps it while || would replace it."
+  ]}
+  expected="Both reads succeed: the complete user shows its city, the incomplete user shows 'Unknown', and nothing throws."
+  solutionLang="js"
+  solution={`const ada = {
+  name: "Ada",
+  profile: { address: { city: "London" } }
+};
+const grace = { name: "Grace" }; // no profile at all
+
+function describe(user) {
+  const city = user.profile?.address?.city ?? "Unknown";
+  return \`\${user.name} lives in \${city}\`;
+}
+
+console.log(describe(ada));   // Ada lives in London
+console.log(describe(grace)); // Grace lives in Unknown
+
+// Stretch — ?? keeps a real empty string; || would not:
+const blank = { name: "Sam", profile: { address: { city: "" } } };
+console.log(blank.profile?.address?.city ?? "Unknown"); // "" (kept)
+console.log(blank.profile?.address?.city || "Unknown");  // "Unknown" (wrong)`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does [1, 2, 3].map((n) => n * 10) return?",
+    options: ["60", "[10, 20, 30]", "[1, 2, 3]", "It changes the original array to [10, 20, 30]"],
+    answer: 1,
+    explanation: "map returns a NEW array of the same length, each item transformed by the callback. The original is unchanged."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which method would you use to get the single first item that matches a condition?",
+    options: ["map", "filter", "find", "reduce"],
+    answer: 2,
+    explanation: "find returns the first matching item itself (or undefined). filter returns an array of all matches; map and reduce do other jobs."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Predict the output: const prices = [2, 8, 5]; console.log(prices.reduce((sum, p) => sum + p, 0));",
+    options: ["15", "[2, 8, 5]", "0", "8"],
+    answer: 0,
+    explanation: "reduce collapses the array to one value. Starting at 0: 0+2=2, 2+8=10, 10+5=15."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Given const p = { name: \"Ada\", age: 30 }; what does const { age } = p; do?",
+    options: [
+      "Creates a variable age equal to 30",
+      "Deletes age from p",
+      "Creates an array [30]",
+      "Throws because age is a number"
+    ],
+    answer: 0,
+    explanation: "Object destructuring pulls the value of the matching key into a same-named variable, so age is 30."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "const user = {}; what is user.profile?.city ?? \"none\"?",
+    options: ["A TypeError is thrown", "undefined", "\"none\"", "null"],
+    answer: 2,
+    explanation: "?. stops safely at the missing profile and yields undefined; ?? then supplies the fallback \"none\". No crash."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Which Object method gives you an array of [key, value] pairs you can destructure in a loop?",
+    answer: "Object.entries",
+    accept: ["object.entries", "entries", "Object.entries()"],
+    explanation: "Object.entries(obj) returns [[key, value], ...] — ideal for for...of with a destructured [key, value]."
+  }
+]} />
+
+<ReadMore title="Where this goes next: React and the declarative mindset">
+The instinct you just practiced — *describe a transformation of your data instead of mutating things step by step* — is the whole idea behind **React**. In React you render a list by mapping an array straight to UI: `items.map((item) => <li key={item.id}>{item.text}</li>)`. The `map` is exactly the one you learned here; the destructuring (`{ name, age }`) is how you read a component's *props*; and the spread copy (`{ ...state, done: true }`) is how you update state without mutating it, because React compares the new object to the old one to decide what to redraw. Optional chaining and `??` show up constantly when rendering data fetched from a server that might not have arrived yet. Learn these in plain JavaScript first — they are not React features, just modern JavaScript — and React will feel like a natural next step rather than a new language.
+
+- [MDN – Array.prototype.map()](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map) — the canonical reference, with more examples.
+- [React – Rendering Lists](https://react.dev/learn/rendering-lists) — see `map` used to build UI from an array.
+- [javascript.info – Destructuring assignment](https://javascript.info/destructuring-assignment) — a thorough walkthrough of destructuring and spread.
+</ReadMore>
+
+<DocsLinks links={[
+  { label: "MDN – Array.prototype.map()", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/map" },
+  { label: "MDN – Array.prototype.filter()", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/filter" },
+  { label: "MDN – Array.prototype.reduce()", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/reduce" },
+  { label: "MDN – Destructuring assignment", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment" },
+  { label: "MDN – Spread syntax (...)", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Spread_syntax" },
+  { label: "MDN – Optional chaining (?.)", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Optional_chaining" },
+  { label: "MDN – Nullish coalescing (??)", href: "https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Nullish_coalescing" },
+  { label: "W3Schools – JavaScript Array Methods", href: "https://www.w3schools.com/js/js_array_methods.asp" }
+]} />

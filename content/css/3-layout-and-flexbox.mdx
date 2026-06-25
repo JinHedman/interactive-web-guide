@@ -166,6 +166,47 @@ strong { font-size: 1.1rem; }`
 
 Interactive elements like these links should also react to the pointer and keyboard. A selector with `:hover` (e.g. `.links a:hover { text-decoration: underline; }`) styles an element while the mouse is over it, and `:focus` styles it while it is keyboard-focused — add both so the navigation gives clear feedback to mouse and keyboard users alike.
 
+## Letting one item fill the space: `flex: 1`
+
+The properties above all go on the *container*. There is one item-level shorthand you will meet constantly: `flex: 1`. Put it on a flex *item* and that item grows to absorb the leftover space in the row, while items without it keep their natural size. It is how you make a title or text field stretch to fill the gap beside fixed-size buttons.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="row">
+      <span class="label">Buy milk</span>
+      <button>Done</button>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.row {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  max-width: 360px;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.label { flex: 1; }`
+  }
+]} />
+
+The label has `flex: 1`, so it expands to push the button to the right edge; the button keeps its own width. (`flex` is actually a shorthand for how an item grows, shrinks, and starts — the advanced chapter unpacks the parts. For now, read `flex: 1` as "take the remaining space.")
+
 ## A peek at grid
 
 Flexbox excels at laying out items in *one* direction — a row or a column. When you need to control rows **and** columns at the same time — a true two-dimensional layout like a photo gallery or a dashboard — `display: grid` is the better tool.

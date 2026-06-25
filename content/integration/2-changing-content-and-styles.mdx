@@ -94,6 +94,46 @@ task2.classList.toggle("done");`
 
 The first task gets the `done` class and shows the strike-through. The second is toggled on, then off, so it looks unchanged. `toggle` is perfect for a checkbox-style behavior: click once to complete, click again to un-complete.
 
+Two related forms are worth knowing. Pass `toggle` a second argument — a boolean — and it forces the class **on** when that value is `true` and **off** when it is `false`, instead of flipping. That lets you drive a class straight from a condition. And `classList.contains("done")` returns `true`/`false` so you can *check* whether a class is currently present.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <li id="task">Walk the dog</li>
+    <p id="state"></p>
+    <script src="script.js"></script>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `.done { text-decoration: line-through; color: gray; }`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const task = document.getElementById("task");
+const state = document.getElementById("state");
+
+const isDone = true;
+task.classList.toggle("done", isDone); // force on because isDone is true
+
+state.textContent =
+  "Has done class? " + task.classList.contains("done"); // true`
+  }
+]} />
+
+Because `isDone` is `true`, the class is forced on; `contains` then confirms it is there. The two-argument `toggle` is ideal when you already hold a boolean (like a task's completed state) and want the class to match it.
+
 ## Set inline styles with the style property
 
 You can also change a single CSS property directly through the `style` property. CSS property names that contain a hyphen become camelCase: `background-color` becomes `backgroundColor`.
@@ -160,6 +200,44 @@ report.textContent =
 ]} />
 
 `setAttribute` takes two arguments: the attribute name and its new value. `getAttribute` takes just the name and returns the current value.
+
+## Stash your own data with data-* attributes
+
+HTML lets you invent your own attributes as long as they start with `data-`, like `data-id="42"`. They are a clean place to attach information an element needs — most often *which* item of your data this element represents. You could read them with `getAttribute("data-id")`, but JavaScript gives you a tidier path: the `dataset` property. A `data-id` attribute shows up as `element.dataset.id` (the `data-` prefix is dropped).
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
+  <body>
+    <li id="task" data-id="42" data-priority="high">Walk the dog</li>
+    <p id="report"></p>
+    <script src="script.js"></script>
+  </body>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const task = document.getElementById("task");
+const report = document.getElementById("report");
+
+console.log(task.dataset.id);       // "42"
+console.log(task.dataset.priority); // "high"
+
+// you can also set one — it updates the data-* attribute
+task.dataset.id = "99";
+
+report.textContent = "This element's id is " + task.dataset.id;`
+  }
+]} />
+
+Reading `task.dataset.id` returns the string `"42"`, and `task.dataset.priority` returns `"high"`. Values always come back as strings. This is the standard way to remember which row a button belongs to — handy once a single handler deals with many items.
 
 ## Prefer classes over inline styles
 

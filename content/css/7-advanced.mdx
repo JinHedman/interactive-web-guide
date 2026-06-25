@@ -1,0 +1,858 @@
+---
+title: "Advanced: custom properties, flex/grid depth & fluid responsive"
+module: "css"
+order: 7
+goal: "Reach past the basics with CSS custom properties for theming, the flex grow/shrink/basis mechanics, fluid sizing with clamp() and dark mode, and precise grid placement by line and by name."
+objectives:
+  - "Declare custom properties with --name and read them with var(), and scope a theme on :root"
+  - "Control how flex items share and absorb space with flex-grow, flex-shrink, and flex-basis"
+  - "Override a single item with align-self and reorder with order"
+  - "Size type and spacing fluidly with clamp(), and respond to dark mode with prefers-color-scheme"
+  - "Place grid items by explicit line numbers with grid-column and grid-row, and by name with grid-template-areas"
+estMinutes: 45
+prerequisites: ["css/3-layout-and-flexbox", "css/4-responsive-basics", "css/5-grid-in-depth"]
+---
+
+This is an **optional, deeper chapter**. Chapters 1–6 already give you a working stylesheet — you can style boxes, build flex and grid layouts, and make them responsive. This chapter goes one layer down into the tools real stylesheets lean on: variables for theming, the precise mechanics of how flex items share space, fluid sizing that needs no breakpoint, and pixel-accurate grid placement. None of it replaces what you know; it sharpens it.
+
+Each section teaches one idea with a runnable example, most with a `preview` so you can see the result. Then you will drill them and finish with a quiz. Take it at your own pace.
+
+## Custom properties (CSS variables)
+
+You have repeated the same color in a dozen rules and then had to change it in a dozen places. **Custom properties** — CSS's own variables — fix that. You *declare* one with a name starting with two dashes, then *read* it anywhere with the `var()` function.
+
+Declare them on `:root` (the `<html>` element) so the whole page can see them, and the rest of your CSS just references the names.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ada Lovelace</h1>
+      <p>Mathematician and writer.</p>
+      <a href="#more">Read more</a>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `:root {
+  --accent: #1d4ed8;
+  --surface: #f3f4f6;
+  --text: #1f2937;
+  --space: 1rem;
+}
+
+body { font-family: system-ui, sans-serif; padding: var(--space); }
+.card {
+  background: var(--surface);
+  color: var(--text);
+  padding: var(--space);
+  border-radius: 8px;
+  border-top: 4px solid var(--accent);
+  max-width: 360px;
+}
+.card h1 { color: var(--accent); margin: 0 0 0.25rem; }
+.card a { color: var(--accent); }`
+  }
+]} />
+
+Now the brand color lives in exactly one place. Change `--accent` on `:root` and the heading, link, and border all update together — that is the whole point. A custom property is just a value with a name, so it can hold a color, a length, a font stack, anything.
+
+`var()` also takes a **fallback** as a second argument, used when the property was never defined: `color: var(--accent, navy)` is `navy` if `--accent` is missing. That keeps a rule from silently producing nothing.
+
+Custom properties also **cascade and inherit** like any other value, which makes per-section theming trivial. Redefine a property on a smaller element and everything *inside* it picks up the new value:
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">Default theme</div>
+    <div class="card danger">Danger theme</div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `:root { --accent: #1d4ed8; }
+
+body { font-family: system-ui, sans-serif; padding: 1rem; }
+.card {
+  border-left: 6px solid var(--accent);
+  background: #f3f4f6;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 6px;
+}
+/* override the SAME variable name, only for this element */
+.danger { --accent: #dc2626; }`
+  }
+]} />
+
+Both cards use `var(--accent)`, but the second one redefines `--accent` on itself, so its border turns red without a single new rule for the border. This "set a token, let it flow down" pattern is exactly how design systems work.
+
+## Flex items: grow, shrink, and basis
+
+The flexbox chapter set properties on the *container*. The interesting control lives on the *items* — three properties decide how each item shares the row's space.
+
+- **`flex-grow`** — how greedily an item takes *leftover* space. `0` (default) means "don't grow." A higher number means "take more of the extra room." The numbers are ratios: an item with `flex-grow: 2` gets twice the spare space of one with `flex-grow: 1`.
+- **`flex-shrink`** — how readily an item *gives up* space when the row is too narrow. `1` (default) means "shrink if needed." `0` means "never shrink — keep my size."
+- **`flex-basis`** — the item's starting size *before* grow/shrink adjust it (think of it as the ideal width). `auto` (default) uses the content's natural size.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="row">
+      <div class="box a">grow 1</div>
+      <div class="box b">grow 2</div>
+      <div class="box c">grow 0</div>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.row { display: flex; gap: 0.5rem; }
+.box {
+  flex-basis: 80px;       /* all start at 80px wide */
+  padding: 1rem;
+  color: white;
+  border-radius: 6px;
+  text-align: center;
+}
+.a { flex-grow: 1; background: #1d4ed8; }
+.b { flex-grow: 2; background: #2563eb; } /* takes twice the spare space of .a */
+.c { flex-grow: 0; background: #64748b; } /* never grows past its basis */`
+  }
+]} />
+
+All three start at `80px` (`flex-basis`). The leftover space in the row is then handed out by `flex-grow`: `.b` gets twice as much as `.a`, and `.c` gets none, so it stays at 80px while the other two stretch.
+
+The shorthand you have seen — **`flex: 1`** — is just `flex-grow: 1; flex-shrink: 1; flex-basis: 0`. That `0` basis is the key: it tells items to ignore their content size and split the row purely by their grow ratio, which is why several `flex: 1` items come out equal width. To make one item hold its size while a neighbor fills the rest, pin the fixed one with `flex-shrink: 0` (and a width) and let the other grow:
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="toolbar">
+      <div class="avatar"></div>
+      <input class="search" type="search" placeholder="Search…">
+      <button class="btn">Go</button>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1d4ed8;
+  flex-shrink: 0;     /* never squashed when the row gets tight */
+}
+.search { flex: 1; padding: 0.5rem; }  /* grows to fill the middle */
+.btn {
+  flex-shrink: 0;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #1d4ed8;
+  color: white;
+}`
+  }
+]} />
+
+The avatar and button keep their size (`flex-shrink: 0`); the search input takes everything that is left (`flex: 1`). This fixed-ends-with-a-flexible-middle row is one of the most common layouts on the web.
+
+## Per-item overrides: align-self and order
+
+Container properties apply to every item at once. Two item-level properties let one item break ranks.
+
+- **`align-self`** overrides the container's `align-items` for a single item — handy when one item should sit at the top or bottom while the rest stay centered.
+- **`order`** changes an item's position in the visual sequence. Items default to `order: 0` and lay out in source order; a lower number moves earlier, a higher number later — *without* touching the HTML.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="row">
+      <div class="box first">1 (source first)</div>
+      <div class="box tall">2 (top)</div>
+      <div class="box last">3 (source last)</div>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.row {
+  display: flex;
+  align-items: center;   /* the default for every item */
+  gap: 0.5rem;
+  min-height: 120px;
+}
+.box {
+  flex: 1;
+  padding: 1rem;
+  color: white;
+  border-radius: 6px;
+  background: #1d4ed8;
+}
+.tall { align-self: flex-start; } /* this one only: pin to the top */
+.first { order: 3; }  /* sent to the end, though it is first in the HTML */
+.last { order: 1; }   /* pulled toward the front */`
+  }
+]} />
+
+The middle box pins itself to the top with `align-self` while its neighbors stay centered, and `order` shuffles the visual sequence even though the HTML order never changed. A caution: `order` moves things *visually only* — the DOM order (what a screen reader announces and what the Tab key follows) is unchanged, so use it for presentation, not to fix a wrong source order.
+
+## Fluid type and spacing with clamp()
+
+In the responsive chapter you changed sizes at breakpoints — a jump from one value to another. **`clamp()`** scales a value *smoothly* between a floor and a ceiling, so type can grow with the viewport and then stop, with no media query at all.
+
+It takes three arguments: `clamp(minimum, preferred, maximum)`. The browser uses the preferred value, but never lets it drop below the minimum or rise above the maximum. The trick is a viewport unit (`vw`) in the middle: `1vw` is 1% of the viewport width, so the preferred size tracks the screen.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1 class="title">Fluid heading</h1>
+    <p>Resize the preview pane or your browser to watch the heading scale.</p>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.title {
+  /* never smaller than 1.5rem, never larger than 3rem,
+     scaling with the viewport in between */
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  margin: 0 0 var(--gap, 1rem);
+}`
+  }
+]} />
+
+On a narrow phone the heading sits at its `1.5rem` floor; on a wide monitor it caps at `3rem`; in between it grows with the screen. The same idea works for spacing — `padding: clamp(1rem, 4vw, 3rem)` gives a margin that breathes on large screens and tightens on small ones. `clamp()` does not replace media queries (those still re-arrange the *layout*); it replaces the busywork of resizing single values at each breakpoint.
+
+## Dark mode with prefers-color-scheme
+
+Media queries are not only about width. **`prefers-color-scheme`** reads the user's operating-system theme, so your page can honor a dark-mode preference automatically. Pair it with custom properties and dark mode becomes a handful of variable swaps — the rest of your CSS, all written with `var()`, needs no changes.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h1>Theme-aware card</h1>
+      <p>Switch your OS to dark mode to see this flip.</p>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `:root {
+  --bg: #ffffff;
+  --surface: #f3f4f6;
+  --text: #1f2937;
+  --accent: #1d4ed8;
+}
+
+/* when the OS prefers dark, redefine the SAME tokens */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1020;
+    --surface: #161c2e;
+    --text: #e5e7eb;
+    --accent: #93c5fd;
+  }
+}
+
+body { font-family: system-ui, sans-serif; padding: 1rem; background: var(--bg); }
+.card {
+  background: var(--surface);
+  color: var(--text);
+  padding: 1rem;
+  border-radius: 8px;
+  border-top: 4px solid var(--accent);
+  max-width: 360px;
+}
+.card h1 { color: var(--accent); margin: 0 0 0.25rem; }`
+  }
+]} />
+
+Only the four variables change inside the dark-mode query; every rule that reads them updates for free. Set your operating system (or the browser devtools rendering panel) to dark mode and the card flips. This is why teaching theming with variables first pays off — dark mode is then almost no extra work.
+
+## Grid placement by line number
+
+The grid chapter placed items with `span`. Grid also lets you name *exact lines*. The lines between and around tracks are numbered from `1`, so a three-column grid has column lines `1` through `4`. **`grid-column: 2 / 4`** means "start at line 2, end at line 4" — spanning the two columns between them. `grid-row` works the same way down the rows.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="grid">
+      <div class="hero">A (lines 1–3, rows 1–3)</div>
+      <div>B</div>
+      <div>C</div>
+      <div>D</div>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 80px;
+  gap: 0.5rem;
+}
+.grid div {
+  background: #1d4ed8;
+  color: white;
+  padding: 0.5rem;
+  border-radius: 6px;
+}
+.hero {
+  /* explicit lines: columns 1→3, rows 1→3 */
+  grid-column: 1 / 3;
+  grid-row: 1 / 3;
+  background: #1e3a8a;
+}`
+  }
+]} />
+
+`grid-column: 1 / 3` puts the hero between column lines 1 and 3 (covering columns 1 and 2), and `grid-row: 1 / 3` makes it two rows tall. The other items flow into the cells the hero left free. Compared with `span`, line numbers let you anchor an item to an exact position rather than just say "take two." You can mix the two: `grid-column: 2 / span 2` starts at line 2 and spans two columns.
+
+## Naming regions with grid-template-areas
+
+For a whole layout, even line numbers get fiddly. **`grid-template-areas`** lets you draw the layout as a map of names — the most readable placement tool grid offers. You label each item with `grid-area`, then arrange those labels in rows of strings on the container.
+
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="page">
+      <header>Header</header>
+      <nav>Nav</nav>
+      <main>Main</main>
+      <footer>Footer</footer>
+    </div>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.page {
+  display: grid;
+  grid-template-columns: 140px 1fr;
+  grid-template-areas:
+    "header header"
+    "nav    main"
+    "footer footer";
+  gap: 0.5rem;
+  min-height: 300px;
+}
+.page > * {
+  background: #1d4ed8;
+  color: white;
+  padding: 1rem;
+  border-radius: 6px;
+}
+header { grid-area: header; }
+nav    { grid-area: nav; }
+main   { grid-area: main; background: #1e3a8a; }
+footer { grid-area: footer; }`
+  }
+]} />
+
+Each quoted string is one grid row; each word is a column cell. Repeating a name (`"header header"`) makes that area stretch across both columns. The layout reads almost like the picture it draws, and rearranging the page is just editing the map — no line numbers to renumber. (You can even swap the map inside a media query to reflow a whole page at a breakpoint.)
+
+<Exercise
+  title="Theme a card with custom properties"
+  goal="Refactor a card so all its colors and spacing come from custom properties on :root, then re-skin it by editing one block."
+  steps={[
+    "In VS Code, create theming.html and styles.css (or use a style block).",
+    "Build a simple card: a heading, a paragraph, and a link inside a div class=\"card\".",
+    "On :root, declare --accent, --surface, --text, and --space.",
+    "Rewrite every color, background, and padding in the card to read its value with var(...), so no literal color appears in the .card rules.",
+    "Confirm it renders, then change the whole look by editing only the four :root values — nothing else.",
+    "Stretch: add a class .alt that redefines --accent on itself, and apply it to a second card so only that card changes color.",
+    "Commit in GitHub Desktop with a message like \"Theme card with custom properties\"."
+  ]}
+  expected="A card whose colors and spacing all come from :root variables, re-skinnable by editing one block. With the stretch, a second .alt card shows a different accent from the same var(--accent)."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Themed card</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h2>Analytical Engine</h2>
+      <p>A general-purpose mechanical computer.</p>
+      <a href="#more">Read more</a>
+    </div>
+    <div class="card alt">
+      <h2>Notes G</h2>
+      <p>The first published algorithm.</p>
+      <a href="#more">Read more</a>
+    </div>
+  </body>
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `:root {
+  --accent: #1d4ed8;
+  --surface: #f3f4f6;
+  --text: #1f2937;
+  --space: 1rem;
+}
+
+body { font-family: system-ui, sans-serif; padding: var(--space); }
+.card {
+  background: var(--surface);
+  color: var(--text);
+  padding: var(--space);
+  margin-bottom: var(--space);
+  border-radius: 8px;
+  border-top: 4px solid var(--accent);
+  max-width: 360px;
+}
+.card h2 { color: var(--accent); margin: 0 0 0.25rem; }
+.card a { color: var(--accent); }
+
+/* stretch: re-theme just this card by redefining the token */
+.alt { --accent: #dc2626; }`
+    }
+  ]}
+/>
+
+<Exercise
+  title="Build a flexible toolbar with grow/shrink/basis"
+  goal="Lay out a toolbar where a title holds its size, a search field grows to fill, and an avatar never squashes."
+  steps={[
+    "Create toolbar.html with a div class=\"toolbar\" holding a strong title, an input type=\"search\", and a div class=\"avatar\".",
+    "Make .toolbar a flex row with align-items: center and a gap.",
+    "Give the search input flex: 1 so it grows to take the leftover space.",
+    "Give the avatar flex-shrink: 0 and a fixed width/height so it stays a circle even when the row is tight.",
+    "Leave the title at its default (no flex) so it keeps its natural width.",
+    "Resize the window and confirm only the search field changes width.",
+    "Stretch: add a button with flex-shrink: 0 on the far right and use order to move it before the avatar without editing the HTML.",
+    "Commit with a message like \"Build flexible toolbar\"."
+  ]}
+  expected="A toolbar where the title and avatar keep their size while the search input absorbs all the spare width. With the stretch, the button appears before the avatar via order alone."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Toolbar</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="toolbar">
+      <strong class="title">Ada</strong>
+      <input class="search" type="search" placeholder="Search…">
+      <div class="avatar"></div>
+      <button class="btn">Go</button>
+    </div>
+  </body>
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.title { flex-shrink: 0; }       /* keep its natural width */
+.search { flex: 1; padding: 0.5rem; } /* grow to fill the middle */
+.avatar {
+  flex-shrink: 0;                /* never squashed */
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: #1d4ed8;
+}
+.btn {
+  flex-shrink: 0;
+  order: -1;                     /* stretch: move before the avatar */
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background: #1d4ed8;
+  color: white;
+}`
+    }
+  ]}
+/>
+
+<Exercise
+  title="Fluid heading with clamp() and dark mode"
+  goal="Size a heading fluidly with clamp() and add an automatic dark theme by swapping custom properties in a prefers-color-scheme query."
+  steps={[
+    "Create fluid.html with a card containing an h1 and a paragraph; link styles.css.",
+    "On :root, define --bg, --surface, --text, and --accent for the light theme, and style the body and card to read them with var(...).",
+    "Give the h1 a font-size of clamp(1.5rem, 5vw, 3rem) so it scales between 1.5rem and 3rem.",
+    "Add an @media (prefers-color-scheme: dark) block that redefines the same four variables with dark values on :root.",
+    "Open with Live Server, resize to watch the heading scale, then switch your OS (or the devtools rendering panel) to dark mode to watch the palette flip.",
+    "Stretch: also clamp the card's padding, e.g. clamp(1rem, 4vw, 2.5rem).",
+    "Commit with a message like \"Add fluid heading and dark mode\"."
+  ]}
+  expected="A heading that scales smoothly with the viewport between 1.5rem and 3rem, and a card whose palette flips automatically when the OS is in dark mode — driven only by swapped variables."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Fluid + dark mode</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h1>Fluid heading</h1>
+      <p>Resize the window, then try dark mode.</p>
+    </div>
+  </body>
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `:root {
+  --bg: #ffffff;
+  --surface: #f3f4f6;
+  --text: #1f2937;
+  --accent: #1d4ed8;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #0b1020;
+    --surface: #161c2e;
+    --text: #e5e7eb;
+    --accent: #93c5fd;
+  }
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  background: var(--bg);
+  padding: 1rem;
+}
+.card {
+  background: var(--surface);
+  color: var(--text);
+  padding: clamp(1rem, 4vw, 2.5rem); /* stretch: fluid padding */
+  border-radius: 8px;
+  border-top: 4px solid var(--accent);
+  max-width: 480px;
+}
+.card h1 {
+  font-size: clamp(1.5rem, 5vw, 3rem);
+  color: var(--accent);
+  margin: 0 0 0.5rem;
+}`
+    }
+  ]}
+/>
+
+<Exercise
+  title="Place a dashboard with line numbers and named areas"
+  goal="Build the same small dashboard two ways: once with explicit grid line numbers, once with grid-template-areas, to feel the difference."
+  steps={[
+    "Create dashboard.html with a div class=\"page\" holding a header, a nav, a main, and a footer element.",
+    "Make .page a grid with grid-template-columns: 160px 1fr and a gap.",
+    "VERSION 1 (line numbers): place header at grid-column: 1 / 3 (full width), nav at column 1, main at column 2, and footer at grid-column: 1 / 3. Use grid-row line numbers to put them on rows 1, 2, and 3.",
+    "Confirm the layout: full-width header, sidebar + main in the middle, full-width footer.",
+    "VERSION 2 (named areas): replace the placement rules with grid-template-areas drawing the same map, and give each element a grid-area name. Confirm the result is identical.",
+    "Note which version you found easier to read and why.",
+    "Commit with a message like \"Dashboard layout two ways\"."
+  ]}
+  expected="A dashboard with a full-width header, a sidebar beside the main content, and a full-width footer — built first with explicit line numbers, then reproduced with grid-template-areas for the same result."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="page">
+      <header>Header</header>
+      <nav>Nav</nav>
+      <main>Main</main>
+      <footer>Footer</footer>
+    </div>
+  </body>
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.page {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 0.5rem;
+  min-height: 320px;
+}
+.page > * {
+  background: #1d4ed8;
+  color: white;
+  padding: 1rem;
+  border-radius: 6px;
+}
+main { background: #1e3a8a; }
+
+/* VERSION 1 — explicit line numbers */
+header { grid-column: 1 / 3; grid-row: 1; }
+nav    { grid-column: 1;     grid-row: 2; }
+main   { grid-column: 2;     grid-row: 2; }
+footer { grid-column: 1 / 3; grid-row: 3; }
+
+/* VERSION 2 — same layout with named areas.
+   Swap the four rules above for these:
+
+.page {
+  grid-template-areas:
+    "header header"
+    "nav    main"
+    "footer footer";
+}
+header { grid-area: header; }
+nav    { grid-area: nav; }
+main   { grid-area: main; }
+footer { grid-area: footer; }
+*/`
+    }
+  ]}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "How do you read the value of a custom property named --accent?",
+    options: [
+      "use(--accent)",
+      "var(--accent)",
+      "$accent",
+      "@accent"
+    ],
+    answer: 1,
+    explanation: "Custom properties are declared with a leading -- and read with the var() function: color: var(--accent). $ is Sass and @ is Less, not plain CSS."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Three flex items each have flex-basis: 0 and flex-grow values of 1, 2, and 1. How is the row's space split?",
+    options: [
+      "Equally — a third each",
+      "1/4, 1/2, 1/4 of the row",
+      "The middle item takes everything",
+      "They keep their content widths"
+    ],
+    answer: 1,
+    explanation: "With a 0 basis, the whole row is shared by the grow ratios 1:2:1 (total 4), so the items take one quarter, one half, and one quarter."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which property stops a flex item from being squashed when the row runs out of room?",
+    options: [
+      "flex-grow: 0",
+      "flex-shrink: 0",
+      "order: 0",
+      "align-self: stretch"
+    ],
+    answer: 1,
+    explanation: "flex-shrink: 0 means 'never give up size', so the item keeps its width even when the row is too narrow. flex-grow controls taking spare space, not keeping size."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "For font-size: clamp(1.5rem, 5vw, 3rem), what size shows on a very wide monitor?",
+    options: [
+      "1.5rem",
+      "5vw, with no upper limit",
+      "3rem (the maximum)",
+      "It is invalid CSS"
+    ],
+    answer: 2,
+    explanation: "clamp(min, preferred, max) never exceeds the maximum, so on a wide screen where 5vw would be large, it caps at 3rem."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Why does pairing custom properties with @media (prefers-color-scheme: dark) make dark mode easy?",
+    options: [
+      "It disables all light-mode CSS automatically",
+      "You only redefine a few variables in the dark block; every rule that reads them with var() updates for free",
+      "prefers-color-scheme rewrites your colors to their dark equivalents",
+      "It requires JavaScript to swap a class"
+    ],
+    answer: 1,
+    explanation: "Because rules read colors through var(), redefining the tokens inside the dark query updates everything at once — no rule-by-rule overrides needed."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Write the grid-column value that places an item from column line 1 to column line 3 (spanning two columns), using the start / end form.",
+    answer: "1 / 3",
+    accept: ["1 / 3", "1/3", "grid-column: 1 / 3", "1 / 3;"],
+    explanation: "grid-column: 1 / 3 starts at line 1 and ends at line 3, covering the two columns between those lines."
+  }
+]} />
+
+<ReadMore title="Where this goes next: design tokens and Tailwind's theme">
+The variable habit you just practiced — *name your colors and sizes once, reference them everywhere* — is what the industry calls **design tokens**, and it is the backbone of modern styling tools. **Tailwind CSS v4** builds its whole theme on exactly this: you declare tokens in an `@theme` block, and Tailwind both generates utility classes from them *and* exposes them as ordinary CSS custom properties you can read with `var()` — the same `var(--color-...)` you used here.
+
+<CodeExample language="css">
+{`/* Tailwind v4 — tokens declared once, used as utilities AND as var() */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #1d4ed8;
+}
+
+/* Tailwind makes a "bg-brand" utility from that token,
+   and you can still read it directly: */
+.callout { border-top: 4px solid var(--color-brand); }`}
+</CodeExample>
+
+So the leap from this chapter to a framework is small: custom properties are the foundation, and `clamp()`, `prefers-color-scheme`, and grid placement are all plain CSS that Tailwind and every other tool sit on top of. Learn them here and they carry everywhere.
+
+- [Tailwind CSS – Theme variables (v4)](https://tailwindcss.com/docs/theme)
+- [MDN – Using CSS custom properties](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties)
+- [MDN – clamp()](https://developer.mozilla.org/en-US/docs/Web/CSS/clamp)
+</ReadMore>
+
+<DocsLinks links={[
+  { label: "MDN – Using CSS custom properties (variables)", href: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_cascading_variables/Using_CSS_custom_properties" },
+  { label: "MDN – Controlling ratios of flex items (grow/shrink/basis)", href: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_flexible_box_layout/Controlling_ratios_of_flex_items_along_the_main_axis" },
+  { label: "MDN – clamp()", href: "https://developer.mozilla.org/en-US/docs/Web/CSS/clamp" },
+  { label: "MDN – prefers-color-scheme", href: "https://developer.mozilla.org/en-US/docs/Web/CSS/@media/prefers-color-scheme" },
+  { label: "MDN – Grid line-based placement", href: "https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout/Grid_layout_using_line-based_placement" },
+  { label: "W3Schools – CSS Variables (var) (Try it Yourself)", href: "https://www.w3schools.com/css/css3_variables.asp" },
+  { label: "W3Schools – CSS Flexbox flex-grow/shrink/basis", href: "https://www.w3schools.com/cssref/css3_pr_flex.php" }
+]} />

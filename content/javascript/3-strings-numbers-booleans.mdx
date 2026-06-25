@@ -57,6 +57,20 @@ console.log(hobby.slice(0, 5));     // Photo — characters 0 up to (not includi
 - `includes("...")` returns a boolean: does the string contain that text?
 - `slice(start, end)` returns the piece from `start` up to (but not including) `end`.
 
+Two more you will reach for often, especially with form input: `trim()` removes whitespace from both ends of a string, and `split(separator)` breaks a string into an *array* of pieces wherever the separator appears.
+
+<CodeExample language="js" preview>
+{`const raw = "   ada lovelace   ";
+console.log(raw.trim());            // "ada lovelace" — spaces gone
+
+const csv = "math,writing,music";
+const tags = csv.split(",");
+console.log(tags);                  // ["math", "writing", "music"]
+console.log(tags.length);           // 3`}
+</CodeExample>
+
+`trim()` is how you clean up what someone typed before checking or storing it; `split(",")` is the standard way to turn a delimited string into a list you can loop over.
+
 These methods **return a new value** — they do not change the original string.
 
 ## Number work and conversion

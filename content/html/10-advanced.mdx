@@ -1,0 +1,430 @@
+---
+title: "Advanced: forms validation, semantics & tables"
+module: "html"
+order: 10
+goal: "Reach for the deeper HTML you skipped earlier — built-in form validation, captioned media, native disclosure widgets, description lists, and accessible table structure — all without a line of JavaScript."
+objectives:
+  - "Validate forms in the browser with required, type, pattern, and minlength/maxlength"
+  - "Group related controls with <fieldset> and <legend>"
+  - "Caption media as one unit with <figure> and <figcaption>"
+  - "Build a no-JS collapsible with <details> and <summary>"
+  - "Mark up term-and-definition data with <dl>, <dt>, and <dd>"
+  - "Make tables accessible with <caption>, scope, colspan/rowspan, and <tfoot>"
+estMinutes: 35
+prerequisites: ["html/6-forms", "html/5-semantics", "html/7-tables"]
+---
+
+This is an **optional, deeper chapter**. Everything in chapters 1–9 stands on its own — you can already build a page, a form, and a table. But HTML has a second layer most tutorials skip: the browser will validate your forms for free, caption your media as one unit, collapse a panel with no JavaScript, and make a table genuinely navigable by a screen reader. None of this is exotic. It is the difference between markup that *works* and markup that is correct, accessible, and does more with less code.
+
+Each section teaches one tool with a runnable example, then you will drill them and finish with a quiz. Take it at your own pace.
+
+## What `required` actually does
+
+In chapter 6 you added `required` to an input. Here is what it means: the browser **refuses to submit the form** and shows its own message until that field has a value. No JavaScript involved — the browser enforces it. This is called *constraint validation*, and `required` is just the first of several constraints you can declare in the markup.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="username">Username</label>
+  <input type="text" id="username" name="username" required>
+  <button type="submit">Sign up</button>
+</form>`}
+</CodeExample>
+
+Click Sign up with the field empty and the browser blocks it with a "Please fill out this field" bubble. You wrote one word and got a working check.
+
+## Type, pattern, and length constraints
+
+`required` only checks that *something* is there. The other constraints check the *shape* of what was typed:
+
+- `type="email"` and `type="url"` make the browser reject a value that is not a valid email or URL.
+- `minlength` and `maxlength` set how short or long the text may be.
+- `pattern` takes a regular expression the value must match — for things with no built-in type, like a postal code.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email" required>
+
+  <label for="site">Website</label>
+  <input type="url" id="site" name="site" placeholder="https://...">
+
+  <label for="pw">Password (8–20 chars)</label>
+  <input type="password" id="pw" name="pw"
+         minlength="8" maxlength="20" required>
+
+  <label for="zip">UK postcode</label>
+  <input type="text" id="zip" name="zip"
+         pattern="[A-Za-z]{1,2}[0-9].*" title="e.g. SW1A 1AA">
+
+  <button type="submit">Submit</button>
+</form>`}
+</CodeExample>
+
+Try submitting with `not-an-email` in the email field — the browser stops you. The `title` on the `pattern` field is what the browser shows if the value does not match, so always give a human-readable hint there. These checks are a first line of defence and a convenience for the user; a real server still re-checks everything, because anyone can bypass the browser.
+
+## Grouping controls with `<fieldset>` and `<legend>`
+
+Related controls — especially a set of radio buttons or checkboxes — belong in a `<fieldset>`. A `<legend>` (its first child) gives the whole group a visible, announced label. Screen readers read the legend together with each option, so the user hears "Contact preference: Email" instead of a bare "Email".
+
+<CodeExample language="html" preview>
+{`<form>
+  <fieldset>
+    <legend>Preferred contact method</legend>
+    <input type="radio" id="by-email" name="contact" value="email">
+    <label for="by-email">Email</label>
+    <input type="radio" id="by-phone" name="contact" value="phone">
+    <label for="by-phone">Phone</label>
+    <input type="radio" id="by-post" name="contact" value="post">
+    <label for="by-post">Post</label>
+  </fieldset>
+</form>`}
+</CodeExample>
+
+The `<fieldset>` draws a box around the group by default, and the `<legend>` sits on its border. This is the accessible answer to "how do I label a radio group?" — a single `<label>` can only point at one input, but a `<legend>` labels them all.
+
+## Captioned media with `<figure>` and `<figcaption>`
+
+An image's `alt` text describes it for people who cannot see it. A *caption* is different: it is a visible label everyone reads, like the credit under a photo or the title of a chart. `<figure>` wraps the media and its `<figcaption>` into one self-contained unit, so the caption is semantically tied to the image rather than floating as a loose paragraph.
+
+<CodeExample language="html" preview>
+{`<figure>
+  <img src="chart.png" alt="Bar chart: visits rose from 200 in January to 900 in June">
+  <figcaption>Monthly visitors, January–June 2026.</figcaption>
+</figure>`}
+</CodeExample>
+
+Notice the two texts do different jobs. The `alt` describes the data for someone who cannot see the chart; the `<figcaption>` is the short visible label everyone sees. A `<figure>` can also wrap a code block, a quote, or a diagram — anything referenced from the main text that could move elsewhere without breaking the flow.
+
+## Native disclosure with `<details>` and `<summary>`
+
+A collapsible panel — an FAQ answer, a "show more" section — normally screams *JavaScript*. HTML has it built in. `<details>` is a panel that is closed by default; its first child, `<summary>`, is the always-visible label you click to toggle it open. No script, no library.
+
+<CodeExample language="html" preview>
+{`<details>
+  <summary>What does "semantic HTML" mean?</summary>
+  <p>Using elements for their meaning — like <code>nav</code> for
+     navigation — instead of generic boxes for everything.</p>
+</details>
+
+<details open>
+  <summary>Can I open one by default?</summary>
+  <p>Yes — add the <code>open</code> attribute, as on this one.</p>
+</details>`}
+</CodeExample>
+
+Click a summary to expand or collapse its panel. Add the `open` attribute to have a panel start expanded. The browser handles the keyboard, focus, and toggle state for you — all behaviour you would otherwise hand-write in JavaScript.
+
+## Description lists with `<dl>`, `<dt>`, and `<dd>`
+
+You know ordered and unordered lists. There is a third kind for **name-and-value pairs**: a glossary, a set of metadata, a list of terms and their definitions. `<dl>` is the list, `<dt>` is a term (the name), and `<dd>` is its description (the value).
+
+<CodeExample language="html" preview>
+{`<dl>
+  <dt>HTML</dt>
+  <dd>The language that structures the content of a page.</dd>
+
+  <dt>CSS</dt>
+  <dd>The language that controls how a page looks.</dd>
+
+  <dt>JavaScript</dt>
+  <dd>The language that adds behaviour to a page.</dd>
+</dl>`}
+</CodeExample>
+
+One term can have several descriptions (stack multiple `<dd>` under one `<dt>`), and several terms can share one description (stack multiple `<dt>` before one `<dd>`). Reach for a `<dl>` whenever your data is genuinely "this label means this value" — it carries more meaning than faking it with paragraphs or a two-column table.
+
+## Tables that screen readers can read: `scope`
+
+In chapter 7 you used `<th>` only across the top, as column headers. Real tables often have headers down the side too — the first cell of each row naming what that row is. The `scope` attribute tells assistive tech which cells a header governs: `scope="col"` for a column header, `scope="row"` for a row header. Without it, a screen reader cannot reliably connect a data cell to its headers.
+
+<CodeExample language="html" preview>
+{`<table>
+  <caption>Opening hours</caption>
+  <thead>
+    <tr>
+      <th scope="col">Day</th>
+      <th scope="col">Opens</th>
+      <th scope="col">Closes</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Monday</th>
+      <td>09:00</td>
+      <td>17:00</td>
+    </tr>
+    <tr>
+      <th scope="row">Saturday</th>
+      <td>10:00</td>
+      <td>14:00</td>
+    </tr>
+  </tbody>
+</table>`}
+</CodeExample>
+
+The day names are now `<th scope="row">` instead of `<td>`, so a screen reader can announce a cell together with its headers — something like "Saturday, Closes, 14:00" — the row header plus the column header plus the value. That association is what makes a table usable without sight.
+
+## Spanning cells and a footer: `colspan`, `rowspan`, `<tfoot>`
+
+Two more pieces complete the table toolkit. `colspan` makes a cell stretch across several columns; `rowspan` makes it stretch down several rows. And `<tfoot>` groups a summary or total row — the table's footer — separate from the body.
+
+<CodeExample language="html" preview>
+{`<table>
+  <caption>Quarterly sales</caption>
+  <thead>
+    <tr>
+      <th scope="col">Product</th>
+      <th scope="col">Q1</th>
+      <th scope="col">Q2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Books</th>
+      <td>120</td>
+      <td>150</td>
+    </tr>
+    <tr>
+      <th scope="row">Pens</th>
+      <td>80</td>
+      <td>95</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th scope="row">Total</th>
+      <td colspan="2">445</td>
+    </tr>
+  </tfoot>
+</table>`}
+</CodeExample>
+
+The `<tfoot>` row's total cell uses `colspan="2"` to span both quarter columns. Write `<tfoot>` after `<tbody>` in your markup; the browser still renders it at the bottom. Group the document order as header, body, footer and the structure reads cleanly.
+
+<Exercise
+  title="Add real validation to a sign-up form"
+  goal="Build a form whose fields the browser validates on submit — required, email, length, and pattern — with no JavaScript."
+  steps={[
+    "Create signup.html with the basic document structure and a <form> inside <main>.",
+    "Add a required text input for a username with minlength=\"3\".",
+    "Add a required email input (type=\"email\") and a url input for a website.",
+    "Add a password input with minlength=\"8\" and maxlength=\"20\", both required.",
+    "Add a <button type=\"submit\">. Open with Live Server and try submitting with empty, too-short, and malformed values to watch the browser block each one.",
+    "Commit in GitHub Desktop with the message 'Add validated sign-up form'."
+  ]}
+  expected="Submitting refuses to proceed until every field is filled and valid: the email must look like an email, the password must be 8–20 characters, and the username at least 3."
+  solutionLang="html"
+  solution={`<main>
+  <h1>Sign up</h1>
+  <form action="/signup" method="post">
+    <label for="username">Username</label>
+    <input type="text" id="username" name="username"
+           minlength="3" required>
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email" required>
+
+    <label for="site">Website</label>
+    <input type="url" id="site" name="site"
+           placeholder="https://...">
+
+    <label for="pw">Password (8–20 chars)</label>
+    <input type="password" id="pw" name="pw"
+           minlength="8" maxlength="20" required>
+
+    <button type="submit">Create account</button>
+  </form>
+</main>`}
+/>
+
+<Exercise
+  title="Group a radio set with fieldset and legend"
+  goal="Wrap a set of radio buttons in an accessible group with a single shared label."
+  steps={[
+    "In a form, add a <fieldset>.",
+    "Make its first child a <legend> reading 'How did you hear about us?'.",
+    "Add three radio inputs that all share name=\"source\", each with its own id, value, and <label>.",
+    "Open with Live Server: confirm only one option can be selected and the legend labels the whole box.",
+    "Commit with the message 'Group radios in a fieldset'."
+  ]}
+  expected="A bordered group with a heading on its edge, containing three mutually exclusive radio options."
+  solutionLang="html"
+  solution={`<form>
+  <fieldset>
+    <legend>How did you hear about us?</legend>
+
+    <input type="radio" id="src-search" name="source" value="search">
+    <label for="src-search">Search engine</label>
+
+    <input type="radio" id="src-friend" name="source" value="friend">
+    <label for="src-friend">From a friend</label>
+
+    <input type="radio" id="src-social" name="source" value="social">
+    <label for="src-social">Social media</label>
+  </fieldset>
+</form>`}
+/>
+
+<Exercise
+  title="Build a no-JS FAQ with details and summary"
+  goal="Create a three-question FAQ where each answer expands and collapses with zero JavaScript."
+  steps={[
+    "Create faq.html with the basic structure and an <h1>Frequently asked questions</h1>.",
+    "Add three <details> blocks. In each, the first child is a <summary> with the question.",
+    "After the <summary>, add a <p> with the answer.",
+    "Add the open attribute to the first <details> so it starts expanded.",
+    "Open with Live Server and confirm clicking each summary toggles its answer, with no script involved.",
+    "Commit with the message 'Add native FAQ accordion'."
+  ]}
+  expected="Three collapsible questions; the first is open on load, and clicking any summary toggles its panel — all with no JavaScript."
+  solutionLang="html"
+  solution={`<h1>Frequently asked questions</h1>
+
+<details open>
+  <summary>Do I need to know JavaScript for this?</summary>
+  <p>No — this whole widget is plain HTML.</p>
+</details>
+
+<details>
+  <summary>Is it accessible?</summary>
+  <p>Yes. The browser handles keyboard focus and toggling for you.</p>
+</details>
+
+<details>
+  <summary>Can more than one be open at once?</summary>
+  <p>Yes — each details is independent.</p>
+</details>`}
+/>
+
+<Exercise
+  title="Make a table accessible with scope and a footer"
+  goal="Take a plain data table and add row headers, column headers, a caption, and a spanning total row."
+  steps={[
+    "Create budget.html and add a <table> with a <caption> like 'Monthly budget'.",
+    "In a <thead>, add a header row of <th scope=\"col\"> cells: Category, Planned, Actual.",
+    "In a <tbody>, add two rows. Make the first cell of each row a <th scope=\"row\"> for the category name; use <td> for the numbers.",
+    "Add a <tfoot> with a Total row: a <th scope=\"row\">Total</th> and a single <td colspan=\"2\"> spanning both number columns.",
+    "Open with Live Server, confirm the headers are bold and the total cell spans two columns, then commit with the message 'Make budget table accessible'."
+  ]}
+  expected="A captioned table with column headers across the top, row headers down the side, and a footer total row whose cell spans the two numeric columns."
+  solutionLang="html"
+  solution={`<table>
+  <caption>Monthly budget</caption>
+  <thead>
+    <tr>
+      <th scope="col">Category</th>
+      <th scope="col">Planned</th>
+      <th scope="col">Actual</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">Rent</th>
+      <td>1000</td>
+      <td>1000</td>
+    </tr>
+    <tr>
+      <th scope="row">Food</th>
+      <td>300</td>
+      <td>340</td>
+    </tr>
+  </tbody>
+  <tfoot>
+    <tr>
+      <th scope="row">Total</th>
+      <td colspan="2">2340</td>
+    </tr>
+  </tfoot>
+</table>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does the required attribute on an input actually do?",
+    options: [
+      "It runs a JavaScript check you have to write",
+      "It makes the browser block submission until the field has a value",
+      "It marks the field read-only",
+      "It shows greyed-out hint text"
+    ],
+    answer: 1,
+    explanation: "required is constraint validation: the browser itself refuses to submit and shows a message until the field is filled. No JavaScript needed."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "You need a label that applies to a whole group of radio buttons. Which element provides it?",
+    options: ["A single <label>", "<legend> inside a <fieldset>", "<caption>", "<summary>"],
+    answer: 1,
+    explanation: "A <label> points at one input via for/id. A <legend> inside a <fieldset> labels the entire group, which screen readers read with each option."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What is the difference between an image's alt text and its <figcaption>?",
+    options: [
+      "They are the same thing written twice",
+      "alt is a visible caption; figcaption is for screen readers only",
+      "alt describes the image for those who cannot see it; figcaption is a visible label everyone reads",
+      "figcaption replaces the need for alt"
+    ],
+    answer: 2,
+    explanation: "alt is the textual alternative for non-sighted users; the <figcaption> is a visible caption shown to everyone. They do different jobs, so a figure usually needs both."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which pair of elements creates a collapsible panel with no JavaScript?",
+    options: [
+      "<dialog> and <legend>",
+      "<details> and <summary>",
+      "<section> and <header>",
+      "<aside> and <figcaption>"
+    ],
+    answer: 1,
+    explanation: "<details> is the panel and <summary> is its clickable label. The browser handles the open/closed toggle natively — no script."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "In a table, what does scope=\"row\" on a <th> tell assistive technology?",
+    options: [
+      "That the cell spans multiple rows",
+      "That this header labels the cells in its row",
+      "That this is the table's caption",
+      "That the row should be hidden"
+    ],
+    answer: 1,
+    explanation: "scope=\"row\" marks a header as governing its row; scope=\"col\" governs its column. Spanning multiple rows is rowspan, a different attribute."
+  },
+  {
+    id: "q6",
+    type: "fill-in",
+    prompt: "Which element groups term-and-definition pairs (a glossary), using <dt> for the term and <dd> for the description?",
+    answer: "dl",
+    accept: ["dl", "<dl>", "description list", "<dl> element"],
+    explanation: "<dl> is a description list; each <dt> is a term and each <dd> is its description."
+  }
+]} />
+
+<ReadMore title="Where this goes next: native HTML and component frameworks">
+The theme of this chapter — *let the platform do the work* — only grows from here. Modern frameworks like **React** and **Next.js** write your markup as JSX, which looks like HTML but is really JavaScript: `<details>`, `<figure>`, and `<fieldset>` all work there exactly as you learned them, because JSX compiles down to these same elements. The lesson that carries over is to reach for the semantic, built-in element first — a native `<details>` instead of a hand-rolled JavaScript toggle, real constraint validation before custom scripts — and only add code when the platform genuinely cannot do the job. That instinct keeps even a large app accessible and small.
+
+- [MDN – Client-side form validation](https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation) — the full constraint-validation picture.
+- [MDN – The Details disclosure element](https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details) — more on the native widget.
+- [React – Writing markup with JSX](https://react.dev/learn/writing-markup-with-jsx) — see how HTML elements carry into a component framework.
+</ReadMore>
+
+<DocsLinks links={[
+  { label: "MDN – Client-side form validation", href: "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Forms/Form_validation" },
+  { label: "MDN – <fieldset>", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/fieldset" },
+  { label: "MDN – <figure>", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/figure" },
+  { label: "MDN – <details>", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/details" },
+  { label: "MDN – <dl>", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/dl" },
+  { label: "MDN – <th> scope attribute", href: "https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/th#scope" },
+  { label: "W3Schools – HTML Form Attributes", href: "https://www.w3schools.com/html/html_form_attributes.asp" },
+  { label: "W3Schools – HTML <details>", href: "https://www.w3schools.com/tags/tag_details.asp" },
+  { label: "W3Schools – HTML Description Lists", href: "https://www.w3schools.com/html/html_lists_other.asp" }
+]} />
