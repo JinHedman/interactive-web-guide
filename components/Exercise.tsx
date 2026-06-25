@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { markExerciseDone, type ProgressEventDetail } from "@/lib/progress";
 import { useChapterProgress } from "@/lib/useProgress";
+import { exerciseId } from "@/lib/ids";
 import BlurReveal from "./BlurReveal";
 import CodeFileWindow from "./CodeFileWindow";
 
@@ -49,12 +50,16 @@ export default function Exercise({
 }: ExerciseProps) {
   const [showSolution, setShowSolution] = useState(false);
 
+  // This exercise's stable id within its chapter (slug of its title). Tracked
+  // independently so chapters with several exercises don't share one flag.
+  const id = exerciseId(title);
+
   // Live, hydration-safe completion state. Reflects "Mark complete" as well as
   // any per-chapter / global reset — no manual refresh needed.
-  const done = useChapterProgress(chapterId ?? "").exerciseDone;
+  const done = useChapterProgress(chapterId ?? "").exercisesDone.includes(id);
 
   function handleMarkDone() {
-    if (chapterId) markExerciseDone(chapterId);
+    if (chapterId) markExerciseDone(chapterId, id);
   }
 
   // Re-blur the solution when this chapter is reset (per-chapter "Reset this

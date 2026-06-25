@@ -27,6 +27,11 @@ export interface ChapterMeta {
   slug: string;
   href: string; // /learn/<module>/<slug>
   frontmatter: LessonFrontmatter;
+  // Interactive content discovered in the MDX body, used to size the sidebar
+  // progress dots. One id per <Exercise> (slug of its title), plus whether a
+  // <Quiz> is present.
+  exerciseIds: string[];
+  hasQuiz: boolean;
 }
 
 // Quiz question types — matches interactive-content SKILL.md exactly
@@ -53,7 +58,10 @@ export type QuizQuestion = MultipleChoiceQuestion | FillInQuestion;
 // Per-chapter progress shape
 export interface ChapterProgress {
   read: boolean;
-  exerciseDone: boolean;
+  // Ids (exercise title slugs, see lib/ids.ts) of the exercises marked complete
+  // in this chapter. A chapter can contain several exercises (e.g. practice
+  // chapters), so each is tracked independently rather than with one flag.
+  exercisesDone: string[];
   quizScore: number | null;
 }
 

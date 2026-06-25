@@ -18,8 +18,15 @@ interface Props {
  * closes on backdrop click and on navigation, traps focus while open,
  * and restores focus to the toggle on close.
  */
+const COLLAPSE_KEY = "guide:sidebar-collapsed";
+
 export default function LearnShell({ sidebar, children }: Props) {
   const [open, setOpen] = useState(false);
+  // Desktop-only collapse (CSS hides/shows the column per the data attribute;
+  // on mobile the drawer is driven by `open` instead). Starts expanded so SSR
+  // and the first client paint match, then upgrades from the stored preference
+  // on mount — a brief flash on a hard reload, never a hydration mismatch.
+  const [collapsed, setCollapsed] = useState(false);
   const pathname = usePathname();
   const drawerId = useId();
   const toggleRef = useRef<HTMLButtonElement>(null);
@@ -29,6 +36,24 @@ export default function LearnShell({ sidebar, children }: Props) {
   useEffect(() => {
     setOpen(false);
   }, [pathname]);
+
+  // Restore the persisted desktop collapse preference after mount.
+  useEffect(() => {
+    try {
+      if (localStorage.getItem(COLLAPSE_KEY) === "true") setCollapsed(true);
+    } catch {
+      // ignore (private mode / disabled storage)
+    }
+  }, []);
+
+  function setCollapsedPersisted(next: boolean) {
+    setCollapsed(next);
+    try {
+      localStorage.setItem(COLLAPSE_KEY, next ? "true" : "false");
+    } catch {
+      // ignore
+    }
+  }
 
   // While open: lock body scroll, handle Escape, and trap focus in the drawer.
   useEffect(() => {
@@ -85,7 +110,19 @@ export default function LearnShell({ sidebar, children }: Props) {
   }
 
   return (
-    <div className="learn-shell">
+    <div className="learn-shell" data-collapsed={collapsed ? "true" : undefined}>
+      {/* Desktop-only: re-open the collapsed sidebar. Visible only while
+          collapsed (CSS), floats over the top-left of the reading column. */}
+      <button
+        type="button"
+        className="sidebar-expand"
+        aria-label="Show navigation sidebar"
+        aria-expanded={!collapsed}
+        onClick={() => setCollapsedPersisted(false)}
+      >
+        <span aria-hidden="true">»</span>
+      </button>
+
       {/* Mobile-only top bar with the drawer toggle. */}
       <div className="learn-topbar">
         <button
@@ -127,6 +164,16 @@ export default function LearnShell({ sidebar, children }: Props) {
           onClick={close}
         >
           <span aria-hidden="true">✕</span>
+        </button>
+        {/* Desktop-only: collapse the sidebar to widen the reading column. */}
+        <button
+          type="button"
+          className="sidebar-collapse"
+          aria-label="Collapse navigation sidebar"
+          aria-expanded={!collapsed}
+          onClick={() => setCollapsedPersisted(true)}
+        >
+          <span aria-hidden="true">«</span>
         </button>
         {sidebar}
       </div>

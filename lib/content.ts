@@ -3,6 +3,7 @@ import path from "path";
 import matter from "gray-matter";
 import type { ChapterMeta, LessonFrontmatter } from "./types";
 import { MODULE_ORDER } from "./types";
+import { exerciseId } from "./ids";
 
 const CONTENT_DIR = path.join(process.cwd(), "content");
 
@@ -34,11 +35,17 @@ function fileToSlug(filename: string): string {
   return filename.replace(/\.mdx$/, "");
 }
 
-// Read frontmatter from an MDX file
-function readFrontmatter(fullPath: string): LessonFrontmatter {
-  const raw = fs.readFileSync(fullPath, "utf-8");
-  const { data } = matter(raw);
-  return data as LessonFrontmatter;
+// Scan an MDX body for the interactive components that drive the sidebar
+// progress dots. Each <Exercise> contributes one id (the slug of its `title`,
+// which is the first attribute on the tag and unique within a chapter); a
+// <Quiz> contributes the single quiz dot. Anchored on `<Exercise`/`<Quiz` so
+// `title=` on other components (e.g. <ReadMore title="…">) is ignored.
+function scanInteractive(body: string): { exerciseIds: string[]; hasQuiz: boolean } {
+  const exerciseIds: string[] = [];
+  for (const m of body.matchAll(/<Exercise\b[^>]*?title="([^"]*)"/g)) {
+    exerciseIds.push(exerciseId(m[1]));
+  }
+  return { exerciseIds, hasQuiz: /<Quiz\b/.test(body) };
 }
 
 // Return all chapters sorted by module order then chapter order
@@ -47,12 +54,16 @@ export function getAllChapters(): ChapterMeta[] {
 
   const chapters: ChapterMeta[] = files.map(({ module, filename, fullPath }) => {
     const slug = fileToSlug(filename);
-    const frontmatter = readFrontmatter(fullPath);
+    const raw = fs.readFileSync(fullPath, "utf-8");
+    const { data, content } = matter(raw);
+    const { exerciseIds, hasQuiz } = scanInteractive(content);
     return {
       module,
       slug,
       href: `/learn/${module}/${slug}`,
-      frontmatter,
+      frontmatter: data as LessonFrontmatter,
+      exerciseIds,
+      hasQuiz,
     };
   });
 

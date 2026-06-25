@@ -17,24 +17,27 @@ function isClient(): boolean {
 }
 
 // ─── Defaults ───────────────────────────────────────────────────────────────
-const EMPTY: ChapterProgress = { read: false, exerciseDone: false, quizScore: null };
+const EMPTY: ChapterProgress = { read: false, exercisesDone: [], quizScore: null };
 const EMPTY_META: ProgressMeta = { lastVisited: null };
 
 // ─── Parsing (tolerant of missing / corrupt data) ────────────────────────────
+// Normalizes any stored object into a valid ChapterProgress, defaulting missing
+// or malformed fields. This also transparently migrates the old shape, where a
+// single `exerciseDone: boolean` tracked the (then) single exercise: that field
+// is simply ignored, so a previously-completed exercise resets to not-done —
+// acceptable for resettable learning progress.
 function parse(raw: string | null): ChapterProgress | null {
   if (!raw) return null;
   try {
     const val = JSON.parse(raw);
-    if (
-      typeof val === "object" &&
-      val !== null &&
-      typeof val.read === "boolean" &&
-      typeof val.exerciseDone === "boolean" &&
-      (val.quizScore === null || typeof val.quizScore === "number")
-    ) {
-      return val as ChapterProgress;
-    }
-    return null;
+    if (typeof val !== "object" || val === null) return null;
+    return {
+      read: val.read === true,
+      exercisesDone: Array.isArray(val.exercisesDone)
+        ? val.exercisesDone.filter((x: unknown): x is string => typeof x === "string")
+        : [],
+      quizScore: typeof val.quizScore === "number" ? val.quizScore : null,
+    };
   } catch {
     return null;
   }
@@ -161,8 +164,12 @@ export function markRead(chapterId: string): void {
   setProgress(chapterId, { read: true });
 }
 
-export function markExerciseDone(chapterId: string): void {
-  setProgress(chapterId, { exerciseDone: true });
+// Mark one exercise (by its title-slug id) complete within a chapter. Adds the
+// id to the chapter's set; other exercises in the same chapter are untouched.
+export function markExerciseDone(chapterId: string, exerciseId: string): void {
+  const current = getProgress(chapterId);
+  if (current.exercisesDone.includes(exerciseId)) return;
+  setProgress(chapterId, { exercisesDone: [...current.exercisesDone, exerciseId] });
 }
 
 export function setQuizScore(chapterId: string, score: number): void {
@@ -183,7 +190,7 @@ export function setLastVisited(chapterId: string): void {
 }
 
 // ─── Resets ───────────────────────────────────────────────────────────────────
-// Clear a single chapter's progress (read / exerciseDone / quizScore).
+// Clear a single chapter's progress (read / exercisesDone / quizScore).
 export function resetChapter(chapterId: string): void {
   if (!isClient()) return;
   try {

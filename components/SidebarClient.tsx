@@ -127,7 +127,11 @@ export default function SidebarClient({ chapters, modules }: Props) {
                         >
                           {chapter.frontmatter.title}
                         </span>
-                        <ProgressDots chapterId={chapterId} />
+                        <ProgressDots
+                          chapterId={chapterId}
+                          exerciseIds={chapter.exerciseIds}
+                          hasQuiz={chapter.hasQuiz}
+                        />
                       </Link>
                     </li>
                   );

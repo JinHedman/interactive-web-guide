@@ -418,6 +418,73 @@ body {
   }
 }
 
+/* ─── Desktop sidebar collapse / expand ───────────────────────────────────── */
+/* Both controls are desktop-only; on mobile the off-canvas drawer is used
+   instead. Hidden by default, revealed inside the min-width media query. */
+.sidebar-collapse,
+.sidebar-expand {
+  display: none;
+}
+
+@media (min-width: 769px) {
+  /* Collapse toggle: floats at the top-right of the sidebar header. The
+     sidebar's content fits its height (only the inner <nav> scrolls), so an
+     absolutely-positioned button stays pinned to the top. */
+  .sidebar-collapse {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    top: 14px;
+    right: 10px;
+    z-index: 2;
+    width: 28px;
+    height: 28px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    color: var(--fg-muted);
+    font-size: 0.95rem;
+    line-height: 1;
+    cursor: pointer;
+    transition: color 0.12s, background 0.12s;
+  }
+  .sidebar-collapse:hover {
+    color: var(--fg-base);
+    background: var(--bg-subtle);
+  }
+
+  /* Collapsed: remove the column entirely so the reading area takes the full
+     width, and surface the floating "expand" affordance. */
+  .learn-shell[data-collapsed="true"] .sidebar {
+    display: none;
+  }
+
+  .learn-shell[data-collapsed="true"] .sidebar-expand {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    position: fixed;
+    top: 14px;
+    left: 14px;
+    z-index: 45;
+    width: 40px;
+    height: 40px;
+    background: var(--bg-surface);
+    border: 1px solid var(--border-strong);
+    border-radius: 9px;
+    color: var(--fg-base);
+    font-size: 1.05rem;
+    line-height: 1;
+    cursor: pointer;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.12);
+    transition: background 0.12s;
+  }
+  .learn-shell[data-collapsed="true"] .sidebar-expand:hover {
+    background: var(--bg-subtle);
+  }
+}
+
 /* ─── Lesson article responsive padding ───────────────────────────────────── */
 .lesson-article {
   max-width: 1080px;
