@@ -92,23 +92,25 @@ export default function Home() {
               Start learning →
             </Link>
           ) : null}
-          <Link
-            href="/learn/html/1-structure"
-            style={{
-              display: "inline-flex",
-              alignItems: "center",
-              padding: "12px 24px",
-              background: "none",
-              color: "var(--fg-base)",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              textDecoration: "none",
-              fontWeight: 500,
-              fontSize: "0.95rem",
-            }}
-          >
-            Browse chapters
-          </Link>
+          {firstChapter ? (
+            <Link
+              href={firstChapter.href}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "12px 24px",
+                background: "none",
+                color: "var(--fg-base)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                textDecoration: "none",
+                fontWeight: 500,
+                fontSize: "0.95rem",
+              }}
+            >
+              Browse chapters
+            </Link>
+          ) : null}
         </div>
 
         {chapters.length > 0 && (

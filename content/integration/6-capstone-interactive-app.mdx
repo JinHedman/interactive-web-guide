@@ -10,7 +10,7 @@ objectives:
   - "Handle add, complete, and remove actions"
   - "Style the app and confirm it works end to end"
 estMinutes: 60
-prerequisites: ["integration/5-creating-elements", "css/3-layout-flexbox", "javascript/7-functions"]
+prerequisites: ["integration/5-creating-and-removing-elements", "css/3-layout-and-flexbox", "javascript/7-functions"]
 ---
 
 This is where it all comes together. You have selected elements, changed content and styles, listened for events, read form input, and created and removed elements. Now you will assemble those skills into one complete, working **to-do list app** — the project you have been building toward all module. Take your time; this chapter is a build, not a read.
@@ -210,7 +210,7 @@ Here is the finished app. Read each handler as "change the array, then `render`"
 
 Try the whole thing in the preview: add a task, tick it to cross it off, untick it, and delete one. When you remove the last task, the empty-state message appears. Every action follows the same shape — update `tasks`, call `render` — and the page stays perfectly in sync with the data. That single discipline is what makes the app reliable.
 
-A couple of notes on the new pieces. `tasks.forEach(function (task, index) { ... })` gives you both the task and its position, and you use `index` to update or splice the right one. `splice(index, 1)` removes one item starting at `index`. And because the checkbox and delete listeners are attached inside `render`, every freshly drawn task gets its own working handlers.
+A couple of notes on the new pieces. `tasks.forEach(function (task, index) { ... })` gives you both the task and its position, and you use `index` to update or splice the right one. `splice` is a new array method here: `splice(index, 1)` removes one item starting at `index` (where `push` and `pop` only added or removed at the end, `splice` can remove from any position). And because the checkbox and delete listeners are attached inside `render`, every freshly drawn task gets its own working handlers.
 
 <Exercise
   title="Build and ship your to-do app"

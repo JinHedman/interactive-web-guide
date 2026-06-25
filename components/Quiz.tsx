@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useReducer, useRef } from "react";
+import { useEffect, useId, useReducer } from "react";
 import type { QuizQuestion } from "@/lib/types";
 import { setQuizScore, type ProgressEventDetail } from "@/lib/progress";
 
@@ -23,7 +23,6 @@ interface State {
 
 type Action =
   | { type: "SELECT"; qi: number; value: number | string }
-  | { type: "SUBMIT"; qi: number }
   | { type: "FINISH" }
   | { type: "RESET" };
 
@@ -45,9 +44,6 @@ function reducer(state: State, action: Action): State {
       qs[action.qi] = { ...qs[action.qi], selected: action.value };
       return { ...state, questions: qs };
     }
-    case "SUBMIT": {
-      return state; // handled inline via isCorrect check
-    }
     case "FINISH":
       return { ...state, finished: true };
     case "RESET":
@@ -61,7 +57,6 @@ function reducer(state: State, action: Action): State {
 export default function Quiz({ questions = [], chapterId }: QuizProps) {
   const uid = useId();
   const [state, dispatch] = useReducer(reducer, questions.length, initState);
-  const liveRef = useRef<HTMLDivElement>(null);
 
   // Track per-question submitted state locally (outside reducer for simplicity)
   const [submitted, setSubmitted] = useMapState<boolean>(questions.length);
@@ -173,9 +168,6 @@ export default function Quiz({ questions = [], chapterId }: QuizProps) {
           );
         })}
 
-        {/* Live region for score announcement */}
-        <div ref={liveRef} aria-live="polite" aria-atomic="true" style={{ height: 0, overflow: "hidden" }} />
-
         {/* Actions */}
         <div
           style={{
@@ -275,6 +267,7 @@ function QuestionItem({
           value={(selected as string) ?? ""}
           submitted={submitted}
           onChange={(v) => onSelect(v)}
+          onSubmit={onSubmit}
         />
       )}
 
@@ -407,6 +400,7 @@ function FillInInput({
   value,
   submitted,
   onChange,
+  onSubmit,
 }: {
   question: Extract<QuizQuestion, { type: "fill-in" }>;
   qi: number;
@@ -414,6 +408,7 @@ function FillInInput({
   value: string;
   submitted: boolean;
   onChange: (v: string) => void;
+  onSubmit: () => void;
 }) {
   const inputId = `${uid}-q${qi}-fill`;
   return (
@@ -441,8 +436,9 @@ function FillInInput({
           outline: "none",
         }}
         onKeyDown={(e) => {
-          if (e.key === "Enter" && !submitted) {
-            // Delegate to parent's onSubmit via blur trick — no-op here
+          if (e.key === "Enter" && !submitted && value.trim() !== "") {
+            e.preventDefault();
+            onSubmit();
           }
         }}
       />
@@ -464,7 +460,7 @@ function checkCorrect(
   const accepted = [
     question.answer,
     ...(question.accept ?? []),
-  ].map((a) => a.toLowerCase());
+  ].map((a) => a.trim().toLowerCase());
   return accepted.includes(normalized);
 }
 

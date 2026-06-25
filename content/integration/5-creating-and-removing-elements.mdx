@@ -38,7 +38,7 @@ Three steps: create the element, set its content, and add it to the page. The li
 
 ## Add elements with append
 
-`append` adds your new element as the last child of a parent. (You will also see `appendChild`, the older method — it does the same job for a single element. `append` is newer and a little more flexible, so prefer it.)
+`append` adds your new element as the last child of a parent. (You will also see `appendChild`, the older method — it does the same job for a single element. `append` is newer and a little more flexible, so prefer it.) One handy bit of that flexibility: `append` can take several nodes at once — `parent.append(a, b, c)` adds them all in order — which the capstone uses to drop a checkbox, a label, and a delete button into one list item in a single call.
 
 <CodeExample language="html" preview>
 {`<!doctype html>
