@@ -26,6 +26,7 @@ This is an optional bonus chapter: pure practice, no new material. Each drill be
     "Commit in GitHub Desktop with the message 'Add FizzBuzz drill'."
   ]}
   expected="Twenty lines: 1, 2, Fizz, 4, Buzz, Fizz, 7, 8, Fizz, Buzz, 11, Fizz, 13, 14, FizzBuzz, ... up to 20."
+  solutionLang="js"
   solution={`for (let i = 1; i <= 20; i++) {
   // Check the combined case first — order matters.
   if (i % 3 === 0 && i % 5 === 0) {
@@ -51,6 +52,7 @@ This is an optional bonus chapter: pure practice, no new material. Each drill be
     "Add a one-line comment on each fix saying what went wrong."
   ]}
   expected="The while loop prints 3, 2, 1 and stops; the for loop prints 10, 20, 30 with no trailing undefined."
+  solutionLang="js"
   solution={`// Bug 1 fixed: without count-- the condition stays true forever (infinite loop).
 let count = 3;
 while (count > 0) {
@@ -79,6 +81,7 @@ for (let i = 0; i < nums.length; i++) {
     "Stretch: in the same loop, track a let smallest the same way and log it too (it should be 3)."
   ]}
   expected="The console logs 25 (the largest). With the stretch, it also logs 3 (the smallest)."
+  solutionLang="js"
   solution={`const nums = [12, 7, 25, 3, 19];
 
 let largest = nums[0];
@@ -108,6 +111,7 @@ console.log(smallest); // 3`}
     "Run it and confirm the three lines: a character count, a word count, and the boolean true."
   ]}
   expected="Three lines — the character count (30), the word count (5), and true."
+  solutionLang="js"
   solution={`const sentence = "I am learning JavaScript today";
 
 console.log(sentence.length);                              // 30
@@ -127,6 +131,7 @@ console.log(sentence.toLowerCase().includes("javascript")); // true`}
     "Reveal the solution only after your version prints 18 (the mean of those six numbers)."
   ]}
   expected="The console logs 18 — the average of 4, 8, 15, 16, 23, 42."
+  solutionLang="js"
   solution={`function average(numbers) {
   let sum = 0;
   for (const n of numbers) {

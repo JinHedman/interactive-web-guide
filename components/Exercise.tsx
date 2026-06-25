@@ -4,13 +4,37 @@ import { useEffect, useState } from "react";
 import { markExerciseDone, type ProgressEventDetail } from "@/lib/progress";
 import { useChapterProgress } from "@/lib/useProgress";
 import BlurReveal from "./BlurReveal";
+import CodeFileWindow from "./CodeFileWindow";
+
+/**
+ * One pre-highlighted solution file. The server-side Exercise wrapper (in
+ * mdx-components) runs Shiki and hands these down so the client component can
+ * render them inside BlurReveal without re-highlighting.
+ */
+export interface HighlightedSolutionFile {
+  name: string;
+  code: string;
+  html: string;
+}
 
 export interface ExerciseProps {
   title: string;
   goal: string;
   steps: string[];
   expected: string;
-  solution: string;
+  /**
+   * Pre-highlighted solution windows, supplied by the RSC wrapper. Single- and
+   * multi-file CODE solutions both normalize to this array (one entry per
+   * window). Empty when the solution is explanatory prose.
+   */
+  solutionFiles?: HighlightedSolutionFile[];
+  /**
+   * Explanatory PROSE solution (set by the RSC wrapper when
+   * solutionLang="text"). Rendered as normal body text — no code window, no
+   * filename bar, no Shiki — but still behind the BlurReveal gate. Mutually
+   * exclusive with solutionFiles.
+   */
+  solutionProse?: string;
   chapterId?: string; // e.g. "html/1-structure"
 }
 
@@ -19,7 +43,8 @@ export default function Exercise({
   goal,
   steps = [],
   expected,
-  solution,
+  solutionFiles = [],
+  solutionProse,
   chapterId,
 }: ExerciseProps) {
   const [showSolution, setShowSolution] = useState(false);
@@ -238,21 +263,45 @@ export default function Exercise({
             revealLabel="Reveal solution"
             hiddenLabel={`Solution for ${title}`}
           >
-            <pre
-              style={{
-                background: "var(--code-bg)",
-                color: "var(--code-fg)",
-                borderRadius: "6px",
-                padding: "1rem 1.25rem",
-                overflowX: "auto",
-                fontFamily: "var(--font-mono)",
-                fontSize: "0.875rem",
-                lineHeight: 1.65,
-                margin: 0,
-              }}
-            >
-              <code>{solution}</code>
-            </pre>
+            {solutionProse !== undefined ? (
+              /* Prose solution (solutionLang="text"): readable body text, no
+                 code-window chrome / filename bar / Shiki. Matches the in-card
+                 body typography used by Goal / Expected. */
+              <div
+                style={{
+                  padding: "12px 15px",
+                  background: "var(--bg-base)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "8px",
+                }}
+              >
+                <p
+                  style={{
+                    margin: 0,
+                    fontSize: "14px",
+                    lineHeight: 1.6,
+                    color: "var(--fg-base)",
+                    whiteSpace: "pre-wrap",
+                  }}
+                >
+                  {solutionProse}
+                </p>
+              </div>
+            ) : (
+              /* Each solution file is its own labeled, highlighted window —
+                 matching CodeExample's multi-file styling. */
+              <div>
+                {solutionFiles.map((f, i) => (
+                  <CodeFileWindow
+                    key={`${f.name}-${i}`}
+                    name={f.name}
+                    html={f.html}
+                    code={f.code}
+                    stacked={i > 0}
+                  />
+                ))}
+              </div>
+            )}
           </BlurReveal>
         </div>
       </div>

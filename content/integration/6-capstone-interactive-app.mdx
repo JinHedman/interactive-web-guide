@@ -27,22 +27,17 @@ The guiding rule, from the last chapter: **the array is the source of truth.** E
 
 ## Build the structure and styles
 
-Start with the HTML shell and a little CSS. A flex row keeps each task's text, checkbox, and delete button aligned. The `done` class provides the crossed-out look.
+A real app keeps its parts in separate files: structure in `index.html`, look in `styles.css`, behavior in `script.js`. Start with the first two. The HTML links the stylesheet from its `<head>`; the flex rules keep each task's text, checkbox, and delete button aligned, and the `done` class provides the crossed-out look. There is no `script.js` yet — you add it next.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
-      form { display: flex; gap: 0.5rem; }
-      input[type="text"] { flex: 1; padding: 0.4rem; }
-      ul { list-style: none; padding: 0; }
-      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
-      li span { flex: 1; }
-      .done span { text-decoration: line-through; color: gray; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>My Tasks</h1>
@@ -52,60 +47,82 @@ Start with the HTML shell and a little CSS. A flex row keeps each task's text, c
     </form>
     <ul id="taskList"></ul>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+form { display: flex; gap: 0.5rem; }
+input[type="text"] { flex: 1; padding: 0.4rem; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+li span { flex: 1; }
+.done span { text-decoration: line-through; color: gray; }`
+  }
+]} />
 
-This is just the layout — no behavior yet. The list is empty because JavaScript will fill it.
+This is just the layout — no behavior yet. The list is empty because JavaScript will fill it. Notice the single `<link rel="stylesheet" href="styles.css">` line: that is all it takes for the browser to pull in your stylesheet.
 
 ## Render the task array
 
 Now the engine. Hold the tasks in an array. The `render` function clears the list, loops over the array, and builds one `<li>` per task — text in a `<span>`, plus a checkbox and a delete button. Re-running `render` always redraws from the current data.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
-      ul { list-style: none; padding: 0; }
-      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
-      li span { flex: 1; }
-      .done span { text-decoration: line-through; color: gray; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>My Tasks</h1>
     <ul id="taskList"></ul>
-    <script>
-      const list = document.getElementById("taskList");
-
-      const tasks = [
-        { text: "Buy milk", done: false },
-        { text: "Walk the dog", done: true },
-      ];
-
-      function render() {
-        list.textContent = "";
-        for (const task of tasks) {
-          const li = document.createElement("li");
-          if (task.done) {
-            li.classList.add("done");
-          }
-
-          const span = document.createElement("span");
-          span.textContent = task.text;
-
-          li.append(span);
-          list.append(li);
-        }
-      }
-
-      render();
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+li span { flex: 1; }
+.done span { text-decoration: line-through; color: gray; }`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const list = document.getElementById("taskList");
+
+const tasks = [
+  { text: "Buy milk", done: false },
+  { text: "Walk the dog", done: true },
+];
+
+function render() {
+  list.textContent = "";
+  for (const task of tasks) {
+    const li = document.createElement("li");
+    if (task.done) {
+      li.classList.add("done");
+    }
+
+    const span = document.createElement("span");
+    span.textContent = task.text;
+
+    li.append(span);
+    list.append(li);
+  }
+}
+
+render();`
+  }
+]} />
 
 One starter task is already done, so it renders crossed out — proof the `done` flag drives the look. Next you add the actions.
 
@@ -117,21 +134,15 @@ Here is the finished app. Read each handler as "change the array, then `render`"
 - **Complete** — each task's checkbox click flips `task.done`, then re-renders so the strike-through appears or disappears.
 - **Remove** — each task's delete button splices that task out of the array, then re-renders.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
-      form { display: flex; gap: 0.5rem; }
-      input[type="text"] { flex: 1; padding: 0.4rem; }
-      ul { list-style: none; padding: 0; }
-      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
-      li span { flex: 1; }
-      .done span { text-decoration: line-through; color: gray; }
-      .empty { color: gray; font-style: italic; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>My Tasks</h1>
@@ -141,72 +152,88 @@ Here is the finished app. Read each handler as "change the array, then `render`"
     </form>
     <ul id="taskList"></ul>
 
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const list = document.getElementById("taskList");
-
-      const tasks = [
-        { text: "Buy milk", done: false },
-        { text: "Walk the dog", done: true },
-      ];
-
-      function render() {
-        list.textContent = "";
-
-        if (tasks.length === 0) {
-          const li = document.createElement("li");
-          li.textContent = "No tasks yet. Add one above.";
-          li.className = "empty";
-          list.append(li);
-          return;
-        }
-
-        tasks.forEach(function (task, index) {
-          const li = document.createElement("li");
-          if (task.done) {
-            li.classList.add("done");
-          }
-
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.checked = task.done;
-          checkbox.addEventListener("change", function () {
-            tasks[index].done = checkbox.checked;
-            render();
-          });
-
-          const span = document.createElement("span");
-          span.textContent = task.text;
-
-          const delBtn = document.createElement("button");
-          delBtn.textContent = "Delete";
-          delBtn.addEventListener("click", function () {
-            tasks.splice(index, 1);
-            render();
-          });
-
-          li.append(checkbox, span, delBtn);
-          list.append(li);
-        });
-      }
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const text = input.value.trim();
-        if (text === "") {
-          return;
-        }
-        tasks.push({ text: text, done: false });
-        input.value = "";
-        render();
-      });
-
-      render();
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+form { display: flex; gap: 0.5rem; }
+input[type="text"] { flex: 1; padding: 0.4rem; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+li span { flex: 1; }
+.done span { text-decoration: line-through; color: gray; }
+.empty { color: gray; font-style: italic; }`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const list = document.getElementById("taskList");
+
+const tasks = [
+  { text: "Buy milk", done: false },
+  { text: "Walk the dog", done: true },
+];
+
+function render() {
+  list.textContent = "";
+
+  if (tasks.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "No tasks yet. Add one above.";
+    li.className = "empty";
+    list.append(li);
+    return;
+  }
+
+  tasks.forEach(function (task, index) {
+    const li = document.createElement("li");
+    if (task.done) {
+      li.classList.add("done");
+    }
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.done;
+    checkbox.addEventListener("change", function () {
+      tasks[index].done = checkbox.checked;
+      render();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = task.text;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", function () {
+      tasks.splice(index, 1);
+      render();
+    });
+
+    li.append(checkbox, span, delBtn);
+    list.append(li);
+  });
+}
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = input.value.trim();
+  if (text === "") {
+    return;
+  }
+  tasks.push({ text: text, done: false });
+  input.value = "";
+  render();
+});
+
+render();`
+  }
+]} />
 
 Try the whole thing in the preview: add a task, tick it to cross it off, untick it, and delete one. When you remove the last task, the empty-state message appears. Every action follows the same shape — update `tasks`, call `render` — and the page stays perfectly in sync with the data. That single discipline is what makes the app reliable.
 
@@ -214,35 +241,30 @@ A couple of notes on the new pieces. `tasks.forEach(function (task, index) { ...
 
 <Exercise
   title="Build and ship your to-do app"
-  goal="Assemble the complete to-do app in one file, run it with Live Server, and commit it with GitHub Desktop."
+  goal="Assemble the complete to-do app as three linked files — index.html, styles.css, and script.js — run it with Live Server, and commit it with GitHub Desktop."
   steps={[
-    "In VS Code, open your project folder and create (or finish) todo.html.",
-    "Add the HTML shell: an h1, a form with a text input and submit button, and an empty ul with id taskList.",
-    "Add the style block from the example so tasks lay out in a flex row and the done class crosses them out.",
-    "In a script before the closing body tag, declare the tasks array with one or two starter objects shaped { text, done }.",
+    "In VS Code, open your project folder and create (or finish) three files: index.html, styles.css, and script.js.",
+    "In index.html, add the shell: an h1, a form with a text input and submit button, and an empty ul with id taskList. Link the stylesheet in the head with <link rel=\"stylesheet\" href=\"styles.css\">, and link the script before </body> with <script src=\"script.js\"></script>.",
+    "In styles.css, add the rules from the example so tasks lay out in a flex row and the done class crosses them out.",
+    "In script.js, declare the tasks array with one or two starter objects shaped { text, done }.",
     "Write the render function: clear the list, show an empty-state message if there are no tasks, otherwise forEach over tasks building a checkbox, a span, and a delete button for each.",
     "Wire the checkbox change to flip tasks[index].done and re-render; wire the delete click to splice the task and re-render.",
     "Add the form submit handler: preventDefault, trim the input, return if empty, push a new task, clear the input, and re-render. Call render() once at the end.",
-    "Open with Live Server and test every action: add, complete, un-complete, delete, and empty the list.",
-    "In GitHub Desktop, write a commit message like \"Add to-do list capstone\", commit to your branch, and push."
+    "Open index.html with Live Server and test every action: add, complete, un-complete, delete, and empty the list.",
+    "In GitHub Desktop, write a commit message like \"Add to-do list capstone\", commit all three files to your branch, and push."
   ]}
-  expected="A working to-do app: typing and submitting adds a task, the checkbox crosses it off and back, Delete removes it, an empty list shows a friendly message, and your work is committed and pushed."
-  solution={`<!doctype html>
+  expected="A working to-do app split across index.html, styles.css, and script.js: typing and submitting adds a task, the checkbox crosses it off and back, Delete removes it, an empty list shows a friendly message, and your work is committed and pushed."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>My Tasks</title>
-    <style>
-      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
-      form { display: flex; gap: 0.5rem; }
-      input[type="text"] { flex: 1; padding: 0.4rem; }
-      ul { list-style: none; padding: 0; }
-      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
-      li span { flex: 1; }
-      .done span { text-decoration: line-through; color: gray; }
-      .empty { color: gray; font-style: italic; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1>My Tasks</h1>
@@ -252,71 +274,88 @@ A couple of notes on the new pieces. `tasks.forEach(function (task, index) { ...
     </form>
     <ul id="taskList"></ul>
 
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const list = document.getElementById("taskList");
-
-      const tasks = [
-        { text: "Buy milk", done: false },
-        { text: "Walk the dog", done: true },
-      ];
-
-      function render() {
-        list.textContent = "";
-
-        if (tasks.length === 0) {
-          const li = document.createElement("li");
-          li.textContent = "No tasks yet. Add one above.";
-          li.className = "empty";
-          list.append(li);
-          return;
-        }
-
-        tasks.forEach(function (task, index) {
-          const li = document.createElement("li");
-          if (task.done) {
-            li.classList.add("done");
-          }
-
-          const checkbox = document.createElement("input");
-          checkbox.type = "checkbox";
-          checkbox.checked = task.done;
-          checkbox.addEventListener("change", function () {
-            tasks[index].done = checkbox.checked;
-            render();
-          });
-
-          const span = document.createElement("span");
-          span.textContent = task.text;
-
-          const delBtn = document.createElement("button");
-          delBtn.textContent = "Delete";
-          delBtn.addEventListener("click", function () {
-            tasks.splice(index, 1);
-            render();
-          });
-
-          li.append(checkbox, span, delBtn);
-          list.append(li);
-        });
-      }
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const text = input.value.trim();
-        if (text === "") {
-          return;
-        }
-        tasks.push({ text: text, done: false });
-        input.value = "";
-        render();
-      });
-
-      render();
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+form { display: flex; gap: 0.5rem; }
+input[type="text"] { flex: 1; padding: 0.4rem; }
+ul { list-style: none; padding: 0; }
+li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+li span { flex: 1; }
+.done span { text-decoration: line-through; color: gray; }
+.empty { color: gray; font-style: italic; }`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const list = document.getElementById("taskList");
+
+const tasks = [
+  { text: "Buy milk", done: false },
+  { text: "Walk the dog", done: true },
+];
+
+function render() {
+  list.textContent = "";
+
+  if (tasks.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "No tasks yet. Add one above.";
+    li.className = "empty";
+    list.append(li);
+    return;
+  }
+
+  tasks.forEach(function (task, index) {
+    const li = document.createElement("li");
+    if (task.done) {
+      li.classList.add("done");
+    }
+
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.checked = task.done;
+    checkbox.addEventListener("change", function () {
+      tasks[index].done = checkbox.checked;
+      render();
+    });
+
+    const span = document.createElement("span");
+    span.textContent = task.text;
+
+    const delBtn = document.createElement("button");
+    delBtn.textContent = "Delete";
+    delBtn.addEventListener("click", function () {
+      tasks.splice(index, 1);
+      render();
+    });
+
+    li.append(checkbox, span, delBtn);
+    list.append(li);
+  });
+}
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = input.value.trim();
+  if (text === "") {
+    return;
+  }
+  tasks.push({ text: text, done: false });
+  input.value = "";
+  render();
+});
+
+render();`
+    }
+  ]}
 />
 
 <Quiz questions={[

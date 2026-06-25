@@ -20,40 +20,62 @@ Through this module you will build toward one project: a working to-do list. We 
 
 The most direct way to find an element is by its `id`. Give an element an `id` in your HTML, then call `document.getElementById` with that exact id string.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <h1 id="appTitle">My To-Do List</h1>
-    <script>
-      const title = document.getElementById("appTitle");
-      title.textContent = "Selected from JavaScript!";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const title = document.getElementById("appTitle");
+title.textContent = "Selected from JavaScript!";`
+  }
+]} />
 
 The script ran after the page loaded, found the `<h1>`, and changed its text. Notice `getElementById` takes the id *without* a `#` in front of it — just the plain string `"appTitle"`.
+
+From here on, this module keeps your code in **separate files** — the way real projects are built. The markup lives in `index.html`, and the JavaScript lives in `script.js`. The HTML pulls in the script with one line near the bottom of the body: `<script src="script.js"></script>`. Placing it just before `</body>` means the elements above it already exist by the time the script runs, so your selectors find them. When a demo needs styling too, it gets a third file, `styles.css`, linked from the `<head>` with `<link rel="stylesheet" href="styles.css">`. The **Result** panel shows the same running page as before — only now the pieces are split the way you will write them yourself.
 
 ## Select with querySelector
 
 `getElementById` only works for ids. `querySelector` is more flexible: you pass it a **CSS selector** — the same kind you wrote in the CSS module — and it returns the **first** matching element.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <h1 class="title">My To-Do List</h1>
     <p class="note">Pick the first matching element.</p>
-    <script>
-      const heading = document.querySelector(".title");
-      const para = document.querySelector("p");
-      heading.textContent = "Found by class selector";
-      para.textContent = "Found by element selector";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const heading = document.querySelector(".title");
+const para = document.querySelector("p");
+heading.textContent = "Found by class selector";
+para.textContent = "Found by element selector";`
+  }
+]} />
 
 Because it takes a CSS selector, you write `".title"` with the dot for a class, `"#appTitle"` with the hash for an id, and `"p"` for a tag. If nothing matches, `querySelector` returns `null`.
 
@@ -61,24 +83,34 @@ Because it takes a CSS selector, you write `".title"` with the dot for a class, 
 
 `querySelector` stops at the first match. To get **every** matching element, use `querySelectorAll`. It returns a `NodeList` — a list you can loop over.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <ul>
       <li>Buy milk</li>
       <li>Walk the dog</li>
       <li>Write some code</li>
     </ul>
-    <script>
-      const items = document.querySelectorAll("li");
-      items.forEach((item) => {
-        item.textContent = item.textContent.toUpperCase();
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const items = document.querySelectorAll("li");
+items.forEach((item) => {
+  item.textContent = item.textContent.toUpperCase();
+});`
+  }
+]} />
 
 `querySelectorAll` always returns a list, even if only one element matches (or none). You loop over it with `forEach`, just like an array. This is the same `forEach` from the loops chapter, now written with the arrow-function form `(item) => { ... }` from the functions chapter. Each `item` in the loop is one element you can work with.
 
@@ -86,42 +118,57 @@ Because it takes a CSS selector, you write `".title"` with the dot for a class, 
 
 Selecting an element gives you back a value. Store it in a `const` so you can use it more than once. But remember: if the selector matches nothing, you get `null` — and trying to use `null` throws an error.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <p id="status">Checking...</p>
-    <script>
-      const status = document.getElementById("status");
-      const missing = document.getElementById("doesNotExist");
-
-      if (missing === null) {
-        status.textContent = "The element 'doesNotExist' was not found.";
-      } else {
-        status.textContent = "Found it.";
-      }
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const status = document.getElementById("status");
+const missing = document.getElementById("doesNotExist");
+
+if (missing === null) {
+  status.textContent = "The element 'doesNotExist' was not found.";
+} else {
+  status.textContent = "Found it.";
+}`
+  }
+]} />
 
 In real apps you guard against missing elements, because a typo in a selector or a script that runs before the element exists both produce `null`, and trying to use `null` throws an error. The elements we select in the rest of this module are known to exist in the page we wrote, so we keep it simple and skip the check — but it is good to know the value you get back when nothing matches.
 
 <Exercise
   title="Select the parts of your to-do page"
-  goal="Build the static HTML shell of a to-do list and select each part from JavaScript to confirm your selectors work."
+  goal="Build the static HTML shell of a to-do list across separate files and select each part from JavaScript to confirm your selectors work."
   steps={[
-    "In VS Code, create a new file named todo.html with the basic HTML document structure.",
+    "In VS Code, create a project folder with two files: index.html and script.js.",
+    "In index.html, add the basic HTML document structure.",
     "Inside body, add an h1 with id=\"appTitle\" and the text To-Do List.",
     "Add an input with id=\"taskInput\" and a button with id=\"addBtn\".",
     "Add an empty ul with id=\"taskList\".",
-    "Add a script tag before the closing body tag.",
-    "In the script, select each element by its id and store it in a const (title, input, addBtn, list).",
+    "Just before the closing body tag, link the script: <script src=\"script.js\"></script>.",
+    "In script.js, select each element by its id and store it in a const (title, input, addBtn, list).",
     "Set title.textContent to \"My Tasks\" so you can confirm the selection worked.",
-    "Open todo.html with Live Server and check that the heading text changed."
+    "Open index.html with Live Server and check that the heading text changed."
   ]}
-  expected="A page with a heading that now reads My Tasks, an empty input, an Add button, and an empty list — proving every element was selected correctly."
-  solution={`<!doctype html>
+  expected="A page with a heading that now reads My Tasks, an empty input, an Add button, and an empty list — proving every element was selected correctly from a separate script file."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -134,16 +181,21 @@ In real apps you guard against missing elements, because a typo in a selector or
     <button id="addBtn">Add</button>
     <ul id="taskList"></ul>
 
-    <script>
-      const title = document.getElementById("appTitle");
-      const input = document.getElementById("taskInput");
-      const addBtn = document.getElementById("addBtn");
-      const list = document.getElementById("taskList");
-
-      title.textContent = "My Tasks";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const title = document.getElementById("appTitle");
+const input = document.getElementById("taskInput");
+const addBtn = document.getElementById("addBtn");
+const list = document.getElementById("taskList");
+
+title.textContent = "My Tasks";`
+    }
+  ]}
 />
 
 <Quiz questions={[

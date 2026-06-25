@@ -81,20 +81,22 @@ That is the whole loop: Git pauses, you decide, you delete the markers, you comm
     "Back in GitHub Desktop, confirm the conflict warning is gone and click the button to commit the merge."
   ]}
   expected="A single, marker-free <title> line of your choosing, and a merge commit recording that you resolved the conflict."
-  solution={`Before resolving, VS Code shows:
+  solution={`Before resolving, VS Code shows the conflicted spot wrapped in three markers:
 
-<<<<<<< HEAD
-    <title>Profile — main version</title>
-=======
-    <title>Profile — branch version</title>
->>>>>>> edit-title
+  <<<<<<< HEAD
+      <title>Profile — main version</title>
+  =======
+      <title>Profile — branch version</title>
+  >>>>>>> edit-title
 
-After resolving (markers deleted, one chosen line kept):
+To resolve it, delete all three marker lines and keep the single line you
+want. For example, keeping the branch's version:
 
-    <title>Profile — branch version</title>
+      <title>Profile — branch version</title>
 
-Then in GitHub Desktop: the conflict warning clears, and you click the
-button to commit the merge.`}
+Then return to GitHub Desktop: the conflict warning clears, and you click
+the button to commit the merge.`}
+  solutionLang="text"
 />
 
 <Quiz questions={[

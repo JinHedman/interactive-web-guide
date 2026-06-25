@@ -18,25 +18,35 @@ So far your scripts run once, top to bottom, the moment the page loads. Real app
 
 Call `addEventListener` on an element. You give it two things: the name of the event (a string like `"click"`) and a function to run when the event fires. That function is called a **handler** or **callback**.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <button id="addBtn">Add task</button>
     <p id="status">No clicks yet.</p>
-    <script>
-      const addBtn = document.getElementById("addBtn");
-      const status = document.getElementById("status");
-      let clicks = 0;
-
-      addBtn.addEventListener("click", function () {
-        clicks = clicks + 1;
-        status.textContent = "You clicked " + clicks + " time(s).";
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const addBtn = document.getElementById("addBtn");
+const status = document.getElementById("status");
+let clicks = 0;
+
+addBtn.addEventListener("click", function () {
+  clicks = clicks + 1;
+  status.textContent = "You clicked " + clicks + " time(s).";
+});`
+  }
+]} />
 
 Click the button in the preview. Each click runs the handler again, so the count goes up. The script set up the listener once; the browser calls your function every time the event happens after that.
 
@@ -46,23 +56,33 @@ The handler here is written as a full `function () { ... }` for readability. An 
 
 The `input` event fires every time the value of an input field changes — on every keystroke. It is how you respond to a user as they type.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <input id="taskInput" placeholder="Type a task...">
     <p id="echo">You typed nothing yet.</p>
-    <script>
-      const input = document.getElementById("taskInput");
-      const echo = document.getElementById("echo");
-
-      input.addEventListener("input", function () {
-        echo.textContent = "You typed: " + input.value;
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const input = document.getElementById("taskInput");
+const echo = document.getElementById("echo");
+
+input.addEventListener("input", function () {
+  echo.textContent = "You typed: " + input.value;
+});`
+  }
+]} />
 
 Type in the box and watch the paragraph update live. You read what the user typed with `input.value` — the next chapter goes deeper on reading input.
 
@@ -70,25 +90,35 @@ Type in the box and watch the paragraph update live. You read what the user type
 
 Your handler can take one argument: the **event object**. The browser passes it in automatically, and it carries details about what happened — including `event.target`, the element the event came from.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <button id="btn">Inspect this event</button>
     <p id="out"></p>
-    <script>
-      const btn = document.getElementById("btn");
-      const out = document.getElementById("out");
-
-      btn.addEventListener("click", function (event) {
-        out.textContent =
-          "Event type: " + event.type +
-          " | from element: " + event.target.tagName;
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const btn = document.getElementById("btn");
+const out = document.getElementById("out");
+
+btn.addEventListener("click", function (event) {
+  out.textContent =
+    "Event type: " + event.type +
+    " | from element: " + event.target.tagName;
+});`
+  }
+]} />
 
 Here `event.type` is `"click"` and `event.target.tagName` is `"BUTTON"`. The event object becomes especially useful later, when one listener handles clicks on many items and you need to know which one was clicked.
 
@@ -96,31 +126,41 @@ Here `event.type` is `"click"` and `event.target.tagName` is `"BUTTON"`. The eve
 
 When a user submits a `<form>` — by clicking a submit button or pressing Enter — the browser fires a `submit` event and then, by default, **reloads the page** to send the data somewhere. For an app that handles things in JavaScript, that reload wipes your work. Call `event.preventDefault()` to stop it.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <form id="taskForm">
       <input id="taskInput" placeholder="New task">
       <button type="submit">Add</button>
     </form>
     <ul id="taskList"></ul>
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const list = document.getElementById("taskList");
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const li = document.createElement("li");
-        li.textContent = input.value;
-        list.append(li);
-        input.value = "";
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const list = document.getElementById("taskList");
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const li = document.createElement("li");
+  li.textContent = input.value;
+  list.append(li);
+  input.value = "";
+});`
+  }
+]} />
 
 Type a task and press Enter or click Add. Without `event.preventDefault()`, the page would reload and the list would vanish. With it, you stay on the page and your JavaScript runs. A `<form>` with a submit handler is the right way to capture "the user finished entering something" — it works with both the button and the Enter key. (You will meet `createElement` properly in chapter 5; here it is just a preview of where this is heading.)
 
@@ -128,17 +168,21 @@ Type a task and press Enter or click Add. Without `event.preventDefault()`, the 
   title="Wire up the Add button"
   goal="Make your to-do form respond to a submit by reading the input and showing it on the page — without a page reload."
   steps={[
-    "Open your todo.html. Wrap the input and Add button inside a form with id=\"taskForm\". Give the button type=\"submit\".",
-    "Keep the empty ul with id=\"taskList\".",
-    "In the script, select the form, the input, and the list.",
+    "Open your to-do project (index.html and script.js). In index.html, wrap the input and Add button inside a form with id=\"taskForm\". Give the button type=\"submit\".",
+    "Keep the empty ul with id=\"taskList\", and the <script src=\"script.js\"></script> link before </body>.",
+    "In script.js, select the form, the input, and the list.",
     "Add a submit listener on the form that takes the event argument.",
     "As the first line of the handler, call event.preventDefault().",
     "For now, set the list's textContent to \"Last task entered: \" plus input.value to confirm the wiring works.",
     "Clear the input by setting input.value to an empty string.",
-    "Open with Live Server, type a task, press Enter, and confirm the page does not reload and the text appears."
+    "Open index.html with Live Server, type a task, press Enter, and confirm the page does not reload and the text appears."
   ]}
   expected="Submitting the form (Enter or the Add button) updates the page with the entered task and clears the input — and the page never reloads."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -153,19 +197,24 @@ Type a task and press Enter or click Add. Without `event.preventDefault()`, the 
     </form>
     <ul id="taskList"></ul>
 
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const list = document.getElementById("taskList");
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        list.textContent = "Last task entered: " + input.value;
-        input.value = "";
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const list = document.getElementById("taskList");
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  list.textContent = "Last task entered: " + input.value;
+  input.value = "";
+});`
+    }
+  ]}
 />
 
 <Quiz questions={[

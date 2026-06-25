@@ -144,15 +144,19 @@ Most bugs fall to steps 1–3. The console is not a last resort — it is the fi
   title="Hunt a bug with the console"
   goal="Use DevTools to find why a small script produces the wrong result, fix it, and confirm with a console.log."
   steps={[
-    "In VS Code, create debug.html with the basic skeleton and a script tag before </body> (or a linked debug.js).",
-    "Paste this buggy code into the script: const nums = [2, 4, 6]; let sum = 0; for (let i = 0; i <= nums.length; i++) { sum = sum + nums[i]; } console.log('Sum:', sum);",
-    "Open the page with Live Server and open the DevTools Console. Note the result is NaN, not 12.",
+    "In VS Code, create two files: index.html with the basic skeleton and a <script src=\"script.js\"></script> before </body>, and script.js for the code.",
+    "Paste this buggy code into script.js: const nums = [2, 4, 6]; let sum = 0; for (let i = 0; i <= nums.length; i++) { sum = sum + nums[i]; } console.log('Sum:', sum);",
+    "Open index.html with Live Server and open the DevTools Console. Note the result is NaN, not 12.",
     "Add console.log(i, nums[i]) inside the loop, reload, and read the output. Spot the final pass where nums[i] is undefined.",
     "Fix the loop condition from i <= nums.length to i < nums.length, reload, and confirm the console now logs Sum: 12.",
     "Remove the debugging console.log inside the loop, leaving only the final result line."
   ]}
   expected="The console logs Sum: 12, and you can explain that the original <= ran one extra time, reading nums[3] which is undefined and turning the sum into NaN."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -161,17 +165,22 @@ Most bugs fall to steps 1–3. The console is not a last resort — it is the fi
   <body>
     <h1>Debugging demo</h1>
 
-    <script>
-      const nums = [2, 4, 6];
-      let sum = 0;
-      // Fixed: i < nums.length stops at the last real index.
-      for (let i = 0; i < nums.length; i++) {
-        sum = sum + nums[i];
-      }
-      console.log("Sum:", sum); // Sum: 12
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const nums = [2, 4, 6];
+let sum = 0;
+// Fixed: i < nums.length stops at the last real index.
+for (let i = 0; i < nums.length; i++) {
+  sum = sum + nums[i];
+}
+console.log("Sum:", sum); // Sum: 12`
+    }
+  ]}
 />
 
 <Quiz questions={[

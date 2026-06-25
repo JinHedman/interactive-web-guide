@@ -41,45 +41,37 @@ In these lessons, the result pane on the right shows whatever you `console.log`.
 
 ## Adding a script to a page
 
-In a real project, JavaScript lives in its own `.js` file and you attach it to the page with a `<script>` tag and a `src` attribute, just like a stylesheet.
+In a real project, JavaScript lives in its **own `.js` file**, separate from your HTML. You attach it to the page with a `<script>` tag and a `src` attribute, just like a stylesheet. These are two files in the same folder:
 
-<CodeExample language="html">
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <title>My page</title>
   </head>
   <body>
-    <h1>Hello</h1>
+    <h1 id="greeting">Loading...</h1>
 
-    <script src="main.js"></script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `document.getElementById("greeting").textContent = "Hello from a separate file!";`
+  }
+]} />
 
 Notice where the `<script>` sits: at the very bottom of `<body>`, just before `</body>`. The browser reads the page top to bottom. If the script runs before the elements above it exist, it cannot find them. Putting the script last means the whole page is ready by the time your code runs.
 
-You can also write JavaScript directly inside a `<script>` tag instead of a separate file. This is handy for tiny examples.
+The `src="script.js"` attribute is the link between the two files: it tells the browser to load and run that file at this point in the page. Keeping HTML and JavaScript in separate files is the normal way to work — the markup describes the page, the script describes its behavior.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <title>Inline script</title>
-  </head>
-  <body>
-    <h1 id="greeting">Loading...</h1>
-
-    <script>
-      document.getElementById("greeting").textContent = "Hello from a script tag!";
-    </script>
-  </body>
-</html>`}
-</CodeExample>
-
-Do not worry about that `document.getElementById` line yet — that is the DOM, which the final chapter of this module introduces. For now, just notice that the script changed the heading after the page loaded.
+Do not worry about that `document.getElementById` line yet — that is the DOM, which the final chapter of this module introduces. For now, just notice that the script in `script.js` changed the heading after the page loaded.
 
 ## Opening the devtools console
 
@@ -112,15 +104,18 @@ console.log("But this line does run.");`}
   title="Run your first script"
   goal="Create an HTML page with an external JavaScript file that logs three messages to the console."
   steps={[
-    "In VS Code, create a new folder and open it. Inside, create index.html and main.js.",
+    "In VS Code, create a new folder and open it. Inside, create index.html and script.js as two separate files.",
     "In index.html, write the basic document skeleton: doctype, html, head with a charset and title, and a body with an h1 that says Console demo.",
-    "Just before </body>, add a script tag with src=\"main.js\".",
-    "In main.js, add a comment at the top describing the file, then three console.log lines: your name, your favorite number, and the result of 10 * 3.",
+    "Just before </body>, add a script tag with src=\"script.js\".",
+    "In script.js, add a comment at the top describing the file, then three console.log lines: your name, your favorite number, and the result of 10 * 3.",
     "Open index.html with Live Server, then open the devtools console (F12, Console tab) and confirm all three lines appear."
   ]}
   expected="The page shows the Console demo heading, and the devtools console prints your name, your favorite number, and 30."
-  solution={`<!-- index.html -->
-<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -129,15 +124,19 @@ console.log("But this line does run.");`}
   <body>
     <h1>Console demo</h1>
 
-    <script src="main.js"></script>
+    <script src="script.js"></script>
   </body>
-</html>
-
-// main.js
-// Logs a few values to the console so we can see JavaScript run.
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `// Logs a few values to the console so we can see JavaScript run.
 console.log("Ada Lovelace");
 console.log(7);
-console.log(10 * 3);`}
+console.log(10 * 3);`
+    }
+  ]}
 />
 
 <Quiz questions={[

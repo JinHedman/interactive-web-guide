@@ -18,25 +18,35 @@ Events tell you *that* the user did something. Now you need to read *what* they 
 
 A text input's current text lives in its `value` property. Read it inside an event handler to find out what the user typed.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <input id="taskInput" placeholder="Type a task...">
     <button id="readBtn">Read it</button>
     <p id="out"></p>
-    <script>
-      const input = document.getElementById("taskInput");
-      const readBtn = document.getElementById("readBtn");
-      const out = document.getElementById("out");
-
-      readBtn.addEventListener("click", function () {
-        out.textContent = "The input holds: " + input.value;
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const input = document.getElementById("taskInput");
+const readBtn = document.getElementById("readBtn");
+const out = document.getElementById("out");
+
+readBtn.addEventListener("click", function () {
+  out.textContent = "The input holds: " + input.value;
+});`
+  }
+]} />
 
 `value` is always a string — even for a number input. To clear a field, set `value` back to `""`.
 
@@ -44,31 +54,41 @@ A text input's current text lives in its `value` property. Read it inside an eve
 
 Checkboxes and radio buttons do not use `value` to tell you if they are selected. They use a boolean property called `checked`: `true` when ticked, `false` when not.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <label>
       <input type="checkbox" id="urgent"> Mark as urgent
     </label>
     <button id="checkBtn">Check status</button>
     <p id="out"></p>
-    <script>
-      const urgent = document.getElementById("urgent");
-      const checkBtn = document.getElementById("checkBtn");
-      const out = document.getElementById("out");
-
-      checkBtn.addEventListener("click", function () {
-        if (urgent.checked) {
-          out.textContent = "This task is urgent.";
-        } else {
-          out.textContent = "This task is normal priority.";
-        }
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const urgent = document.getElementById("urgent");
+const checkBtn = document.getElementById("checkBtn");
+const out = document.getElementById("out");
+
+checkBtn.addEventListener("click", function () {
+  if (urgent.checked) {
+    out.textContent = "This task is urgent.";
+  } else {
+    out.textContent = "This task is normal priority.";
+  }
+});`
+  }
+]} />
 
 Tick the box, then click the button. Radio buttons work the same way: you check `.checked` on each one to find which is selected.
 
@@ -76,9 +96,15 @@ Tick the box, then click the button. Radio buttons work the same way: you check 
 
 A `<select>` dropdown exposes the chosen option through its `value` property — the `value` attribute of the selected `<option>`.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <label for="priority">Priority:</label>
     <select id="priority">
@@ -87,17 +113,21 @@ A `<select>` dropdown exposes the chosen option through its `value` property —
       <option value="high">High</option>
     </select>
     <p id="out"></p>
-    <script>
-      const priority = document.getElementById("priority");
-      const out = document.getElementById("out");
-
-      priority.addEventListener("change", function () {
-        out.textContent = "Priority set to: " + priority.value;
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const priority = document.getElementById("priority");
+const out = document.getElementById("out");
+
+priority.addEventListener("change", function () {
+  out.textContent = "Priority set to: " + priority.value;
+});`
+  }
+]} />
 
 The `change` event fires when the user picks a different option. Then `priority.value` gives you `"low"`, `"medium"`, or `"high"`.
 
@@ -105,14 +135,15 @@ The `change` event fires when the user picks a different option. Then `priority.
 
 Before you act on input, check it. If a user submits an empty task, you should tell them — but not with `alert()`, which is jarring and blocks the page. Instead, write a message into an element on the page. This is friendlier and lets you style it.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
-    <style>
-      .error { color: crimson; }
-      .ok { color: green; }
-    </style>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <form id="taskForm">
@@ -120,29 +151,39 @@ Before you act on input, check it. If a user submits an empty task, you should t
       <button type="submit">Add</button>
     </form>
     <p id="message"></p>
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const message = document.getElementById("message");
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const text = input.value.trim();
-
-        if (text === "") {
-          message.textContent = "Please type a task before adding.";
-          message.className = "error";
-          return;
-        }
-
-        message.textContent = "Added: " + text;
-        message.className = "ok";
-        input.value = "";
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `.error { color: crimson; }
+.ok { color: green; }`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = input.value.trim();
+
+  if (text === "") {
+    message.textContent = "Please type a task before adding.";
+    message.className = "error";
+    return;
+  }
+
+  message.textContent = "Added: " + text;
+  message.className = "ok";
+  input.value = "";
+});`
+  }
+]} />
 
 Two details worth noticing. `input.value.trim()` removes leading and trailing spaces, so a field of only spaces counts as empty. And `return` ends the handler early when validation fails, so the "added" code below it never runs. Swapping the `className` between `error` and `ok` lets your CSS color the message appropriately.
 
@@ -150,25 +191,26 @@ Two details worth noticing. `input.value.trim()` removes leading and trailing sp
   title="Validate the new task before adding"
   goal="Make your to-do form reject empty tasks with a visible on-page message, and confirm a good task on screen."
   steps={[
-    "Open your todo.html with the form, input, and Add button inside a form with id=\"taskForm\".",
-    "Add a p with id=\"message\" below the form for feedback.",
-    "In the head, add styles: .error { color: crimson; } and .ok { color: green; }.",
-    "In the submit handler, after preventDefault, read const text = input.value.trim().",
+    "Open your to-do project: index.html with the form, input, and Add button inside a form with id=\"taskForm\", plus styles.css and script.js linked.",
+    "Add a p with id=\"message\" below the form in index.html for feedback.",
+    "In styles.css, add: .error { color: crimson; } and .ok { color: green; }.",
+    "In script.js, inside the submit handler, after preventDefault, read const text = input.value.trim().",
     "If text is an empty string, set message.textContent to an error, set message.className to \"error\", and return.",
     "Otherwise set message.textContent to \"Added: \" + text, set className to \"ok\", and clear the input.",
-    "Open with Live Server. Submit empty to see the red error, then submit a real task to see the green confirmation."
+    "Open index.html with Live Server. Submit empty to see the red error, then submit a real task to see the green confirmation."
   ]}
   expected="Submitting an empty field shows a red error and adds nothing; submitting a real task shows a green confirmation and clears the input."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>To-Do List</title>
-    <style>
-      .error { color: crimson; }
-      .ok { color: green; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1 id="appTitle">My Tasks</h1>
@@ -179,28 +221,39 @@ Two details worth noticing. `input.value.trim()` removes leading and trailing sp
     <p id="message"></p>
     <ul id="taskList"></ul>
 
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const message = document.getElementById("message");
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const text = input.value.trim();
-
-        if (text === "") {
-          message.textContent = "Please type a task before adding.";
-          message.className = "error";
-          return;
-        }
-
-        message.textContent = "Added: " + text;
-        message.className = "ok";
-        input.value = "";
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `.error { color: crimson; }
+.ok { color: green; }`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const message = document.getElementById("message");
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = input.value.trim();
+
+  if (text === "") {
+    message.textContent = "Please type a task before adding.";
+    message.className = "error";
+    return;
+  }
+
+  message.textContent = "Added: " + text;
+  message.className = "ok";
+  input.value = "";
+});`
+    }
+  ]}
 />
 
 <Quiz questions={[

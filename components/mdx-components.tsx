@@ -5,7 +5,7 @@
 
 import CodeExample from "./CodeExample";
 import Quiz from "./Quiz";
-import Exercise from "./Exercise";
+import ExerciseServer from "./ExerciseServer";
 import ReadMore from "./ReadMore";
 import DocsLinks from "./DocsLinks";
 
@@ -19,8 +19,8 @@ export function getMDXComponents(chapterId: string) {
       <Quiz {...props} chapterId={chapterId} />
     ),
     Exercise: (
-      props: Omit<React.ComponentProps<typeof Exercise>, "chapterId">
-    ) => <Exercise {...props} chapterId={chapterId} />,
+      props: Omit<React.ComponentProps<typeof ExerciseServer>, "chapterId">
+    ) => <ExerciseServer {...props} chapterId={chapterId} />,
     ReadMore: (props: React.ComponentProps<typeof ReadMore>) => (
       <ReadMore {...props} />
     ),

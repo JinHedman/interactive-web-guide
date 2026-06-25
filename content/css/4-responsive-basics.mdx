@@ -69,43 +69,16 @@ The width at which the layout changes — here `600px` — is called a **breakpo
 
 Here is the profile card adapting from a stacked mobile layout to a side-by-side desktop one. The in-page preview is a fixed-width pane, so to watch it switch at the breakpoint, open the page in your own browser with Live Server and either resize the browser window across the 600px mark or use the browser devtools responsive/device toolbar.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-      * { box-sizing: border-box; }
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-
-      .card {
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 1rem;
-        width: 100%;
-        max-width: 480px;
-        margin: 0 auto;
-        padding: 1.5rem;
-        background: #f3f4f6;
-        border-radius: 8px;
-        text-align: center;
-      }
-      .avatar {
-        width: 72px;
-        height: 72px;
-        border-radius: 50%;
-        background: navy;
-        flex-shrink: 0;
-      }
-      .card h1 { font-size: 1.25rem; margin: 0; }
-      .card p { margin: 0.25rem 0 0; color: #444; line-height: 1.5; }
-
-      @media (min-width: 600px) {
-        .card { flex-direction: row; text-align: left; }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -116,8 +89,42 @@ Here is the profile card adapting from a stacked mobile layout to a side-by-side
       </div>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; padding: 1rem; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+  text-align: center;
+}
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: navy;
+  flex-shrink: 0;
+}
+.card h1 { font-size: 1.25rem; margin: 0; }
+.card p { margin: 0.25rem 0 0; color: #444; line-height: 1.5; }
+
+@media (min-width: 600px) {
+  .card { flex-direction: row; text-align: left; }
+}`
+  }
+]} />
 
 On a narrow screen the avatar sits above centered text; at 600px and wider it moves beside left-aligned text. One stylesheet, two layouts.
 
@@ -133,11 +140,18 @@ On a narrow screen the avatar sits above centered text; at 600px and wider it mo
     "View with Live Server and resize the browser window across the 600px mark to watch the layout change. Commit in GitHub Desktop."
   ]}
   expected="A card that stacks the avatar above the text on narrow screens and places them side by side at 600px and wider — centered and capped at 480px."
-  solution={`<!-- index.html head -->
+  solution={[
+    {
+      name: "index.html (head)",
+      lang: "html",
+      code: `<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-/* styles.css */
-* { box-sizing: border-box; }
+<link rel="stylesheet" href="styles.css">`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `* { box-sizing: border-box; }
 
 .card {
   display: flex;
@@ -166,7 +180,9 @@ On a narrow screen the avatar sits above centered text; at 600px and wider it mo
     flex-direction: row;
     text-align: left;
   }
-}`}
+}`
+    }
+  ]}
 />
 
 <Quiz questions={[

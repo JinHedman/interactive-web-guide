@@ -24,20 +24,15 @@ The browser lays out each element as a rectangular box with four layers, from th
 - **Border** — a line around the padding.
 - **Margin** — space *outside* the box, pushing other elements away.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .card {
-        background: #f3f4f6;
-        padding: 16px;        /* space inside, around the text */
-        border: 2px solid navy;
-        margin: 24px;         /* space outside, away from edges */
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -45,8 +40,20 @@ The browser lays out each element as a rectangular box with four layers, from th
       <p>I find patterns in numbers and write algorithms for fun.</p>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.card {
+  background: #f3f4f6;
+  padding: 16px;        /* space inside, around the text */
+  border: 2px solid navy;
+  margin: 24px;         /* space outside, away from edges */
+}`
+  }
+]} />
 
 You can set each side separately (`padding-top`, `margin-left`) or use shorthand. `margin: 24px` sets all four sides; `padding: 8px 16px` sets top/bottom then left/right.
 
@@ -79,18 +86,15 @@ CSS accepts colors in several formats. The common ones:
 - **rgb** — `rgb(30 58 138)`. The same channels as numbers 0–255.
 - **hsl** — `hsl(222 64% 33%)`. Hue, saturation, lightness — easy to tweak by hand.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .card { background: #f3f4f6; padding: 16px; border-radius: 8px; }
-      .card h1 { color: hsl(222 64% 33%); }
-      .card p { color: rgb(68 68 68); }
-      .tag { color: white; background: tomato; padding: 2px 8px; border-radius: 4px; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -99,8 +103,18 @@ CSS accepts colors in several formats. The common ones:
       <span class="tag">mathematician</span>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.card { background: #f3f4f6; padding: 16px; border-radius: 8px; }
+.card h1 { color: hsl(222 64% 33%); }
+.card p { color: rgb(68 68 68); }
+.tag { color: white; background: tomato; padding: 2px 8px; border-radius: 4px; }`
+  }
+]} />
 
 Hex is the most common in the wild; `hsl` is the friendliest when you want a slightly lighter or darker shade.
 
@@ -135,20 +149,15 @@ Four properties cover most text styling:
 - **`font-weight`** — `normal` (400), `bold` (700), or a number.
 - **`line-height`** — vertical space between lines. A unitless value like `1.5` means 1.5× the font size and is the recommended way to set it.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body {
-        font-family: "Segoe UI", system-ui, sans-serif;
-        padding: 1rem;
-      }
-      .card { background: #f3f4f6; padding: 1.5rem; border-radius: 8px; max-width: 360px; }
-      .card h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.5rem; }
-      .card p { font-size: 1rem; line-height: 1.6; color: #444; margin: 0; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -156,8 +165,20 @@ Four properties cover most text styling:
       <p>I find patterns in numbers and write algorithms for fun. Mathematician, writer, and arguably the first programmer.</p>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body {
+  font-family: "Segoe UI", system-ui, sans-serif;
+  padding: 1rem;
+}
+.card { background: #f3f4f6; padding: 1.5rem; border-radius: 8px; max-width: 360px; }
+.card h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.5rem; }
+.card p { font-size: 1rem; line-height: 1.6; color: #444; margin: 0; }`
+  }
+]} />
 
 Starting `font-family` with `system-ui` uses the reader's native operating-system font — fast and familiar, with no download.
 
@@ -174,8 +195,8 @@ Starting `font-family` with `system-ui` uses the reader's native operating-syste
     "Save, view with Live Server, then commit in GitHub Desktop."
   ]}
   expected="A neat card: comfortable padding inside a rounded border, a bold name, and a readable bio with relaxed line spacing."
-  solution={`/* styles.css */
-* {
+  solutionLang="css"
+  solution={`* {
   box-sizing: border-box;
 }
 

@@ -69,10 +69,13 @@ From `document` you can search the tree for elements, read their content, and ch
 
 The key idea: the DOM is **live**. It is not a one-time snapshot of your HTML — it is the page as it exists *right now*. When JavaScript changes a node in the DOM, the browser immediately re-renders, and the user sees the change. No reload, no new file.
 
-Here is a tiny taste, using the same `<script>` approach from chapter 1. Watch the heading change after the page loads:
+Here is a tiny taste, using the same separate-files approach from chapter 1: an `index.html` that links a `script.js`. Watch the heading change after the page loads:
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -81,16 +84,20 @@ Here is a tiny taste, using the same `<script>` approach from chapter 1. Watch t
   <body>
     <h1 id="title">Original heading</h1>
 
-    <script>
-      // Find a node in the DOM, then change it.
-      const heading = document.getElementById("title");
-      heading.textContent = "Changed by JavaScript!";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `// Find a node in the DOM, then change it.
+const heading = document.getElementById("title");
+heading.textContent = "Changed by JavaScript!";`
+  }
+]} />
 
-The HTML said "Original heading," but the script reached into the DOM and rewrote it. Because the DOM is live, the page shows the new text. That single move — find a node, change it — is the heart of interactive web pages.
+The HTML in `index.html` said "Original heading," but the script in `script.js` reached into the DOM and rewrote it. Because the DOM is live, the page shows the new text. That single move — find a node, change it — is the heart of interactive web pages.
 
 ## What comes next
 
@@ -107,14 +114,18 @@ Every one of those builds directly on the JavaScript you already know — variab
   title="Change the page with the DOM"
   goal="Prove the DOM is live by changing an element's text after the page loads, then add one more change of your own."
   steps={[
-    "In VS Code, create dom.html with the basic document skeleton.",
-    "In the body, add an h1 with id=\"title\" and text Hello, and a p with id=\"note\" and text Loading.",
-    "Just before </body>, add a script tag.",
-    "Inside the script, select the heading with document.getElementById(\"title\") and set its textContent to a new message.",
-    "Do the same for the paragraph: select #note and change its textContent. Open with Live Server and confirm both changed even though the HTML said something else."
+    "In VS Code, create two files in the same folder: index.html and script.js.",
+    "In index.html, write the basic document skeleton. In the body, add an h1 with id=\"title\" and text Hello, and a p with id=\"note\" and text Loading.",
+    "Just before </body>, link the script with <script src=\"script.js\"></script>.",
+    "In script.js, select the heading with document.getElementById(\"title\") and set its textContent to a new message.",
+    "Do the same for the paragraph: select #note and change its textContent. Open index.html with Live Server and confirm both changed even though the HTML said something else."
   ]}
   expected="The page loads and immediately shows your two new strings, not the original Hello and Loading text — proof the DOM updated live."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -124,15 +135,20 @@ Every one of those builds directly on the JavaScript you already know — variab
     <h1 id="title">Hello</h1>
     <p id="note">Loading</p>
 
-    <script>
-      const heading = document.getElementById("title");
-      heading.textContent = "Changed by JavaScript!";
-
-      const note = document.getElementById("note");
-      note.textContent = "The DOM is live.";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const heading = document.getElementById("title");
+heading.textContent = "Changed by JavaScript!";
+
+const note = document.getElementById("note");
+note.textContent = "The DOM is live.";`
+    }
+  ]}
 />
 
 <Quiz questions={[

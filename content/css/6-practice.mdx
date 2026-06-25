@@ -27,32 +27,17 @@ This is extra practice for the whole CSS module — five drills you can do in VS
     "Commit in GitHub Desktop with a message like \"Practice relationship selectors\"."
   ]}
   expected="A styled card where both headings share a color, the paragraph is tinted, and the nav links are spaced and colored — all achieved without a single class or id in the markup."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Relationship selectors</title>
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .card {
-        max-width: 360px;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        padding: 1rem;
-      }
-      /* grouped: both headings, one rule */
-      .card h2, .card h3 { color: #1d4ed8; margin: 0 0 0.25rem; }
-      /* descendant: any p inside the card */
-      .card p { color: #555; }
-      /* child: only links that are DIRECT children of nav */
-      .card nav > a {
-        margin-right: 0.75rem;
-        color: #1d4ed8;
-        text-decoration: none;
-      }
-      .card ul { padding-left: 1.1rem; color: #888; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <section class="card">
@@ -70,7 +55,31 @@ This is extra practice for the whole CSS module — five drills you can do in VS
       </ul>
     </section>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.card {
+  max-width: 360px;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1rem;
+}
+/* grouped: both headings, one rule */
+.card h2, .card h3 { color: #1d4ed8; margin: 0 0 0.25rem; }
+/* descendant: any p inside the card */
+.card p { color: #555; }
+/* child: only links that are DIRECT children of nav */
+.card nav > a {
+  margin-right: 0.75rem;
+  color: #1d4ed8;
+  text-decoration: none;
+}
+.card ul { padding-left: 1.1rem; color: #888; }`
+    }
+  ]}
 />
 
 <Exercise
@@ -85,32 +94,17 @@ This is extra practice for the whole CSS module — five drills you can do in VS
     "Commit with a message like \"Practice hover, focus, and nth-child\"."
   ]}
   expected="Links that visibly change on mouse-over AND on keyboard focus, plus a list where every second row has a tinted background."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Interactive states</title>
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      nav a {
-        display: inline-block;
-        padding: 0.4rem 0.7rem;
-        color: #1d4ed8;
-        text-decoration: none;
-        border-radius: 6px;
-      }
-      /* same change for mouse AND keyboard users */
-      nav a:hover,
-      nav a:focus {
-        background: #1d4ed8;
-        color: white;
-        outline: none;
-      }
-      ul { list-style: none; padding: 0; max-width: 320px; }
-      li { padding: 0.5rem 0.75rem; }
-      li:nth-child(even) { background: #f3f4f6; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <nav>
@@ -126,7 +120,31 @@ This is extra practice for the whole CSS module — five drills you can do in VS
       <li>Row 5</li>
     </ul>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+nav a {
+  display: inline-block;
+  padding: 0.4rem 0.7rem;
+  color: #1d4ed8;
+  text-decoration: none;
+  border-radius: 6px;
+}
+/* same change for mouse AND keyboard users */
+nav a:hover,
+nav a:focus {
+  background: #1d4ed8;
+  color: white;
+  outline: none;
+}
+ul { list-style: none; padding: 0; max-width: 320px; }
+li { padding: 0.5rem 0.75rem; }
+li:nth-child(even) { background: #f3f4f6; }`
+    }
+  ]}
 />
 
 <Exercise
@@ -141,25 +159,17 @@ This is extra practice for the whole CSS module — five drills you can do in VS
     "Confirm all three cards now sit on one row, then commit with \"Fix overflowing cards with border-box\"."
   ]}
   expected="Three cards sitting on a single row, fixed by one box-sizing: border-box rule, with a comment explaining the original cause."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fix the overflow</title>
-    <style>
-      /* THE FIX: width now includes padding + border instead of adding them on top */
-      * { box-sizing: border-box; }
-
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .row { display: flex; gap: 0; }
-      .col {
-        width: 33%;
-        padding: 1rem;
-        border: 2px solid #1d4ed8;
-        background: #eff6ff;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="row">
@@ -168,7 +178,24 @@ This is extra practice for the whole CSS module — five drills you can do in VS
       <div class="col">Three</div>
     </div>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `/* THE FIX: width now includes padding + border instead of adding them on top */
+* { box-sizing: border-box; }
+
+body { font-family: system-ui, sans-serif; padding: 1rem; }
+.row { display: flex; gap: 0; }
+.col {
+  width: 33%;
+  padding: 1rem;
+  border: 2px solid #1d4ed8;
+  background: #eff6ff;
+}`
+    }
+  ]}
 />
 
 <Exercise
@@ -183,26 +210,18 @@ This is extra practice for the whole CSS module — five drills you can do in VS
     "Add a comment listing both bugs you fixed, then commit with \"Fix broken media query\"."
   ]}
   expected="A page that stacks vertically below 600px and becomes a horizontal row at 600px and above, with a comment naming both bugs."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <!-- BUG 1 FIXED: viewport meta was missing, so phones never matched the breakpoint -->
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Fix the media query</title>
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .layout { display: flex; flex-direction: column; gap: 0.5rem; }
-      .layout div {
-        background: #1d4ed8; color: white;
-        padding: 1rem; border-radius: 6px; text-align: center;
-      }
-      /* BUG 2 FIXED: was (min-width 600px) with no colon, so the whole query was ignored */
-      @media screen and (min-width: 600px) {
-        .layout { flex-direction: row; }
-        .layout div { flex: 1; }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="layout">
@@ -211,7 +230,24 @@ This is extra practice for the whole CSS module — five drills you can do in VS
       <div>C</div>
     </div>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.layout { display: flex; flex-direction: column; gap: 0.5rem; }
+.layout div {
+  background: #1d4ed8; color: white;
+  padding: 1rem; border-radius: 6px; text-align: center;
+}
+/* BUG 2 FIXED: was (min-width 600px) with no colon, so the whole query was ignored */
+@media screen and (min-width: 600px) {
+  .layout { flex-direction: row; }
+  .layout div { flex: 1; }
+}`
+    }
+  ]}
 />
 
 <Exercise
@@ -226,51 +262,17 @@ This is extra practice for the whole CSS module — five drills you can do in VS
     "Test by resizing and by tabbing to the buttons, then commit with \"Build responsive pricing section\"."
   ]}
   expected="Three pricing cards in a responsive grid that collapses to one column on narrow screens; each card is a flex column with name, price, features, and a button that reacts to hover and keyboard focus."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Pricing</title>
-    <style>
-      * { box-sizing: border-box; }
-      body { font-family: system-ui, sans-serif; padding: 1rem; color: #1f2937; }
-      .pricing {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 1rem;
-        max-width: 760px;
-        margin: 0 auto;
-      }
-      .plan {
-        display: flex;
-        flex-direction: column;
-        border: 1px solid #e5e7eb;
-        border-radius: 10px;
-        padding: 1.25rem;
-      }
-      .plan h2 { margin: 0 0 0.25rem; font-size: 1.1rem; }
-      .price { font-size: 1.8rem; font-weight: 700; margin: 0 0 0.75rem; }
-      .plan ul { list-style: none; padding: 0; margin: 0 0 1rem; color: #555; }
-      .plan li { padding: 0.2rem 0; }
-      .plan a {
-        margin-top: auto;
-        text-align: center;
-        padding: 0.6rem 1rem;
-        background: #1d4ed8;
-        color: white;
-        text-decoration: none;
-        border-radius: 6px;
-      }
-      .plan a:hover,
-      .plan a:focus {
-        background: #1e40af;
-        outline: 2px solid #93c5fd;
-      }
-      @media (max-width: 600px) {
-        .pricing { grid-template-columns: 1fr; }
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <section class="pricing">
@@ -294,7 +296,50 @@ This is extra practice for the whole CSS module — five drills you can do in VS
       </article>
     </section>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `* { box-sizing: border-box; }
+body { font-family: system-ui, sans-serif; padding: 1rem; color: #1f2937; }
+.pricing {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  max-width: 760px;
+  margin: 0 auto;
+}
+.plan {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  padding: 1.25rem;
+}
+.plan h2 { margin: 0 0 0.25rem; font-size: 1.1rem; }
+.price { font-size: 1.8rem; font-weight: 700; margin: 0 0 0.75rem; }
+.plan ul { list-style: none; padding: 0; margin: 0 0 1rem; color: #555; }
+.plan li { padding: 0.2rem 0; }
+.plan a {
+  margin-top: auto;
+  text-align: center;
+  padding: 0.6rem 1rem;
+  background: #1d4ed8;
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+}
+.plan a:hover,
+.plan a:focus {
+  background: #1e40af;
+  outline: 2px solid #93c5fd;
+}
+@media (max-width: 600px) {
+  .pricing { grid-template-columns: 1fr; }
+}`
+    }
+  ]}
 />
 
 <Quiz questions={[

@@ -18,21 +18,31 @@ Until now you have changed elements that already existed in your HTML. But a to-
 
 `document.createElement` makes a fresh element of the tag you name. It exists only in memory at first — it is not on the page until you add it.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <ul id="taskList"></ul>
-    <script>
-      const list = document.getElementById("taskList");
-
-      const li = document.createElement("li");
-      li.textContent = "Buy milk";
-      list.append(li);
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const list = document.getElementById("taskList");
+
+const li = document.createElement("li");
+li.textContent = "Buy milk";
+list.append(li);`
+  }
+]} />
 
 Three steps: create the element, set its content, and add it to the page. The list started empty in the HTML; the script filled it in.
 
@@ -40,27 +50,37 @@ Three steps: create the element, set its content, and add it to the page. The li
 
 `append` adds your new element as the last child of a parent. (You will also see `appendChild`, the older method — it does the same job for a single element. `append` is newer and a little more flexible, so prefer it.) One handy bit of that flexibility: `append` can take several nodes at once — `parent.append(a, b, c)` adds them all in order — which the capstone uses to drop a checkbox, a label, and a delete button into one list item in a single call.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <ul id="taskList">
       <li>Existing task</li>
     </ul>
-    <script>
-      const list = document.getElementById("taskList");
-
-      const first = document.createElement("li");
-      first.textContent = "Walk the dog";
-      list.append(first);
-
-      const second = document.createElement("li");
-      second.textContent = "Write some code";
-      list.append(second);
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const list = document.getElementById("taskList");
+
+const first = document.createElement("li");
+first.textContent = "Walk the dog";
+list.append(first);
+
+const second = document.createElement("li");
+second.textContent = "Write some code";
+list.append(second);`
+  }
+]} />
 
 Each `append` puts the new item at the end, so they appear in the order you added them, after the task that was already there.
 
@@ -68,26 +88,36 @@ Each `append` puts the new item at the end, so they appear in the order you adde
 
 Any element you hold in a variable can remove itself from the page with `remove`. No parent reference needed.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <ul id="taskList">
       <li id="keep">Keep this one</li>
       <li id="drop">Remove this one</li>
     </ul>
     <button id="delBtn">Delete the second task</button>
-    <script>
-      const drop = document.getElementById("drop");
-      const delBtn = document.getElementById("delBtn");
-
-      delBtn.addEventListener("click", function () {
-        drop.remove();
-      });
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const drop = document.getElementById("drop");
+const delBtn = document.getElementById("delBtn");
+
+delBtn.addEventListener("click", function () {
+  drop.remove();
+});`
+  }
+]} />
 
 Click the button and the second item disappears. In a to-do app, each task will carry its own delete button whose click handler calls `remove` on that task.
 
@@ -95,33 +125,43 @@ Click the button and the second item disappears. In a to-do app, each task will 
 
 Here is the pattern your capstone is built on. Keep your data in an **array**, then loop over it to build the matching elements. When the data changes, you clear the list and rebuild it — so what you see always reflects the data. Notice the shape of the data: each task is an **object** like `{ text: "Buy milk" }`, not a bare string. That gives each task room to grow more fields later (the capstone adds a `done` flag), so we use that shape from the start.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <ul id="taskList"></ul>
-    <script>
-      const list = document.getElementById("taskList");
-      const tasks = [
-        { text: "Buy milk" },
-        { text: "Walk the dog" },
-        { text: "Write some code" },
-      ];
-
-      function render() {
-        list.textContent = "";
-        for (const task of tasks) {
-          const li = document.createElement("li");
-          li.textContent = task.text;
-          list.append(li);
-        }
-      }
-
-      render();
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const list = document.getElementById("taskList");
+const tasks = [
+  { text: "Buy milk" },
+  { text: "Walk the dog" },
+  { text: "Write some code" },
+];
+
+function render() {
+  list.textContent = "";
+  for (const task of tasks) {
+    const li = document.createElement("li");
+    li.textContent = task.text;
+    list.append(li);
+  }
+}
+
+render();`
+  }
+]} />
 
 Read the `render` function closely. It first empties the list with `list.textContent = ""`, then loops over `tasks` and creates one `<li>` per item, reading the text out of each object with `task.text`. Call `render` again any time `tasks` changes and the page redraws itself from the current data. This "data in an array, render from the array" idea is the whole engine of the capstone — and, as you will see at the end of the module, the core idea behind modern frameworks too.
 
@@ -129,16 +169,20 @@ Read the `render` function closely. It first empties the list with `list.textCon
   title="Render tasks from an array and add new ones"
   goal="Combine everything so far: keep tasks in an array, render them as list items, and add a new task on submit by pushing to the array and re-rendering."
   steps={[
-    "Open your todo.html with the form (id taskForm), input (id taskInput), and an empty ul (id taskList).",
-    "In the script, create an array named tasks holding two starter objects, each shaped { text: \"...\" }.",
+    "Open your to-do project: index.html with the form (id taskForm), input (id taskInput), and an empty ul (id taskList), plus script.js linked before </body>.",
+    "In script.js, create an array named tasks holding two starter objects, each shaped { text: \"...\" }.",
     "Write a render function that clears the list with list.textContent = \"\", then loops over tasks with for...of, creating an li for each (using task.text) and appending it.",
     "Call render() once so the starter tasks show.",
     "In the submit handler, after preventDefault, read const text = input.value.trim() and return early if it is empty.",
     "Push a new { text } object onto the tasks array, clear the input, then call render() again.",
-    "Open with Live Server. Confirm the starter tasks appear, then add a few and watch the list grow."
+    "Open index.html with Live Server. Confirm the starter tasks appear, then add a few and watch the list grow."
   ]}
   expected="The page shows the starter tasks on load, and each submitted task appears at the bottom of the list while the input clears."
-  solution={`<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -153,40 +197,45 @@ Read the `render` function closely. It first empties the list with `list.textCon
     </form>
     <ul id="taskList"></ul>
 
-    <script>
-      const form = document.getElementById("taskForm");
-      const input = document.getElementById("taskInput");
-      const list = document.getElementById("taskList");
-
-      const tasks = [
-        { text: "Buy milk" },
-        { text: "Walk the dog" },
-      ];
-
-      function render() {
-        list.textContent = "";
-        for (const task of tasks) {
-          const li = document.createElement("li");
-          li.textContent = task.text;
-          list.append(li);
-        }
-      }
-
-      form.addEventListener("submit", function (event) {
-        event.preventDefault();
-        const text = input.value.trim();
-        if (text === "") {
-          return;
-        }
-        tasks.push({ text: text });
-        input.value = "";
-        render();
-      });
-
-      render();
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const form = document.getElementById("taskForm");
+const input = document.getElementById("taskInput");
+const list = document.getElementById("taskList");
+
+const tasks = [
+  { text: "Buy milk" },
+  { text: "Walk the dog" },
+];
+
+function render() {
+  list.textContent = "";
+  for (const task of tasks) {
+    const li = document.createElement("li");
+    li.textContent = task.text;
+    list.append(li);
+  }
+}
+
+form.addEventListener("submit", function (event) {
+  event.preventDefault();
+  const text = input.value.trim();
+  if (text === "") {
+    return;
+  }
+  tasks.push({ text: text });
+  input.value = "";
+  render();
+});
+
+render();`
+    }
+  ]}
 />
 
 <Quiz questions={[

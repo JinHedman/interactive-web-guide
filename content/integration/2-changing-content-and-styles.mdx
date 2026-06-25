@@ -19,22 +19,32 @@ Selecting an element is only useful if you can then change it. Once you hold an 
 
 Every element has a `textContent` property. Read it to get the text inside, or assign to it to replace that text.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <h1 id="appTitle">Loading...</h1>
     <p id="count">0 tasks</p>
-    <script>
-      const title = document.getElementById("appTitle");
-      const count = document.getElementById("count");
-
-      title.textContent = "My Tasks";
-      count.textContent = "3 tasks";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const title = document.getElementById("appTitle");
+const count = document.getElementById("count");
+
+title.textContent = "My Tasks";
+count.textContent = "3 tasks";`
+  }
+]} />
 
 Assigning to `textContent` replaces everything inside the element with plain text. It treats the value as text, not HTML — so `"<b>hi</b>"` would show those angle brackets literally, never bold text. There is a sibling property, `innerHTML`, that *does* parse its value as HTML — and that is exactly why `textContent` is safer for anything a user typed: with `innerHTML`, a malicious string like `"<script>...</script>"` could inject markup or scripts into your page, while `textContent` always shows it as harmless text. Reach for `textContent` for user-provided data.
 
@@ -46,30 +56,41 @@ You already wrote CSS classes. From JavaScript, `classList` lets you add, remove
 - `classList.remove("done")` — removes it.
 - `classList.toggle("done")` — adds it if missing, removes it if present.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
-    <style>
-      .done { text-decoration: line-through; color: gray; }
-    </style>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <ul>
       <li id="task1">Buy milk</li>
       <li id="task2">Walk the dog</li>
     </ul>
-    <script>
-      const task1 = document.getElementById("task1");
-      const task2 = document.getElementById("task2");
-
-      task1.classList.add("done");
-      task2.classList.toggle("done");
-      task2.classList.toggle("done");
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `.done { text-decoration: line-through; color: gray; }`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const task1 = document.getElementById("task1");
+const task2 = document.getElementById("task2");
+
+task1.classList.add("done");
+task2.classList.toggle("done");
+task2.classList.toggle("done");`
+  }
+]} />
 
 The first task gets the `done` class and shows the strike-through. The second is toggled on, then off, so it looks unchanged. `toggle` is perfect for a checkbox-style behavior: click once to complete, click again to un-complete.
 
@@ -77,20 +98,30 @@ The first task gets the `done` class and shows the strike-through. The second is
 
 You can also change a single CSS property directly through the `style` property. CSS property names that contain a hyphen become camelCase: `background-color` becomes `backgroundColor`.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <p id="banner">Important task!</p>
-    <script>
-      const banner = document.getElementById("banner");
-      banner.style.color = "white";
-      banner.style.backgroundColor = "crimson";
-      banner.style.padding = "0.75rem";
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const banner = document.getElementById("banner");
+banner.style.color = "white";
+banner.style.backgroundColor = "crimson";
+banner.style.padding = "0.75rem";`
+  }
+]} />
 
 This works, but each line sets one property in one place. For anything beyond a quick tweak, a class is cleaner.
 
@@ -98,25 +129,35 @@ This works, but each line sets one property in one place. For anything beyond a 
 
 Beyond text and styles, elements have attributes — `src`, `href`, `disabled`, `data-*`, and so on. Read one with `getAttribute` and change one with `setAttribute`.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
+  <head>
+    <meta charset="utf-8">
+  </head>
   <body>
     <a id="link" href="/old">A link</a>
     <p id="report"></p>
-    <script>
-      const link = document.getElementById("link");
-      const report = document.getElementById("report");
-
-      const oldHref = link.getAttribute("href");
-      link.setAttribute("href", "/new");
-
-      report.textContent =
-        "Changed href from " + oldHref + " to " + link.getAttribute("href");
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "script.js",
+    lang: "js",
+    code: `const link = document.getElementById("link");
+const report = document.getElementById("report");
+
+const oldHref = link.getAttribute("href");
+link.setAttribute("href", "/new");
+
+report.textContent =
+  "Changed href from " + oldHref + " to " + link.getAttribute("href");`
+  }
+]} />
 
 `setAttribute` takes two arguments: the attribute name and its new value. `getAttribute` takes just the name and returns the current value.
 
@@ -126,26 +167,29 @@ When you want to change appearance, reach for `classList` first. A class keeps a
 
 <Exercise
   title="Mark a task as done"
-  goal="Take your to-do page and write JavaScript that marks the first task complete using a class — not inline styles."
+  goal="Take your to-do project and write JavaScript that marks the first task complete using a class — not inline styles — keeping markup, CSS, and JS in separate files."
   steps={[
-    "Open your todo.html from the previous chapter (or recreate the shell).",
-    "In the head, add a style block with a rule: .done { text-decoration: line-through; color: gray; }",
-    "Inside the ul, add two li elements with ids task1 and task2, each with some task text.",
-    "In the script, select task1 with getElementById.",
+    "Open your to-do project from the previous chapter (or recreate index.html and script.js), and add a styles.css file.",
+    "In index.html, link the stylesheet in the head: <link rel=\"stylesheet\" href=\"styles.css\">.",
+    "In styles.css, add the rule: .done { text-decoration: line-through; color: gray; }",
+    "Inside the ul in index.html, add two li elements with ids task1 and task2, each with some task text.",
+    "In script.js, select task1 with getElementById.",
     "Add the done class to task1 using classList.add.",
     "Also update the appTitle textContent to read \"My Tasks\".",
-    "Open the page with Live Server and confirm the first task shows a strike-through."
+    "Open index.html with Live Server and confirm the first task shows a strike-through."
   ]}
-  expected="A page where the first task appears crossed out and gray, the second task looks normal, and the heading reads My Tasks."
-  solution={`<!doctype html>
+  expected="A page where the first task appears crossed out and gray, the second task looks normal, and the heading reads My Tasks — driven by a class defined in styles.css."
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>To-Do List</title>
-    <style>
-      .done { text-decoration: line-through; color: gray; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <h1 id="appTitle">To-Do List</h1>
@@ -154,15 +198,25 @@ When you want to change appearance, reach for `classList` first. A class keeps a
       <li id="task2">Walk the dog</li>
     </ul>
 
-    <script>
-      const title = document.getElementById("appTitle");
-      const task1 = document.getElementById("task1");
-
-      title.textContent = "My Tasks";
-      task1.classList.add("done");
-    </script>
+    <script src="script.js"></script>
   </body>
-</html>`}
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `.done { text-decoration: line-through; color: gray; }`
+    },
+    {
+      name: "script.js",
+      lang: "js",
+      code: `const title = document.getElementById("appTitle");
+const task1 = document.getElementById("task1");
+
+title.textContent = "My Tasks";
+task1.classList.add("done");`
+    }
+  ]}
 />
 
 <Quiz questions={[

@@ -23,23 +23,15 @@ Every element has a default `display` value that governs its layout behavior.
 - **`inline-block`** — flows inline like text, but *accepts* width, height, and vertical padding.
 - **`none`** — removes the element from the page entirely (no space reserved).
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .tag {
-        display: inline-block;
-        background: navy;
-        color: white;
-        padding: 4px 10px;
-        border-radius: 999px;
-        margin-right: 6px;
-      }
-      .hidden { display: none; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <p>
@@ -48,8 +40,23 @@ Every element has a default `display` value that governs its layout behavior.
       <span class="tag hidden">secret</span>
     </p>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.tag {
+  display: inline-block;
+  background: navy;
+  color: white;
+  padding: 4px 10px;
+  border-radius: 999px;
+  margin-right: 6px;
+}
+.hidden { display: none; }`
+  }
+]} />
 
 The third tag has `display: none`, so it takes up no space at all.
 
@@ -57,31 +64,15 @@ The third tag has `display: none`, so it takes up no space at all.
 
 Set `display: flex` on a container and its direct children become **flex items**, laid out in a row by default. Flexbox handles spacing and alignment for you — no floats, no margin tricks.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .card {
-        display: flex;
-        gap: 1rem;
-        max-width: 420px;
-        padding: 1rem;
-        background: #f3f4f6;
-        border-radius: 8px;
-      }
-      .avatar {
-        width: 64px;
-        height: 64px;
-        border-radius: 50%;
-        background: navy;
-        flex-shrink: 0;
-      }
-      .details h1 { font-size: 1.25rem; margin: 0; }
-      .details p { margin: 0.25rem 0 0; color: #444; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -92,8 +83,31 @@ Set `display: flex` on a container and its direct children become **flex items**
       </div>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.card {
+  display: flex;
+  gap: 1rem;
+  max-width: 420px;
+  padding: 1rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: navy;
+  flex-shrink: 0;
+}
+.details h1 { font-size: 1.25rem; margin: 0; }
+.details p { margin: 0.25rem 0 0; color: #444; }`
+  }
+]} />
 
 The avatar and the details sit side by side because the `.card` is a flex container. `gap: 1rem` puts space between them without any margins.
 
@@ -107,26 +121,15 @@ A few properties on the flex container do most of the work:
 - **`gap`** — space between items.
 - **`flex-wrap`** — `wrap` lets items drop onto a new line when they run out of room.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .toolbar {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem 1rem;
-        background: #f3f4f6;
-        border-radius: 8px;
-      }
-      .links { display: flex; gap: 1rem; }
-      .links a { color: navy; text-decoration: none; }
-      strong { font-size: 1.1rem; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="toolbar">
@@ -138,8 +141,26 @@ A few properties on the flex container do most of the work:
       </nav>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.toolbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+}
+.links { display: flex; gap: 1rem; }
+.links a { color: navy; text-decoration: none; }
+strong { font-size: 1.1rem; }`
+  }
+]} />
 
 `justify-content: space-between` pushes the name to the left and the links to the right; `align-items: center` keeps them vertically centered. This row-with-something-on-each-end pattern is everywhere on the web.
 
@@ -149,24 +170,15 @@ Interactive elements like these links should also react to the pointer and keybo
 
 Flexbox excels at laying out items in *one* direction — a row or a column. When you need to control rows **and** columns at the same time — a true two-dimensional layout like a photo gallery or a dashboard — `display: grid` is the better tool.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1rem; }
-      .gallery {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 0.75rem;
-      }
-      .gallery div {
-        background: navy;
-        aspect-ratio: 1;
-        border-radius: 6px;
-      }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="gallery">
@@ -174,8 +186,24 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
       <div></div><div></div><div></div>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1rem; }
+.gallery {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+}
+.gallery div {
+  background: navy;
+  aspect-ratio: 1;
+  border-radius: 6px;
+}`
+  }
+]} />
 
 `grid-template-columns: repeat(3, 1fr)` makes three equal columns; items flow into rows automatically. You do not need to learn grid in depth now — just recognize the situation: aligning content in two dimensions means grid, while a single row or column means flexbox. The Read more in the next chapter links to a full grid reference.
 
@@ -191,8 +219,11 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
     "View with Live Server, adjust the gap until it looks balanced, then commit in GitHub Desktop."
   ]}
   expected="A round avatar sitting to the left of the name and bio, with an evenly spaced row of links above the card."
-  solution={`<!-- index.html (body) -->
-<nav class="links">
+  solution={[
+    {
+      name: "index.html (body)",
+      lang: "html",
+      code: `<nav class="links">
   <a href="#about">About</a>
   <a href="#work">Work</a>
   <a href="#contact">Contact</a>
@@ -204,10 +235,12 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
     <h1 id="name">Ada Lovelace</h1>
     <p>I find patterns in numbers and write algorithms for fun.</p>
   </div>
-</div>
-
-/* styles.css (additions) */
-.links {
+</div>`
+    },
+    {
+      name: "styles.css (additions)",
+      lang: "css",
+      code: `.links {
   display: flex;
   justify-content: space-between;
   gap: 1rem;
@@ -230,7 +263,9 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
 }
 
 .details h1 { margin: 0; }
-.details p { margin: 0.25rem 0 0; }`}
+.details p { margin: 0.25rem 0 0; }`
+    }
+  ]}
 />
 
 <Quiz questions={[

@@ -57,19 +57,17 @@ Reach for classes by default. They are reusable and keep your styling flexible. 
 
 ## See selectors in action
 
-Here is the start of our profile card. The HTML carries a `class` and an `id`; the `<style>` block targets each one.
+Here is the start of our profile card, split the way real projects keep it: an `index.html` for the markup and a `styles.css` for the rules. The HTML carries a `class` and an `id`, and links the stylesheet from the `<head>`; the stylesheet targets each selector.
 
-<CodeExample language="html" preview>
-{`<!doctype html>
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1.5rem; }
-      .card { background: #f3f4f6; padding: 1rem; }
-      #name { color: navy; }
-      p { color: #444; }
-    </style>
+    <link rel="stylesheet" href="styles.css">
   </head>
   <body>
     <div class="card">
@@ -77,8 +75,19 @@ Here is the start of our profile card. The HTML carries a `class` and an `id`; t
       <p>I find patterns in numbers and write algorithms for fun.</p>
     </div>
   </body>
-</html>`}
-</CodeExample>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `body { font-family: system-ui, sans-serif; padding: 1.5rem; }
+.card { background: #f3f4f6; padding: 1rem; }
+#name { color: navy; }
+p { color: #444; }`
+  }
+]} />
+
+The `<link>` connects the two files, so the rules in `styles.css` apply to the elements in `index.html`. We will keep our styles in a separate file like this from now on.
 
 ## Three places CSS can live
 
@@ -90,7 +99,7 @@ CSS can sit in three places, from least to most maintainable.
 {`<h1 style="color: navy; font-size: 32px;">Ada Lovelace</h1>`}
 </CodeExample>
 
-**Internal** — a `<style>` block in the `<head>`. Fine for a quick demo or a one-page site (it is what the previews above use), but the styles cannot be shared across pages.
+**Internal** — a `<style>` block in the `<head>`. Fine for a quick demo or a one-page site, but the styles cannot be shared across pages.
 
 <CodeExample language="html">
 {`<head>
@@ -100,22 +109,34 @@ CSS can sit in three places, from least to most maintainable.
 </head>`}
 </CodeExample>
 
-**External** — a separate `.css` file linked from the `<head>`. This is the one to prefer: one stylesheet can style every page, and your HTML stays clean.
+**External** — a separate `.css` file linked from the `<head>`. This is the one to prefer: one stylesheet can style every page, and your HTML stays clean. It is two files working together — `index.html` links the stylesheet with a `<link>` tag, and `styles.css` holds the rules:
 
-<CodeExample language="html">
-{`<head>
-  <link rel="stylesheet" href="styles.css">
-</head>`}
-</CodeExample>
-
-The `<link>` tag points `href` at the file. The matching `styles.css` holds your rules:
-
-<CodeExample language="css">
-{`h1 {
+<CodeExample preview files={[
+  {
+    name: "index.html",
+    lang: "html",
+    code: `<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <h1>Ada Lovelace</h1>
+  </body>
+</html>`
+  },
+  {
+    name: "styles.css",
+    lang: "css",
+    code: `h1 {
   color: navy;
   font-size: 32px;
-}`}
-</CodeExample>
+}`
+  }
+]} />
+
+The `<link>` tag's `href` points at the file; the matching `styles.css` holds your rules. This is the form to reach for, and the one the rest of this module uses.
 
 ## The cascade and specificity, briefly
 
@@ -144,8 +165,11 @@ You do not need to master specificity now. Just remember the order of strength, 
     "Open index.html with Live Server and confirm the styles apply. Commit both files in GitHub Desktop."
   ]}
   expected="A profile card whose background, name color, and bio color all come from styles.css — with no style attributes or style block in the HTML."
-  solution={`<!-- index.html -->
-<!doctype html>
+  solution={[
+    {
+      name: "index.html",
+      lang: "html",
+      code: `<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -159,10 +183,12 @@ You do not need to master specificity now. Just remember the order of strength, 
       <p>I find patterns in numbers and write algorithms for fun.</p>
     </div>
   </body>
-</html>
-
-/* styles.css */
-.card {
+</html>`
+    },
+    {
+      name: "styles.css",
+      lang: "css",
+      code: `.card {
   background: #f3f4f6;
   padding: 1rem;
 }
@@ -173,7 +199,9 @@ You do not need to master specificity now. Just remember the order of strength, 
 
 p {
   color: #444;
-}`}
+}`
+    }
+  ]}
 />
 
 <Quiz questions={[

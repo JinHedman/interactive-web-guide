@@ -1,129 +1,138 @@
 // RSC — runs on server only; no 'use client'
-import { codeToHtml, type ThemeRegistrationRaw } from "shiki";
 import CopyButton from "./CopyButton";
 import CodePreview from "./CodePreview";
+import CodeFileWindow from "./CodeFileWindow";
+import {
+  highlightCode,
+  highlightFiles,
+  assembleProject,
+  type CodeFile,
+} from "@/lib/highlight";
 
-export interface CodeExampleProps {
-  language: "html" | "css" | "js" | "jsx" | "bash" | "ts" | "tsx" | "json" | string;
-  preview?: boolean;
-  children: string;
-}
-
-// Map our language aliases to Shiki language IDs
-function toShikiLang(lang: string): string {
-  const map: Record<string, string> = {
-    js: "javascript",
-    jsx: "jsx",
-    ts: "typescript",
-    tsx: "tsx",
-    html: "html",
-    css: "css",
-    bash: "bash",
-    json: "json",
-  };
-  return map[lang] ?? lang;
-}
-
-// ─── Webcraft syntax palette ──────────────────────────────────────────────────
-// Custom TextMate theme matching the design handoff "Syntax highlight palette":
-// tags/punctuation #f472b6, attribute names #c4b5fd, strings #fcd34d,
-// keywords/arrows #818cf8, identifiers/functions #7dd3fc, comments #6b7280,
-// plain text #c9cdd6.
+// ─── Authoring API ────────────────────────────────────────────────────────────
+// Two mutually-exclusive modes:
 //
-// The code surface (--code-bg) is ALWAYS dark — #16181f on a light page,
-// #07080b on a dark page — so we use ONE dark syntax palette in both modes.
-// Using a single `theme` (not a light/dark pair with defaultColor:false) makes
-// Shiki emit a direct, readable `color` on each span instead of per-page-theme
-// CSS vars, which previously served the light theme's dark text onto our dark
-// background (invisible in light page mode). The theme background is left
-// transparent so the wrapper's --code-bg keeps the per-page-theme shade.
-const WEBCRAFT_PALETTE = {
-  plain: "#c9cdd6",
-  comment: "#6b7280",
-  string: "#fcd34d",
-  keyword: "#818cf8",
-  identifier: "#7dd3fc",
-  tag: "#f472b6",
-  attr: "#c4b5fd",
-  number: "#7dd3fc",
-} as const;
-
-function makeWebcraftTheme(): ThemeRegistrationRaw {
-  const p = WEBCRAFT_PALETTE;
-  return {
-    name: "webcraft-dark",
-    type: "dark",
-    colors: {
-      "editor.background": "#00000000",
-      "editor.foreground": p.plain,
-    },
-    settings: [
-      { settings: { background: "#00000000", foreground: p.plain } },
-      { scope: ["comment", "punctuation.definition.comment"], settings: { foreground: p.comment } },
-      {
-        scope: ["string", "string.quoted", "string.template", "constant.other.symbol"],
-        settings: { foreground: p.string },
-      },
-      { scope: ["constant.numeric", "constant.language", "constant.character"], settings: { foreground: p.number } },
-      {
-        scope: [
-          "keyword",
-          "keyword.control",
-          "keyword.operator",
-          "storage",
-          "storage.type",
-          "storage.modifier",
-          "keyword.operator.arrow",
-        ],
-        settings: { foreground: p.keyword },
-      },
-      {
-        scope: [
-          "entity.name.function",
-          "support.function",
-          "variable",
-          "variable.other",
-          "meta.function-call entity.name.function",
-        ],
-        settings: { foreground: p.identifier },
-      },
-      {
-        scope: [
-          "entity.name.tag",
-          "punctuation.definition.tag",
-          "punctuation",
-          "meta.tag",
-        ],
-        settings: { foreground: p.tag },
-      },
-      {
-        scope: [
-          "entity.other.attribute-name",
-          "support.type.property-name",
-          "meta.attribute",
-        ],
-        settings: { foreground: p.attr },
-      },
-    ],
-  };
+//  (1) SINGLE-FILE (unchanged, used by ~all existing chapters):
+//      <CodeExample language="html" preview>{`…one file…`}</CodeExample>
+//
+//  (2) MULTI-FILE — teaches real file separation. Each file renders as its own
+//      stacked, highlighted window (HTML, then CSS, then JS, in array order):
+//      <CodeExample preview files={[
+//        { name: "index.html",  lang: "html", code: `…` },
+//        { name: "styles.css",  lang: "css",  code: `…` },
+//        { name: "script.js",   lang: "js",   code: `…` },
+//      ]} />
+//      When `preview`, the files are assembled into ONE document for the
+//      sandboxed iframe (CSS/JS inlined where index.html links them, otherwise
+//      injected). Display = separate files; Result = the combined page.
+export interface CodeExampleProps {
+  /** Single-file mode: the language for `children`. Ignored in multi-file mode. */
+  language?:
+    | "html"
+    | "css"
+    | "js"
+    | "jsx"
+    | "bash"
+    | "ts"
+    | "tsx"
+    | "json"
+    | string;
+  /** Multi-file mode: an ordered list of files, each its own window. */
+  files?: CodeFile[];
+  /** Show a live sandboxed preview (html/css/js only). */
+  preview?: boolean;
+  /** Single-file mode: the source code. */
+  children?: string;
 }
 
-const codeTheme = makeWebcraftTheme();
+const PANE_LABEL_STYLE: React.CSSProperties = {
+  padding: "5px 14px",
+  fontSize: "10.5px",
+  fontWeight: 600,
+  letterSpacing: "0.06em",
+  textTransform: "uppercase",
+  color: "var(--fg-subtle)",
+  background: "var(--bg-subtle)",
+  borderBottom: "1px solid var(--border)",
+};
 
-export default async function CodeExample({
+export default async function CodeExample(props: CodeExampleProps) {
+  if (props.files && props.files.length > 0) {
+    return <MultiFileExample files={props.files} preview={props.preview} />;
+  }
+  return (
+    <SingleFileExample
+      language={props.language ?? "html"}
+      preview={props.preview}
+      code={props.children ?? ""}
+    />
+  );
+}
+
+// ─── Multi-file mode ──────────────────────────────────────────────────────────
+async function MultiFileExample({
+  files,
+  preview = false,
+}: {
+  files: CodeFile[];
+  preview?: boolean;
+}) {
+  const highlighted = await highlightFiles(files);
+
+  // Preview is available when at least one file is previewable (html/css/js).
+  const canPreview =
+    preview && files.some((f) => ["html", "css", "js", "jsx"].includes(f.lang));
+  const assembled = canPreview ? assembleProject(files) : "";
+
+  return (
+    <div style={{ margin: "1.375rem 0" }}>
+      {/* Stack of file windows (display = separate files). */}
+      <div role="group" aria-label="Project files">
+        {highlighted.map((f, i) => (
+          <CodeFileWindow
+            key={`${f.name}-${i}`}
+            name={f.name}
+            html={f.html}
+            code={files[i].code}
+            stacked={i > 0}
+          />
+        ))}
+      </div>
+
+      {/* Combined result (run = one assembled page). */}
+      {canPreview && (
+        <div
+          className="preview-pane"
+          style={{
+            marginTop: "10px",
+            borderRadius: "10px",
+            border: "1px solid var(--border)",
+            overflow: "hidden",
+            background: "var(--bg-surface)",
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
+          <div style={PANE_LABEL_STYLE}>Result</div>
+          <CodePreview srcDoc={assembled} />
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ─── Single-file mode (unchanged behavior) ────────────────────────────────────
+async function SingleFileExample({
   language,
   preview = false,
-  children,
-}: CodeExampleProps) {
-  // children may be undefined if the MDX expression evaluates to nothing
-  const code = (children ?? "").trimEnd();
-  const shikiLang = toShikiLang(language);
-
-  const html = await codeToHtml(code, {
-    lang: shikiLang,
-    theme: codeTheme,
-  });
-
+  code: rawCode,
+}: {
+  language: string;
+  preview?: boolean;
+  code: string;
+}) {
+  const code = rawCode.trimEnd();
+  const html = await highlightCode(code, language);
   const canPreview = preview && ["html", "css", "js", "jsx"].includes(language);
 
   return (
@@ -166,22 +175,7 @@ export default async function CodeExample({
       <div className={canPreview ? "code-example-panes" : undefined}>
         {/* Code pane */}
         <div style={{ position: "relative", minWidth: 0, background: "var(--code-bg)" }}>
-          {canPreview && (
-            <div
-              style={{
-                padding: "5px 14px",
-                fontSize: "10.5px",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: "var(--fg-subtle)",
-                background: "var(--bg-subtle)",
-                borderBottom: "1px solid var(--border)",
-              }}
-            >
-              Code
-            </div>
-          )}
+          {canPreview && <div style={PANE_LABEL_STYLE}>Code</div>}
           <div
             className="code-pane-scroll"
             dangerouslySetInnerHTML={{ __html: html }}
@@ -200,20 +194,7 @@ export default async function CodeExample({
               background: "var(--bg-surface)",
             }}
           >
-            <div
-              style={{
-                padding: "5px 14px",
-                fontSize: "10.5px",
-                fontWeight: 600,
-                letterSpacing: "0.06em",
-                textTransform: "uppercase",
-                color: "var(--fg-subtle)",
-                background: "var(--bg-subtle)",
-                borderBottom: "1px solid var(--border)",
-              }}
-            >
-              Result
-            </div>
+            <div style={PANE_LABEL_STYLE}>Result</div>
             <CodePreview code={code} language={language} />
           </div>
         )}

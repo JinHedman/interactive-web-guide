@@ -84,22 +84,22 @@ Click **Publish branch** at the top of GitHub Desktop. After that, the button be
     "Click Publish branch, then check github.com — your add-skills-section branch now appears in the repository's branch list."
   ]}
   expected="Two separate commits on a branch named add-skills-section, and that branch visible on GitHub. The main branch is unchanged."
-  solution={`<!-- The new markup added to the body of index.html -->
-<h2>Skills</h2>
-<ul>
-  <li>HTML</li>
-  <li>CSS</li>
-  <li>JavaScript</li>
-</ul>
+  solution={`The markup you add to the body of index.html looks like this:
 
-<!--
-GitHub Desktop steps (no code to "solve"):
-1. Current Branch -> New Branch -> name: add-skills-section -> Create Branch
-2. Edit and save in VS Code
-3. Commit "Add skills section with three skills" (button: Commit to add-skills-section)
-4. Edit again, save, commit "Improve the page title" separately
-5. Publish branch
--->`}
+  <h2>Skills</h2>
+  <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+  </ul>
+
+The rest of the exercise is GitHub Desktop steps, not code:
+1. Current Branch -> New Branch -> name it add-skills-section -> Create Branch.
+2. Add the markup in VS Code and save.
+3. Commit "Add skills section with three skills" — the button reads Commit to add-skills-section.
+4. Make a second small edit (improve the page title), save, and commit it separately with its own message.
+5. Click Publish branch, then confirm the branch appears on github.com.`}
+  solutionLang="text"
 />
 
 <Quiz questions={[
