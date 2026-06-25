@@ -1,0 +1,191 @@
+---
+title: "What JavaScript is and how to run it"
+module: "javascript"
+order: 1
+goal: "Add a script to a page and run JavaScript, viewing output in the browser console."
+objectives:
+  - "Explain what JavaScript adds to a page (behavior)"
+  - "Add JS with <script src> and explain why it goes before </body>"
+  - "Write to the console with console.log"
+  - "Open and read the browser devtools console"
+  - "Add a code comment"
+estMinutes: 25
+prerequisites: ["html/1-structure"]
+---
+
+HTML gives a page structure. CSS gives it style. JavaScript gives it *behavior* — the page can respond to clicks, change its own content, do math, and talk to servers. This chapter is about getting JavaScript to run at all: where the code goes, how to see its output, and how to leave notes for yourself.
+
+## What JavaScript adds
+
+HTML and CSS describe a page once, when it loads. JavaScript runs *after* that and can keep changing things. A countdown timer, a form that checks your input as you type, a button that adds a row to a list — all behavior, all JavaScript.
+
+For now we will not touch the page itself. We will write small programs and read their output in the **console**, a panel built into every browser for developers.
+
+## Writing to the console
+
+`console.log` prints a value to the console. It is the simplest way to see what your code is doing.
+
+<CodeExample language="js" preview>
+{`console.log("Hello from JavaScript");
+console.log("This runs in the browser console.");`}
+</CodeExample>
+
+Each `console.log(...)` prints one line. You can pass it text, numbers, or the result of a calculation.
+
+<CodeExample language="js" preview>
+{`console.log("Two plus two is:");
+console.log(2 + 2);`}
+</CodeExample>
+
+In these lessons, the result pane on the right shows whatever you `console.log`. In a real browser you would open the devtools console to see the same output (more on that below).
+
+## Adding a script to a page
+
+In a real project, JavaScript lives in its own `.js` file and you attach it to the page with a `<script>` tag and a `src` attribute, just like a stylesheet.
+
+<CodeExample language="html">
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>My page</title>
+  </head>
+  <body>
+    <h1>Hello</h1>
+
+    <script src="main.js"></script>
+  </body>
+</html>`}
+</CodeExample>
+
+Notice where the `<script>` sits: at the very bottom of `<body>`, just before `</body>`. The browser reads the page top to bottom. If the script runs before the elements above it exist, it cannot find them. Putting the script last means the whole page is ready by the time your code runs.
+
+You can also write JavaScript directly inside a `<script>` tag instead of a separate file. This is handy for tiny examples.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Inline script</title>
+  </head>
+  <body>
+    <h1 id="greeting">Loading...</h1>
+
+    <script>
+      document.getElementById("greeting").textContent = "Hello from a script tag!";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Do not worry about that `document.getElementById` line yet — that is the DOM, which the final chapter of this module introduces. For now, just notice that the script changed the heading after the page loaded.
+
+## Opening the devtools console
+
+On your own machine, you read `console.log` output in the browser's **devtools console**:
+
+- **Chrome / Edge**: press `F12`, or right-click the page and choose *Inspect*, then click the **Console** tab.
+- **Firefox**: press `F12`, then the **Console** tab.
+- **Safari**: enable the Develop menu in Settings, then press `Option` + `Cmd` + `C`.
+
+Keep the console open while you work. Errors show up there too, in red — reading them is half of debugging.
+
+## Comments
+
+A comment is a note in your code that JavaScript ignores. Use it to explain *why* something is there.
+
+<CodeExample language="js" preview>
+{`// This is a single-line comment. JavaScript skips it.
+console.log("Comments do not run.");
+
+/*
+  This is a multi-line comment.
+  Useful for longer explanations.
+*/
+console.log("But this line does run.");`}
+</CodeExample>
+
+`//` comments out the rest of a line. `/* ... */` comments out everything between the markers, across multiple lines.
+
+<Exercise
+  title="Run your first script"
+  goal="Create an HTML page with an external JavaScript file that logs three messages to the console."
+  steps={[
+    "In VS Code, create a new folder and open it. Inside, create index.html and main.js.",
+    "In index.html, write the basic document skeleton: doctype, html, head with a charset and title, and a body with an h1 that says Console demo.",
+    "Just before </body>, add a script tag with src=\"main.js\".",
+    "In main.js, add a comment at the top describing the file, then three console.log lines: your name, your favorite number, and the result of 10 * 3.",
+    "Open index.html with Live Server, then open the devtools console (F12, Console tab) and confirm all three lines appear."
+  ]}
+  expected="The page shows the Console demo heading, and the devtools console prints your name, your favorite number, and 30."
+  solution={`<!-- index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Console demo</title>
+  </head>
+  <body>
+    <h1>Console demo</h1>
+
+    <script src="main.js"></script>
+  </body>
+</html>
+
+// main.js
+// Logs a few values to the console so we can see JavaScript run.
+console.log("Ada Lovelace");
+console.log(7);
+console.log(10 * 3);`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does JavaScript add to a web page that HTML and CSS do not?",
+    options: [
+      "Structure",
+      "Visual styling",
+      "Behavior — the page can respond and change after it loads",
+      "Character encoding"
+    ],
+    answer: 2,
+    explanation: "HTML is structure and CSS is style; JavaScript adds behavior, running after the page loads to respond to events and change content."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Why is a <script src> tag usually placed just before </body>?",
+    options: [
+      "Scripts only work at the bottom of a file",
+      "So the elements above it already exist when the script runs",
+      "It makes the file smaller",
+      "Because the head element cannot contain scripts"
+    ],
+    answer: 1,
+    explanation: "The browser parses top to bottom. Placing the script last means the page's elements exist by the time the code runs."
+  },
+  {
+    id: "q3",
+    type: "fill-in",
+    prompt: "Which function prints a value to the browser console?",
+    answer: "console.log",
+    accept: ["console.log", "console.log()", "log"],
+    explanation: "console.log(value) writes the value to the devtools console — the simplest way to inspect what your code is doing."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which of these is a valid single-line comment in JavaScript?",
+    options: [
+      "# this is a comment",
+      "// this is a comment",
+      "<!-- this is a comment -->",
+      "** this is a comment **"
+    ],
+    answer: 1,
+    explanation: "JavaScript uses // for single-line comments and /* ... */ for multi-line. <!-- --> is HTML; # is not a JS comment."
+  }
+]} />

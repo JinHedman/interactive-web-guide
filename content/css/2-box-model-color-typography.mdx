@@ -1,0 +1,259 @@
+---
+title: "Box model, colors, units, and typography"
+module: "css"
+order: 2
+goal: "Control spacing, color, and text using the box model and sensible units."
+objectives:
+  - "Use the box model: content, padding, border, margin"
+  - "Set colors with named, hex, and rgb/hsl values"
+  - "Choose units: px, em, rem, %"
+  - "Style text: font-family, font-size, font-weight, line-height"
+  - "Apply box-sizing: border-box and explain why it helps"
+prerequisites: ["css/1-how-css-works"]
+estMinutes: 35
+---
+
+You can target elements now. This chapter gives you the properties that do most of the visual work: spacing through the box model, colors in their common formats, the units you measure with, and the handful of properties that style text. We will keep refining the same profile card.
+
+## Every element is a box
+
+The browser lays out each element as a rectangular box with four layers, from the inside out:
+
+- **Content** — the text or image itself.
+- **Padding** — space *inside* the box, between content and border.
+- **Border** — a line around the padding.
+- **Margin** — space *outside* the box, pushing other elements away.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .card {
+        background: #f3f4f6;
+        padding: 16px;        /* space inside, around the text */
+        border: 2px solid navy;
+        margin: 24px;         /* space outside, away from edges */
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ada Lovelace</h1>
+      <p>I find patterns in numbers and write algorithms for fun.</p>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+You can set each side separately (`padding-top`, `margin-left`) or use shorthand. `margin: 24px` sets all four sides; `padding: 8px 16px` sets top/bottom then left/right.
+
+## box-sizing: border-box
+
+By default, `width` measures only the content. Padding and border are then *added on top*, so a box you set to `width: 200px` with `20px` of padding actually takes up `240px`. That math is annoying.
+
+Set `box-sizing: border-box` and `width` includes padding and border instead — what you ask for is what you get. Apply it to everything once at the top of your stylesheet:
+
+<CodeExample language="css">
+{`* {
+  box-sizing: border-box;
+}
+
+.card {
+  width: 300px;     /* the card is exactly 300px wide */
+  padding: 16px;    /* padding now fits inside that 300px */
+  border: 2px solid navy;
+}`}
+</CodeExample>
+
+This is one of the first lines almost every stylesheet includes. Use it.
+
+## Colors
+
+CSS accepts colors in several formats. The common ones:
+
+- **Named** — `navy`, `tomato`, `white`. Handy, but limited.
+- **Hex** — `#1e3a8a`. Three pairs of hex digits for red, green, blue.
+- **rgb** — `rgb(30 58 138)`. The same channels as numbers 0–255.
+- **hsl** — `hsl(222 64% 33%)`. Hue, saturation, lightness — easy to tweak by hand.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .card { background: #f3f4f6; padding: 16px; border-radius: 8px; }
+      .card h1 { color: hsl(222 64% 33%); }
+      .card p { color: rgb(68 68 68); }
+      .tag { color: white; background: tomato; padding: 2px 8px; border-radius: 4px; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ada Lovelace</h1>
+      <p>I find patterns in numbers and write algorithms for fun.</p>
+      <span class="tag">mathematician</span>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+Hex is the most common in the wild; `hsl` is the friendliest when you want a slightly lighter or darker shade.
+
+## Units
+
+Numbers in CSS need units. The four you will use most:
+
+- **`px`** — absolute pixels. Predictable; good for borders and fine details.
+- **`rem`** — relative to the *root* font size (the `<html>` element, usually 16px). `1.5rem` = 24px. Great for font sizes and spacing because it scales with user settings.
+- **`em`** — relative to the *current element's* font size. Useful but compounds when nested.
+- **`%`** — relative to the parent. Common for widths in fluid layouts.
+
+<CodeExample language="css">
+{`html { font-size: 16px; }   /* the root */
+
+.card {
+  width: 80%;               /* 80% of its parent's width */
+  padding: 1rem;            /* 16px */
+  font-size: 1rem;          /* 16px */
+  border: 1px solid navy;   /* a crisp 1px line */
+}`}
+</CodeExample>
+
+A good default: `rem` for font sizes and spacing, `px` for borders, `%` (or `max-width`, coming in chapter 4) for fluid widths.
+
+## Typography
+
+Four properties cover most text styling:
+
+- **`font-family`** — the typeface, with fallbacks listed in order. End with a generic family like `sans-serif`.
+- **`font-size`** — the text size.
+- **`font-weight`** — `normal` (400), `bold` (700), or a number.
+- **`line-height`** — vertical space between lines. A unitless value like `1.5` means 1.5× the font size and is the recommended way to set it.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body {
+        font-family: "Segoe UI", system-ui, sans-serif;
+        padding: 1rem;
+      }
+      .card { background: #f3f4f6; padding: 1.5rem; border-radius: 8px; max-width: 360px; }
+      .card h1 { font-size: 1.75rem; font-weight: 700; margin: 0 0 0.5rem; }
+      .card p { font-size: 1rem; line-height: 1.6; color: #444; margin: 0; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1>Ada Lovelace</h1>
+      <p>I find patterns in numbers and write algorithms for fun. Mathematician, writer, and arguably the first programmer.</p>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+Starting `font-family` with `system-ui` uses the reader's native operating-system font — fast and familiar, with no download.
+
+<Exercise
+  title="Give the profile card real spacing and type"
+  goal="Style the card with box-sizing, padding, a border, colors, and tidy typography in your external stylesheet."
+  steps={[
+    "Open your project from the last chapter in VS Code (index.html + styles.css).",
+    "At the top of styles.css, add a * { box-sizing: border-box; } rule.",
+    "On .card, set a max-width (try 360px), padding of 1.5rem, a border-radius, and a light background color in hex.",
+    "On the name heading, set a font-size in rem and font-weight: 700.",
+    "On the bio paragraph, set a color (try rgb or hsl) and line-height: 1.6.",
+    "Set a font-family on body that starts with system-ui and ends with sans-serif.",
+    "Save, view with Live Server, then commit in GitHub Desktop."
+  ]}
+  expected="A neat card: comfortable padding inside a rounded border, a bold name, and a readable bio with relaxed line spacing."
+  solution={`/* styles.css */
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  padding: 1.5rem;
+}
+
+.card {
+  max-width: 360px;
+  padding: 1.5rem;
+  background: #f3f4f6;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+}
+
+#name {
+  font-size: 1.75rem;
+  font-weight: 700;
+  margin: 0 0 0.5rem;
+}
+
+p {
+  color: hsl(0 0% 27%);
+  line-height: 1.6;
+  margin: 0;
+}`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which box-model layer adds space OUTSIDE the border, pushing other elements away?",
+    options: ["padding", "margin", "content", "border"],
+    answer: 1,
+    explanation: "Margin is the outermost layer and creates space between this box and its neighbors. Padding is the space inside, between content and border."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "With box-sizing: border-box, what does width: 200px include?",
+    options: [
+      "Only the content",
+      "Content plus margin",
+      "Content plus padding and border",
+      "Content plus padding, border, and margin"
+    ],
+    answer: 2,
+    explanation: "border-box makes width include padding and border (but not margin), so a 200px box stays 200px wide regardless of its padding."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What does the unit rem measure relative to?",
+    options: [
+      "The current element's font size",
+      "The parent element's width",
+      "The root (html) element's font size",
+      "The viewport height"
+    ],
+    answer: 2,
+    explanation: "rem is relative to the root font size (usually 16px), so 1.5rem is 24px. em, by contrast, is relative to the current element's font size."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which is a valid hex color?",
+    options: ["#1e3a8a", "rgb(30, 58, 138)", "hsl(222, 64%, 33%)", "navy-blue"],
+    answer: 0,
+    explanation: "#1e3a8a is hex — three pairs of hex digits for red, green, blue. The others are rgb, hsl, and an invalid name."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which property sets the vertical space between lines of text? (Set it with a unitless value like 1.5.)",
+    answer: "line-height",
+    accept: ["line-height", "line height"],
+    explanation: "line-height controls spacing between lines; a unitless value such as 1.5 scales with the font size and is the recommended form."
+  }
+]} />

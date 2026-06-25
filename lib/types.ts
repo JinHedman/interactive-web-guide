@@ -55,3 +55,9 @@ export interface ChapterProgress {
   exerciseDone: boolean;
   quizScore: number | null;
 }
+
+// Global progress metadata (not tied to a single chapter)
+export interface ProgressMeta {
+  // Chapter id ("<module>/<slug>") of the most recently opened chapter, or null.
+  lastVisited: string | null;
+}

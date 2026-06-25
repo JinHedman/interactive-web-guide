@@ -1,0 +1,171 @@
+---
+title: "Strings, numbers, and booleans"
+module: "javascript"
+order: 3
+goal: "Manipulate strings and numbers and understand truthiness."
+objectives:
+  - "Build strings with concatenation and template literals"
+  - "Use common string methods: length, toUpperCase, includes, slice"
+  - "Do basic number work and convert with Number/parseInt"
+  - "Explain truthy and falsy values"
+estMinutes: 30
+prerequisites: ["javascript/2-variables-types"]
+---
+
+Now that you can store values, this chapter is about working with them: joining and inspecting text, doing reliable number work, converting between the two, and understanding why `if` statements treat some values as "true" even when they are not literally `true`.
+
+## Joining strings
+
+The simplest way to combine strings is with `+`, called *concatenation*.
+
+<CodeExample language="js" preview>
+{`const first = "Ada";
+const last = "Lovelace";
+
+const fullName = first + " " + last;
+console.log(fullName); // Ada Lovelace`}
+</CodeExample>
+
+That works, but the spaces and `+` signs get fiddly. **Template literals** are cleaner. Use backticks (`` ` ``) and drop variables inside `${...}`.
+
+<CodeExample language="js" preview>
+{`const name = "Ada";
+const count = 3;
+
+const message = \`\${name} has \${count} hobbies.\`;
+console.log(message); // Ada has 3 hobbies.`}
+</CodeExample>
+
+Template literals can also span multiple lines, which plain strings cannot. Prefer them whenever you mix text and variables.
+
+## Useful string methods
+
+A string carries built-in tools. You call them with a dot after the value.
+
+<CodeExample language="js" preview>
+{`const hobby = "Photography";
+
+console.log(hobby.length);          // 11  — number of characters
+console.log(hobby.toUpperCase());   // PHOTOGRAPHY
+console.log(hobby.toLowerCase());   // photography
+console.log(hobby.includes("graph")); // true — does it contain this?
+console.log(hobby.slice(0, 5));     // Photo — characters 0 up to (not including) 5`}
+</CodeExample>
+
+- `length` is a property (no parentheses) — the character count.
+- `toUpperCase()` / `toLowerCase()` return a new string in that case.
+- `includes("...")` returns a boolean: does the string contain that text?
+- `slice(start, end)` returns the piece from `start` up to (but not including) `end`.
+
+These methods **return a new value** — they do not change the original string.
+
+## Number work and conversion
+
+Numbers use the arithmetic from the last chapter. The tricky part is that input from a page always arrives as a *string*, so `"5"` and `5` are different. You convert with `Number(...)` or `parseInt(...)`.
+
+<CodeExample language="js" preview>
+{`const typed = "42";          // a string, e.g. from a form
+console.log(typed + 1);      // "421" — string concatenation, not math!
+
+const asNumber = Number(typed);
+console.log(asNumber + 1);   // 43 — now it's real addition
+
+console.log(parseInt("12px"));   // 12 — parseInt stops at the first non-digit
+console.log(Number("12px"));     // NaN — Number is stricter`}
+</CodeExample>
+
+- `Number("42")` converts a clean numeric string to a number; anything non-numeric becomes `NaN` ("not a number").
+- `parseInt("12px")` reads digits from the front and ignores the rest — useful for values like `"12px"`.
+
+When you accidentally add a number to a string, JavaScript turns the number into a string and joins them. Converting first avoids that bug.
+
+## Truthy and falsy
+
+In a condition, JavaScript treats every value as either *truthy* or *falsy*. Only a short list of values are **falsy**:
+
+<CodeExample language="js" preview>
+{`// These six values are falsy:
+console.log(Boolean(false));     // false
+console.log(Boolean(0));         // false
+console.log(Boolean(""));        // false (empty string)
+console.log(Boolean(null));      // false
+console.log(Boolean(undefined)); // false
+console.log(Boolean(NaN));       // false
+
+// Almost everything else is truthy:
+console.log(Boolean("hello"));   // true
+console.log(Boolean(42));        // true`}
+</CodeExample>
+
+So `0`, `""`, `null`, `undefined`, `NaN`, and `false` are falsy; everything else — any non-empty string, any non-zero number — is truthy. You will lean on this in the next chapter when writing conditions like `if (name)` to mean "if name has a value."
+
+<Exercise
+  title="Format a profile line"
+  goal="Combine string methods, template literals, and a number conversion into one formatted output line."
+  steps={[
+    "Create profile.js.",
+    "Declare const name = \"ada lovelace\"; and const ageInput = \"30\"; (note the age is a string).",
+    "Make a const ageNumber by converting ageInput with Number, then compute nextYear as ageNumber + 1.",
+    "Capitalize the name: build const displayName using name.toUpperCase() (or capitalize just the first letters if you want a challenge).",
+    "Log one template-literal line: `${displayName} is ${ageNumber} and will be ${nextYear} next year.` Confirm the math is real addition (31, not \"301\")."
+  ]}
+  expected="A single line such as: ADA LOVELACE is 30 and will be 31 next year."
+  solution={`const name = "ada lovelace";
+const ageInput = "30";
+
+const ageNumber = Number(ageInput);
+const nextYear = ageNumber + 1;
+
+const displayName = name.toUpperCase();
+
+console.log(\`\${displayName} is \${ageNumber} and will be \${nextYear} next year.\`);
+// ADA LOVELACE is 30 and will be 31 next year.`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which produces the string \"Ada is 3\" most cleanly, given name = \"Ada\" and count = 3?",
+    options: [
+      "name + \" is \" + count",
+      "`${name} is ${count}`",
+      "name, \" is \", count",
+      "name.concat(is).concat(count)"
+    ],
+    answer: 1,
+    explanation: "A template literal with backticks and ${...} is the cleanest way to mix text and variables. The first option also works but is harder to read."
+  },
+  {
+    id: "q2",
+    type: "fill-in",
+    prompt: "What does \"Photography\".length evaluate to?",
+    answer: "11",
+    accept: ["11"],
+    explanation: "length is the character count, and \"Photography\" has 11 characters."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What is the result of \"5\" + 1 in JavaScript?",
+    options: ["6", "\"51\"", "NaN", "An error"],
+    answer: 1,
+    explanation: "Because \"5\" is a string, + concatenates: it becomes \"51\". Convert with Number(\"5\") first to get real addition."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which of these values is falsy?",
+    options: ["\"false\"", "\"0\"", "0", "[]"],
+    answer: 2,
+    explanation: "The number 0 is falsy. The strings \"false\" and \"0\" are non-empty strings, so they are truthy, and an array is truthy too."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "What does parseInt(\"12px\") return?",
+    answer: "12",
+    accept: ["12"],
+    explanation: "parseInt reads digits from the front and stops at the first non-digit, so it returns 12."
+  }
+]} />

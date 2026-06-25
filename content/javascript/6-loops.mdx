@@ -1,0 +1,170 @@
+---
+title: "Loops"
+module: "javascript"
+order: 6
+goal: "Repeat work and iterate over arrays with loops."
+objectives:
+  - "Write a for loop with a counter"
+  - "Loop over an array with for...of"
+  - "Use a while loop and avoid infinite loops"
+  - "Iterate with forEach"
+estMinutes: 30
+prerequisites: ["javascript/5-conditionals"]
+---
+
+When you need to do the same work many times — print every hobby in a list, count from 1 to 10, total up some numbers — you use a *loop*. This chapter covers the four loops you will use most, and the one mistake that locks up the page.
+
+## The for loop
+
+A classic `for` loop has three parts in its parentheses: a starting counter, a condition to keep going, and a step that runs after each pass.
+
+<CodeExample language="js" preview>
+{`for (let i = 0; i < 5; i++) {
+  console.log(\`Pass number \${i}\`);
+}
+// Pass number 0
+// Pass number 1
+// ... up to 4`}
+</CodeExample>
+
+Read it as: start `i` at `0`; keep looping **while** `i < 5`; after each pass, do `i++` (add one to `i`). When the condition becomes false, the loop stops. The counter is handy when you need the index — for example, to read array items by position.
+
+<CodeExample language="js" preview>
+{`const hobbies = ["reading", "cycling", "cooking"];
+
+for (let i = 0; i < hobbies.length; i++) {
+  console.log(\`\${i + 1}. \${hobbies[i]}\`);
+}
+// 1. reading
+// 2. cycling
+// 3. cooking`}
+</CodeExample>
+
+Looping while `i < hobbies.length` works for any array length — you do not hard-code the count.
+
+## for...of
+
+When you just want each item and do not care about the index, `for...of` is cleaner.
+
+<CodeExample language="js" preview>
+{`const hobbies = ["reading", "cycling", "cooking"];
+
+for (const hobby of hobbies) {
+  console.log(hobby);
+}
+// reading
+// cycling
+// cooking`}
+</CodeExample>
+
+Each pass puts the next item into `hobby`. No counter, no `[i]` — less to get wrong. Reach for `for...of` whenever you are walking through an array's values.
+
+## The while loop
+
+A `while` loop repeats as long as its condition stays true. Use it when you do not know the number of passes up front.
+
+<CodeExample language="js" preview>
+{`let countdown = 3;
+
+while (countdown > 0) {
+  console.log(countdown);
+  countdown--; // this is what eventually ends the loop
+}
+console.log("Lift off!");
+// 3
+// 2
+// 1
+// Lift off!`}
+</CodeExample>
+
+**Watch out for infinite loops.** Something inside the loop must eventually make the condition false. If you forget `countdown--`, the condition stays `true` forever and the page freezes. Always make sure each pass moves toward the exit.
+
+## forEach
+
+Arrays have a `forEach` method that runs a function once per item. You will see this style constantly in real code.
+
+<CodeExample language="js" preview>
+{`const hobbies = ["reading", "cycling", "cooking"];
+
+hobbies.forEach(function (hobby, index) {
+  console.log(\`\${index}: \${hobby}\`);
+});
+// 0: reading
+// 1: cycling
+// 2: cooking`}
+</CodeExample>
+
+`forEach` hands your function each item (and optionally its index). It is concise for "do this with every element." The function you pass is covered properly in the next chapter — here, just notice the pattern.
+
+<Exercise
+  title="Sum and list a cart"
+  goal="Use a loop to total an array of numbers, and another loop to print each item."
+  steps={[
+    "Create cart.js and declare const prices = [4, 9, 2, 6];.",
+    "Create let total = 0;. Use a for...of loop to add each price to total.",
+    "Log the total after the loop (it should be 21).",
+    "Use a second loop (for, for...of, or forEach) to print each price on its own line, like Item: 4.",
+    "Run it and confirm the total and the per-item lines are correct."
+  ]}
+  expected="The console prints a total of 21, then one line per price (4, 9, 2, 6)."
+  solution={`const prices = [4, 9, 2, 6];
+
+let total = 0;
+for (const price of prices) {
+  total += price;
+}
+console.log(\`Total: \${total}\`); // Total: 21
+
+prices.forEach(function (price) {
+  console.log(\`Item: \${price}\`);
+});
+// Item: 4
+// Item: 9
+// Item: 2
+// Item: 6`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "In for (let i = 0; i < 5; i++), what does the i < 5 part do?",
+    options: [
+      "Sets the starting value",
+      "Is the condition that must stay true for the loop to continue",
+      "Runs after every pass",
+      "Declares the counter"
+    ],
+    answer: 1,
+    explanation: "The middle part is the condition checked before each pass. While it is true the loop runs; once false it stops."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which loop is cleanest for visiting each value of an array when you do not need the index?",
+    options: ["for...of", "a counter-based for", "while", "do...while"],
+    answer: 0,
+    explanation: "for...of gives you each item directly, with no counter or indexing — ideal when the index is not needed."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What causes an infinite loop in a while loop?",
+    options: [
+      "Starting the counter at 0",
+      "The condition never becomes false because nothing inside moves toward the exit",
+      "Using a const inside the loop",
+      "Logging on every pass"
+    ],
+    answer: 1,
+    explanation: "If nothing in the body changes the condition toward false, the loop never ends and the page freezes."
+  },
+  {
+    id: "q4",
+    type: "fill-in",
+    prompt: "Which array method runs a function once for each item without a counter or index variable required?",
+    answer: "forEach",
+    accept: ["forEach", "forEach()", ".forEach"],
+    explanation: "forEach calls the function you pass once per element, optionally giving you the index as a second argument."
+  }
+]} />

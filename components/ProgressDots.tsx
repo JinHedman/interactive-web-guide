@@ -1,33 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getProgress } from "@/lib/progress";
-import type { ChapterProgress } from "@/lib/types";
+import { useChapterProgress } from "@/lib/useProgress";
 
 interface Props {
   chapterId: string; // "module/slug"
 }
 
 export default function ProgressDots({ chapterId }: Props) {
-  const [progress, setProgress] = useState<ChapterProgress>({
-    read: false,
-    exerciseDone: false,
-    quizScore: null,
-  });
-
-  useEffect(() => {
-    setProgress(getProgress(chapterId));
-
-    function onProgress(e: Event) {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.chapterId === chapterId) {
-        setProgress(detail.progress);
-      }
-    }
-
-    window.addEventListener("guide:progress", onProgress);
-    return () => window.removeEventListener("guide:progress", onProgress);
-  }, [chapterId]);
+  // Live, hydration-safe: empty on the server / first paint, then real values,
+  // and re-renders on any write or reset (same tab or another tab).
+  const progress = useChapterProgress(chapterId);
 
   return (
     <span

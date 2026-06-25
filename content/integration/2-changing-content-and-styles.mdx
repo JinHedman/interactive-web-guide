@@ -1,0 +1,219 @@
+---
+title: "Changing content and styles"
+module: "integration"
+order: 2
+goal: "Update the text, classes, and inline styles of selected elements."
+objectives:
+  - "Read and change text with textContent"
+  - "Toggle and swap classes with classList"
+  - "Set inline styles with the style property"
+  - "Read and set attributes with getAttribute and setAttribute"
+  - "Prefer class changes over inline styles, and explain why"
+estMinutes: 30
+prerequisites: ["integration/1-selecting-elements"]
+---
+
+Selecting an element is only useful if you can then change it. Once you hold an element in a variable, you can rewrite its text, switch its classes, tweak its styles, and edit its attributes — and the page updates instantly. This is how a to-do item gets crossed off, or a status message appears. This chapter covers the four ways you will change elements every day.
+
+## Change text with textContent
+
+Every element has a `textContent` property. Read it to get the text inside, or assign to it to replace that text.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <h1 id="appTitle">Loading...</h1>
+    <p id="count">0 tasks</p>
+    <script>
+      const title = document.getElementById("appTitle");
+      const count = document.getElementById("count");
+
+      title.textContent = "My Tasks";
+      count.textContent = "3 tasks";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Assigning to `textContent` replaces everything inside the element with plain text. It treats the value as text, not HTML — so `"<b>hi</b>"` would show those angle brackets literally, never bold text. That is exactly what you want when displaying something a user typed.
+
+## Toggle and swap classes with classList
+
+You already wrote CSS classes. From JavaScript, `classList` lets you add, remove, and toggle those classes on an element — which is the cleanest way to change how something looks.
+
+- `classList.add("done")` — adds the class.
+- `classList.remove("done")` — removes it.
+- `classList.toggle("done")` — adds it if missing, removes it if present.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <style>
+      .done { text-decoration: line-through; color: gray; }
+    </style>
+  </head>
+  <body>
+    <ul>
+      <li id="task1">Buy milk</li>
+      <li id="task2">Walk the dog</li>
+    </ul>
+    <script>
+      const task1 = document.getElementById("task1");
+      const task2 = document.getElementById("task2");
+
+      task1.classList.add("done");
+      task2.classList.toggle("done");
+      task2.classList.toggle("done");
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+The first task gets the `done` class and shows the strike-through. The second is toggled on, then off, so it looks unchanged. `toggle` is perfect for a checkbox-style behavior: click once to complete, click again to un-complete.
+
+## Set inline styles with the style property
+
+You can also change a single CSS property directly through the `style` property. CSS property names that contain a hyphen become camelCase: `background-color` becomes `backgroundColor`.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <p id="banner">Important task!</p>
+    <script>
+      const banner = document.getElementById("banner");
+      banner.style.color = "white";
+      banner.style.backgroundColor = "crimson";
+      banner.style.padding = "0.75rem";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+This works, but each line sets one property in one place. For anything beyond a quick tweak, a class is cleaner.
+
+## Read and set attributes
+
+Beyond text and styles, elements have attributes — `src`, `href`, `disabled`, `data-*`, and so on. Read one with `getAttribute` and change one with `setAttribute`.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <a id="link" href="/old">A link</a>
+    <p id="report"></p>
+    <script>
+      const link = document.getElementById("link");
+      const report = document.getElementById("report");
+
+      const oldHref = link.getAttribute("href");
+      link.setAttribute("href", "/new");
+
+      report.textContent =
+        "Changed href from " + oldHref + " to " + link.getAttribute("href");
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+`setAttribute` takes two arguments: the attribute name and its new value. `getAttribute` takes just the name and returns the current value.
+
+## Prefer classes over inline styles
+
+When you want to change appearance, reach for `classList` first. A class keeps all the styling rules in your CSS file, where they belong, and lets one toggle switch many properties at once. Inline styles scatter design decisions through your JavaScript and are harder to override. Use `style` for one-off, dynamic values (like a width computed at runtime); use classes for everything that has a name and a meaning, like `done` or `error`.
+
+<Exercise
+  title="Mark a task as done"
+  goal="Take your to-do page and write JavaScript that marks the first task complete using a class — not inline styles."
+  steps={[
+    "Open your todo.html from the previous chapter (or recreate the shell).",
+    "In the head, add a style block with a rule: .done { text-decoration: line-through; color: gray; }",
+    "Inside the ul, add two li elements with ids task1 and task2, each with some task text.",
+    "In the script, select task1 with getElementById.",
+    "Add the done class to task1 using classList.add.",
+    "Also update the appTitle textContent to read \"My Tasks\".",
+    "Open the page with Live Server and confirm the first task shows a strike-through."
+  ]}
+  expected="A page where the first task appears crossed out and gray, the second task looks normal, and the heading reads My Tasks."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To-Do List</title>
+    <style>
+      .done { text-decoration: line-through; color: gray; }
+    </style>
+  </head>
+  <body>
+    <h1 id="appTitle">To-Do List</h1>
+    <ul id="taskList">
+      <li id="task1">Buy milk</li>
+      <li id="task2">Walk the dog</li>
+    </ul>
+
+    <script>
+      const title = document.getElementById("appTitle");
+      const task1 = document.getElementById("task1");
+
+      title.textContent = "My Tasks";
+      task1.classList.add("done");
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does assigning to element.textContent do?",
+    options: [
+      "Appends text after the existing content",
+      "Replaces the element's content with the value as plain text",
+      "Parses the value as HTML and inserts it",
+      "Sets the element's title attribute"
+    ],
+    answer: 1,
+    explanation: "textContent replaces the inner content with plain text. It does not parse HTML, which makes it safe for user-entered strings."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which classList method adds a class if it is missing and removes it if present?",
+    options: ["add", "remove", "toggle", "swap"],
+    answer: 2,
+    explanation: "toggle flips the class on or off, which is ideal for complete/incomplete behavior."
+  },
+  {
+    id: "q3",
+    type: "fill-in",
+    prompt: "Through the style property, what name do you use for the CSS property background-color?",
+    answer: "backgroundColor",
+    accept: ["backgroundColor", "style.backgroundColor"],
+    explanation: "Hyphenated CSS properties become camelCase in JavaScript, so background-color becomes backgroundColor."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which method changes the value of an attribute like href?",
+    options: ["changeAttribute", "setAttribute", "attr", "writeAttribute"],
+    answer: 1,
+    explanation: "setAttribute(name, value) sets an attribute; getAttribute(name) reads it back."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Why prefer toggling a class over setting many inline styles?",
+    options: [
+      "Inline styles do not work in modern browsers",
+      "A class keeps styling in the CSS and changes many properties with one switch",
+      "classList is faster than every other DOM method",
+      "Inline styles cannot be read back by JavaScript"
+    ],
+    answer: 1,
+    explanation: "Classes keep design in your stylesheet and let one toggle change a whole look at once, which is cleaner and easier to maintain."
+  }
+]} />

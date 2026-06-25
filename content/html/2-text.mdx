@@ -1,0 +1,191 @@
+---
+title: "Headings, paragraphs, lists, and emphasis"
+module: "html"
+order: 2
+goal: "Mark up text content with the right heading levels, paragraphs, lists, and emphasis."
+objectives:
+  - "Use <h1>–<h6> in a correct, non-skipping outline"
+  - "Write paragraphs with <p>"
+  - "Build ordered and unordered lists with <ol>, <ul>, <li>"
+  - "Add emphasis with <em> and <strong>, and know why not <i>/<b>"
+  - "Use <br> and <hr> sparingly and correctly"
+estMinutes: 25
+prerequisites: ["html/1-structure"]
+---
+
+Most of a web page is text, and HTML gives you specific elements to describe what each piece of text *is*: a heading, a paragraph, a list item. Choosing the right element matters — it shapes the page outline, helps screen readers, and makes your markup readable. In this chapter you add real written content to your profile page.
+
+## Headings: h1 through h6
+
+Headings label sections of a page. There are six levels, from `<h1>` (most important) down to `<h6>` (least). They create the page's outline, like the headings in a document.
+
+<CodeExample language="html" preview>
+{`<h1>Ada Lovelace</h1>
+<h2>About me</h2>
+<h3>Background</h3>
+<h2>Projects</h2>`}
+</CodeExample>
+
+Two rules:
+
+- Use **one `<h1>`** per page — it is the page's main title.
+- **Do not skip levels.** Go `<h1>` then `<h2>`, not `<h1>` straight to `<h3>`. The levels describe structure, not size; if a heading looks too big, change it with CSS later, do not reach for a lower level to shrink it.
+
+## Paragraphs
+
+Body text goes in `<p>` elements. Each paragraph is its own `<p>`. The browser adds space between them automatically.
+
+<CodeExample language="html" preview>
+{`<h2>About me</h2>
+<p>I started out fascinated by patterns in numbers.</p>
+<p>These days I am learning to build for the web, one element at a time.</p>`}
+</CodeExample>
+
+Do not try to make two paragraphs by putting blank lines inside one `<p>` — the browser collapses whitespace. Use a separate `<p>` for each.
+
+## Lists
+
+There are two everyday list types:
+
+- An **unordered list** (`<ul>`) for items where order does not matter — it renders with bullets.
+- An **ordered list** (`<ol>`) for steps or rankings — it renders with numbers.
+
+Both hold list items, each in an `<li>`.
+
+<CodeExample language="html" preview>
+{`<h2>Skills I'm learning</h2>
+<ul>
+  <li>HTML structure and semantics</li>
+  <li>CSS layout and design</li>
+  <li>JavaScript interactivity</li>
+</ul>
+
+<h2>My learning plan</h2>
+<ol>
+  <li>Finish the HTML module</li>
+  <li>Style the page with CSS</li>
+  <li>Add interactivity with JavaScript</li>
+</ol>`}
+</CodeExample>
+
+The browser handles the bullets and numbers — you never type them yourself.
+
+## Emphasis: em and strong
+
+To stress a word, use `<em>` (emphasis, shown italic) or `<strong>` (strong importance, shown bold).
+
+<CodeExample language="html" preview>
+{`<p>This deadline is <strong>today</strong>, so please <em>do not</em> wait.</p>`}
+</CodeExample>
+
+You may have seen `<i>` and `<b>` for italic and bold. Prefer `<em>` and `<strong>`: they carry **meaning** (emphasis and importance) that screen readers can convey, while `<i>` and `<b>` are purely visual. Same look, more meaning — that is the HTML way.
+
+## br and hr, used sparingly
+
+Two single-tag elements show up occasionally:
+
+- `<br>` forces a line break within text. Use it only where the break is part of the content, like lines of a poem or an address — not to add spacing.
+- `<hr>` marks a thematic break between sections, rendered as a horizontal rule.
+
+<CodeExample language="html" preview>
+{`<p>Ada Lovelace<br>London, England</p>
+<hr>
+<p>Next section starts here.</p>`}
+</CodeExample>
+
+If you find yourself stacking `<br>` tags to push things around, that is a job for CSS spacing, which comes later.
+
+<Exercise
+  title="Add written content to your profile"
+  goal="Expand your profile page with a heading outline, paragraphs, two lists, and some emphasis."
+  steps={[
+    "Open index.html in your profile-page project. Keep the existing h1 with your name.",
+    "Add an h2 'About me' followed by two p paragraphs describing yourself.",
+    "Add an h2 'Skills' with a ul of at least three items.",
+    "Add an h2 'Learning plan' with an ol of at least three ordered steps.",
+    "Inside one paragraph, wrap an important word in <strong> and an emphasized word in <em>.",
+    "Save, check it in Live Server, then commit in GitHub Desktop with the message 'Add profile text content'."
+  ]}
+  expected="A page with one h1, several h2 sections, two paragraphs, a bulleted list, a numbered list, and visible bold and italic emphasis."
+  solution={`<body>
+  <h1>Ada Lovelace</h1>
+
+  <h2>About me</h2>
+  <p>I started out fascinated by patterns in numbers.</p>
+  <p>These days I am learning to build for the web, and I find it <em>genuinely</em> fun.</p>
+
+  <h2>Skills I'm learning</h2>
+  <ul>
+    <li>HTML structure and semantics</li>
+    <li>CSS layout and design</li>
+    <li>JavaScript interactivity</li>
+  </ul>
+
+  <h2>My learning plan</h2>
+  <ol>
+    <li>Finish the HTML module</li>
+    <li>Style the page with CSS</li>
+    <li>Add interactivity with JavaScript</li>
+  </ol>
+
+  <p>The most <strong>important</strong> habit: practice every day.</p>
+</body>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which heading structure is correct for a page outline?",
+    options: [
+      "<h1> then <h3> then <h2>",
+      "<h2> then <h2> then <h1>",
+      "<h1> then <h2> then <h3>",
+      "Three <h1> elements"
+    ],
+    answer: 2,
+    explanation: "Use one <h1>, then descend without skipping levels: <h1> → <h2> → <h3>. Levels describe structure, not visual size."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "You have a list of steps that must happen in order. Which element fits?",
+    options: ["<ul>", "<ol>", "<dl>", "<p> with <br> tags"],
+    answer: 1,
+    explanation: "<ol> is the ordered list; it numbers items, which suits steps. <ul> is for unordered items."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Why prefer <strong> over <b> for an important word?",
+    options: [
+      "<strong> renders larger",
+      "<b> is invalid in HTML5",
+      "<strong> conveys importance that assistive tech can use; <b> is only visual",
+      "There is no difference at all"
+    ],
+    answer: 2,
+    explanation: "<strong> carries semantic importance that screen readers can announce. <b> just looks bold with no meaning."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "What is a correct use of <br>?",
+    options: [
+      "Adding vertical space between two paragraphs",
+      "Breaking lines within an address or a poem",
+      "Separating two sections thematically",
+      "Wrapping each list item"
+    ],
+    answer: 1,
+    explanation: "<br> is for line breaks that are part of the content, like address lines. Use CSS for spacing and <hr> for thematic breaks."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which element wraps a single item inside a list?",
+    answer: "li",
+    accept: ["li", "<li>", "<li> element"],
+    explanation: "Each item in a <ul> or <ol> goes in its own <li> element."
+  }
+]} />

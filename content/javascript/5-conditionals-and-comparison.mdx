@@ -1,0 +1,188 @@
+---
+title: "Conditionals and comparison"
+module: "javascript"
+order: 5
+goal: "Branch program flow with comparisons and conditional statements."
+objectives:
+  - "Compare values with ===, !==, <, > (and why === over ==)"
+  - "Combine conditions with &&, ||, !"
+  - "Branch with if/else if/else"
+  - "Use a ternary for a simple choice"
+estMinutes: 30
+prerequisites: ["javascript/4-arrays-objects"]
+---
+
+So far your code runs straight through, top to bottom. *Conditionals* let it choose: run this block if a condition holds, otherwise run another. The condition is usually a comparison between two values, and this chapter covers both the comparisons and the branching.
+
+## Comparing values
+
+Comparison operators return a boolean — `true` or `false`.
+
+<CodeExample language="js" preview>
+{`console.log(5 > 3);    // true
+console.log(5 < 3);    // false
+console.log(5 >= 5);   // true  (greater than or equal)
+console.log(4 <= 3);   // false (less than or equal)
+console.log(5 === 5);  // true  (strictly equal)
+console.log(5 !== 3);  // true  (not equal)`}
+</CodeExample>
+
+Use `===` to test equality and `!==` to test inequality. These are the **strict** operators: they compare both value and type, with no surprise conversions.
+
+There is also a loose `==`. **Avoid it.** It converts types before comparing, which leads to confusing results like `0 == ""` being `true`. Always use `===` and `!==`.
+
+<CodeExample language="js" preview>
+{`console.log(1 === "1");  // false — different types (number vs string)
+console.log(1 == "1");   // true  — == converts the string first (avoid this!)`}
+</CodeExample>
+
+## Combining conditions
+
+Three logical operators let you build bigger conditions:
+
+- `&&` (AND) — true only if **both** sides are true.
+- `||` (OR) — true if **either** side is true.
+- `!` (NOT) — flips a boolean.
+
+<CodeExample language="js" preview>
+{`const age = 20;
+const hasTicket = true;
+
+console.log(age >= 18 && hasTicket); // true  — both conditions hold
+console.log(age < 13 || hasTicket);  // true  — at least one holds
+console.log(!hasTicket);             // false — flips true to false`}
+</CodeExample>
+
+## if / else if / else
+
+`if` runs a block when its condition is truthy. Add `else if` for more cases and `else` as a fallback.
+
+<CodeExample language="js" preview>
+{`const score = 72;
+
+if (score >= 90) {
+  console.log("Grade: A");
+} else if (score >= 70) {
+  console.log("Grade: B");
+} else if (score >= 50) {
+  console.log("Grade: C");
+} else {
+  console.log("Grade: F");
+}
+// Grade: B`}
+</CodeExample>
+
+JavaScript checks each condition top to bottom and runs the **first** block that matches, then skips the rest. Order matters: put the most specific or highest-priority condition first.
+
+Remember truthiness from the strings chapter — you can test a value directly:
+
+<CodeExample language="js" preview>
+{`const name = "";
+
+if (name) {
+  console.log(\`Hello, \${name}\`);
+} else {
+  console.log("No name provided"); // runs, because "" is falsy
+}`}
+</CodeExample>
+
+## The ternary operator
+
+For a simple either/or choice, a *ternary* is a compact one-line alternative to `if`/`else`. Its shape is `condition ? valueIfTrue : valueIfFalse`.
+
+<CodeExample language="js" preview>
+{`const age = 20;
+
+const status = age >= 18 ? "adult" : "minor";
+console.log(status); // adult
+
+const count = 1;
+const label = count === 1 ? "item" : "items";
+console.log(\`\${count} \${label}\`); // 1 item`}
+</CodeExample>
+
+Use a ternary when you are choosing between two values. For anything more involved, a full `if`/`else if`/`else` stays more readable.
+
+<Exercise
+  title="A grade reporter"
+  goal="Use comparison, logical operators, and a conditional to classify a score and report it."
+  steps={[
+    "Create grade.js and declare let score = 85; (try changing it later to test other branches).",
+    "Write an if / else if / else that logs Grade: A for 90+, B for 70–89, C for 50–69, otherwise F.",
+    "Add a const passed = score >= 50; and log a sentence using a ternary: `You ${passed ? \"passed\" : \"failed\"}.`",
+    "Add a combined condition: log \"Honor roll\" only if score >= 80 AND passed is true (use &&).",
+    "Run it, then change score to a few different values and confirm each branch behaves correctly."
+  ]}
+  expected="For a score of 85: Grade: B, then You passed., then Honor roll. Changing the score moves it into the matching branch."
+  solution={`let score = 85;
+
+if (score >= 90) {
+  console.log("Grade: A");
+} else if (score >= 70) {
+  console.log("Grade: B");
+} else if (score >= 50) {
+  console.log("Grade: C");
+} else {
+  console.log("Grade: F");
+}
+
+const passed = score >= 50;
+console.log(\`You \${passed ? "passed" : "failed"}.\`);
+
+if (score >= 80 && passed) {
+  console.log("Honor roll");
+}`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Why prefer === over == in JavaScript?",
+    options: [
+      "=== is faster to type",
+      "=== compares value and type without converting, avoiding surprising results",
+      "== does not work in modern browsers",
+      "There is no difference"
+    ],
+    answer: 1,
+    explanation: "=== is strict: it checks value and type with no conversion. == coerces types first, which produces confusing comparisons."
+  },
+  {
+    id: "q2",
+    type: "fill-in",
+    prompt: "What does 5 >= 5 evaluate to?",
+    answer: "true",
+    accept: ["true"],
+    explanation: ">= is 'greater than or equal to', and 5 equals 5, so the result is true."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which operator is true only when both conditions are true?",
+    options: ["||", "&&", "!", "=="],
+    answer: 1,
+    explanation: "&& (AND) requires both sides to be true. || (OR) needs only one; ! flips a boolean."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "In an if/else if/else chain, what happens after the first matching condition runs?",
+    options: [
+      "Every remaining condition is also checked",
+      "The remaining branches are skipped",
+      "The else block always runs too",
+      "It loops back to the top"
+    ],
+    answer: 1,
+    explanation: "Only the first matching block runs; the rest of the chain is skipped. That is why ordering the conditions matters."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Fill in the blank to choose a value: const s = age >= 18 ___ \"adult\" : \"minor\";",
+    answer: "?",
+    accept: ["?"],
+    explanation: "A ternary uses condition ? valueIfTrue : valueIfFalse, so the ? comes right after the condition."
+  }
+]} />

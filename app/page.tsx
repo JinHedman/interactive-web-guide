@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAllChapters } from "@/lib/content";
+import HomeProgressControls from "@/components/HomeProgressControls";
 
 export default function Home() {
   const chapters = getAllChapters();
@@ -67,7 +68,10 @@ export default function Home() {
           at every step.
         </p>
 
-        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+        {/* Resume + global reset (client-only, reflects localStorage live) */}
+        <HomeProgressControls firstChapterHref={firstChapter?.href ?? null} />
+
+        <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap", marginTop: "16px" }}>
           {firstChapter ? (
             <Link
               href={firstChapter.href}

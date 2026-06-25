@@ -1,0 +1,254 @@
+---
+title: "Responsive basics"
+module: "css"
+order: 4
+goal: "Make a layout adapt to screen size with the viewport meta tag and media queries."
+objectives:
+  - "Add the meta name=viewport tag and explain its job"
+  - "Write a media query for a breakpoint"
+  - "Adapt a flex layout from mobile to desktop"
+  - "Prefer relative units and max-width for fluid sizing"
+prerequisites: ["css/3-layout-flexbox"]
+estMinutes: 30
+---
+
+Your profile card looks fine on a laptop, but phones, tablets, and large monitors all have different widths. **Responsive** design means one page that adapts to whatever screen it lands on. This closing chapter covers the three tools that make it happen: the viewport meta tag, fluid sizing, and media queries.
+
+## The viewport meta tag
+
+Without help, mobile browsers pretend the screen is about 980px wide and shrink the whole page to fit — text becomes tiny. The viewport meta tag tells the browser to use the device's real width and not zoom out. Put it in the `<head>` of every page (you have seen it since the HTML module):
+
+<CodeExample language="html">
+{`<meta name="viewport" content="width=device-width, initial-scale=1">`}
+</CodeExample>
+
+`width=device-width` matches the layout to the device's width; `initial-scale=1` sets the starting zoom. Without this tag, no amount of CSS will make a page feel right on a phone.
+
+## Fluid sizing first
+
+Before reaching for media queries, let the layout flex on its own. Two habits do most of the work:
+
+- Use **relative units** (`rem`, `%`) rather than fixed pixels for sizes that should adapt.
+- Use **`max-width`** instead of `width` so a box can shrink on small screens but stops growing on large ones.
+
+<CodeExample language="css">
+{`.card {
+  width: 100%;        /* fill a narrow screen */
+  max-width: 360px;   /* but never grow past 360px */
+  margin: 0 auto;     /* center it once there is spare room */
+  padding: 1.5rem;
+}`}
+</CodeExample>
+
+That card is already responsive: full width on a phone, capped and centered on a desktop — with no media query at all. Reach for fluid sizing first; add breakpoints only where the layout genuinely needs to change.
+
+## Media queries
+
+A media query applies a block of CSS only when a condition is true — usually a screen-width range. You write the base styles for small screens, then add a query that adjusts them once there is more room. This **mobile-first** approach keeps the simplest layout as the default.
+
+<CodeExample language="css">
+{`/* base: mobile — stack vertically */
+.card {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+/* 600px and up — switch to a row */
+@media (min-width: 600px) {
+  .card {
+    flex-direction: row;
+    align-items: center;
+  }
+}`}
+</CodeExample>
+
+The width at which the layout changes — here `600px` — is called a **breakpoint**. Choose breakpoints where *your* design starts to look cramped, not by chasing specific device sizes.
+
+## Putting it together
+
+Here is the profile card adapting from a stacked mobile layout to a side-by-side desktop one. Drag the divider of the preview pane (or resize your window) to watch it switch at the breakpoint.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+      * { box-sizing: border-box; }
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+
+      .card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 1.5rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+        text-align: center;
+      }
+      .avatar {
+        width: 72px;
+        height: 72px;
+        border-radius: 50%;
+        background: navy;
+        flex-shrink: 0;
+      }
+      .card h1 { font-size: 1.25rem; margin: 0; }
+      .card p { margin: 0.25rem 0 0; color: #444; line-height: 1.5; }
+
+      @media (min-width: 600px) {
+        .card { flex-direction: row; text-align: left; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="avatar"></div>
+      <div class="details">
+        <h1>Ada Lovelace</h1>
+        <p>Mathematician and writer. Wrote the first algorithm intended for a machine.</p>
+      </div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+On a narrow screen the avatar sits above centered text; at 600px and wider it moves beside left-aligned text. One stylesheet, two layouts.
+
+<Exercise
+  title="Make the profile card responsive"
+  goal="Use the viewport tag, fluid sizing, and one media query so your card stacks on mobile and sits side by side on wider screens."
+  steps={[
+    "Open your project in VS Code (index.html + styles.css).",
+    "Confirm the head has <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">.",
+    "In styles.css, set .card to width: 100%, max-width: 480px, and margin: 0 auto.",
+    "Make .card a flex container with flex-direction: column and align-items: center (the mobile default).",
+    "Add @media (min-width: 600px) { .card { flex-direction: row; } } to switch to a row on wider screens.",
+    "View with Live Server and resize the browser window across the 600px mark to watch the layout change. Commit in GitHub Desktop."
+  ]}
+  expected="A card that stacks the avatar above the text on narrow screens and places them side by side at 600px and wider — centered and capped at 480px."
+  solution={`<!-- index.html head -->
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+/* styles.css */
+* { box-sizing: border-box; }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 480px;
+  margin: 0 auto;
+  padding: 1.5rem;
+  background: #f3f4f6;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: navy;
+  flex-shrink: 0;
+}
+
+@media (min-width: 600px) {
+  .card {
+    flex-direction: row;
+    text-align: left;
+  }
+}`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the main job of <meta name=\"viewport\" content=\"width=device-width, initial-scale=1\">?",
+    options: [
+      "It loads a responsive stylesheet automatically",
+      "It tells the browser to use the device's real width instead of zooming out a wide page",
+      "It sets the maximum width of the page to the device width",
+      "It enables media queries"
+    ],
+    answer: 1,
+    explanation: "Mobile browsers otherwise assume a ~980px page and shrink it. The viewport tag makes the layout match the device's actual width."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "When does @media (min-width: 600px) { ... } apply its rules?",
+    options: [
+      "Only on screens narrower than 600px",
+      "On screens 600px wide and wider",
+      "On exactly 600px screens",
+      "Only when the user zooms in"
+    ],
+    answer: 1,
+    explanation: "min-width: 600px means 'from 600px upward', so the rules apply at 600px and on any wider screen."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which approach is 'mobile-first'?",
+    options: [
+      "Write desktop styles, then override them for small screens",
+      "Write the small-screen layout as the default, then add min-width queries for larger screens",
+      "Use only px units everywhere",
+      "Hide content on mobile with display: none"
+    ],
+    answer: 1,
+    explanation: "Mobile-first means the base styles target small screens, and min-width media queries layer on enhancements for larger ones."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Why prefer max-width: 360px over width: 360px for a card?",
+    options: [
+      "max-width is faster to render",
+      "It lets the card shrink on narrow screens but stops it growing past 360px on wide ones",
+      "width does not work inside flex containers",
+      "There is no difference"
+    ],
+    answer: 1,
+    explanation: "max-width caps the size while still allowing the element to be narrower, giving fluid behavior. A fixed width can overflow small screens."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "What is the term for the screen width at which a media query changes the layout?",
+    answer: "breakpoint",
+    accept: ["breakpoint", "a breakpoint"],
+    explanation: "A breakpoint is the width where the layout switches — choose it where your design starts to look cramped."
+  }
+]} />
+
+<ReadMore title="How teams write CSS today: Tailwind CSS, CSS-in-JS, and Sass">
+You have written CSS the classic way — rules in a stylesheet, targeting classes. Many teams now use **Tailwind CSS**, a *utility-first* framework. Instead of writing a rule, you compose a design from tiny single-purpose classes applied directly in your markup — which reads **a bit like inline styles**, except the values come from a consistent design system and you can still use hover states, breakpoints, and dark mode. Compare the two approaches for our card heading:
+
+<CodeExample language="html">
+{`<!-- Plain CSS: a rule in your stylesheet -->
+<style>
+  .title { font-size: 1.25rem; font-weight: 700; color: navy; }
+</style>
+<h1 class="title">Ada Lovelace</h1>
+
+<!-- Tailwind: utility classes right on the element -->
+<h1 class="text-xl font-bold text-blue-900">Ada Lovelace</h1>`}
+</CodeExample>
+
+Each Tailwind class maps to one declaration: `text-xl` is a font size, `font-bold` is `font-weight: 700`, `text-blue-900` is a color. Tailwind's current major version is **v4**, which you set up with a single `@import "tailwindcss";` line in your CSS — no large config file required. Two other approaches you will meet: **CSS-in-JS** (libraries like styled-components that let you write CSS inside JavaScript components), and **Sass**, an older preprocessor that adds variables, nesting, and reusable mixins to plain CSS. Skim the links below when you are curious; the box-model, selector, flexbox, and media-query foundations from this module carry into all of them.
+
+- [Tailwind CSS — official docs](https://tailwindcss.com/docs)
+- [CSS grid layout (MDN)](https://developer.mozilla.org/en-US/docs/Web/CSS/CSS_grid_layout)
+- [Sass — official site](https://sass-lang.com/)
+</ReadMore>

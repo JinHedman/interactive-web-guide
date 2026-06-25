@@ -1,32 +1,57 @@
 ---
-title: "HTML Document Structure"
+title: "Elements, tags, attributes, and document structure"
 module: "html"
 order: 1
-goal: "Write a valid HTML document from scratch and understand what every part does."
+goal: "Write a valid HTML document with the correct skeleton and read any tag as element + attributes."
 objectives:
-  - "Understand the purpose of the DOCTYPE declaration"
-  - "Use html, head, and body elements correctly"
-  - "Add a title, charset, and viewport meta tag"
-  - "Write semantic content inside body"
-estMinutes: 15
-prerequisites: []
+  - "Identify an element, its tags, and its attributes"
+  - "Write the document skeleton: <!doctype html>, <html>, <head>, <body>"
+  - "Set the page language and character set"
+  - "Add a page <title> and explain where it shows up"
+  - "Tell the difference between content (<body>) and metadata (<head>)"
+estMinutes: 25
+prerequisites: ["setup/1-tools-and-first-page"]
 ---
 
-Every web page is an HTML document. Before a browser renders a single pixel, it reads a plain text file and builds a tree of elements. This chapter covers that foundational structure — the skeleton every page shares.
+HTML is the language that describes the structure of a web page: its headings, paragraphs, images, and links. Before a browser renders a single pixel, it reads your HTML file and builds a tree of elements from it. This chapter covers how to read any piece of HTML and how to write the skeleton every page shares. You will use it as the foundation for the profile page you build across this module.
+
+## Elements, tags, and attributes
+
+Here is one line of HTML. It looks small, but it has three named parts worth knowing.
+
+<CodeExample language="html">
+{`<a href="https://example.com">Visit my site</a>`}
+</CodeExample>
+
+- An **element** is the whole thing: the opening tag, the content, and the closing tag together. This is an anchor (link) element.
+- A **tag** is the part in angle brackets. `<a>` is the opening tag; `</a>` is the closing tag (note the slash). The content goes between them.
+- An **attribute** lives inside the opening tag and configures the element. Here `href="https://example.com"` sets the link's destination. Attributes are written as `name="value"`.
+
+Most elements wrap content and need a closing tag. A few, like `<img>` and `<meta>`, are **empty elements** — they have no content and no closing tag, just attributes.
+
+## Nesting
+
+Elements go inside other elements, forming a tree. The rule is simple: tags must close in the reverse order they opened, like nested boxes.
+
+<CodeExample language="html">
+{`<p>My favorite language is <strong>JavaScript</strong>.</p>`}
+</CodeExample>
+
+The `<strong>` element is nested inside the `<p>` element. Indenting nested elements by two spaces keeps the structure readable as it grows.
 
 ## The DOCTYPE declaration
 
-The first line of every HTML file is a DOCTYPE declaration. It tells the browser which version of HTML you are using.
+The first line of every HTML file is the DOCTYPE. It tells the browser to use modern (HTML5) rules.
 
 <CodeExample language="html">
 {`<!doctype html>`}
 </CodeExample>
 
-For modern HTML (HTML5) the declaration is always exactly `<!doctype html>`. Nothing else is needed.
+For modern HTML the declaration is always exactly `<!doctype html>`. Nothing else is needed, and it is not really a tag — it is a one-off instruction at the top of the file.
 
 ## The root element
 
-After the DOCTYPE comes the `<html>` element. It wraps the entire document. The `lang` attribute tells browsers and assistive technologies which language the page is written in.
+After the DOCTYPE comes the `<html>` element, which wraps the entire document. The `lang` attribute states which language the page is written in.
 
 <CodeExample language="html">
 {`<!doctype html>
@@ -34,75 +59,52 @@ After the DOCTYPE comes the `<html>` element. It wraps the entire document. The 
 </html>`}
 </CodeExample>
 
-Always include `lang`. It is a small addition with a large accessibility benefit.
+Always include `lang`. Screen readers use it to pick the right voice, and browsers use it for spell-check and translation. It is a tiny addition with a real accessibility payoff.
 
 ## head and body
 
-Inside `<html>` live exactly two children: `<head>` and `<body>`.
+Inside `<html>` live exactly two children: `<head>` and `<body>`. The split is about who the content is for.
 
-- `<head>` holds metadata — information *about* the page that the browser uses but does not display directly.
-- `<body>` holds everything the user sees.
-
-<CodeExample language="html">
-{`<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>My First Page</title>
-  </head>
-  <body>
-    <h1>Hello, world!</h1>
-    <p>This is my first web page.</p>
-  </body>
-</html>`}
-</CodeExample>
-
-Three things in `<head>` matter most:
-
-1. `<meta charset="utf-8">` — ensures the browser uses the right character encoding (it handles accented letters, emoji, etc.).
-2. `<meta name="viewport" ...>` — makes the page scale correctly on mobile screens.
-3. `<title>` — the text that appears in the browser tab and in search results.
-
-## Try it
-
-Here is a minimal complete page. See how the browser renders it on the right.
+- `<head>` holds **metadata** — information *about* the page that the browser uses but does not show on screen.
+- `<body>` holds **content** — everything the visitor actually sees.
 
 <CodeExample language="html" preview>
 {`<!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Demo page</title>
-    <style>
-      body { font-family: system-ui, sans-serif; padding: 1.5rem; }
-    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ada's Profile</title>
   </head>
   <body>
-    <h1>Hello from HTML</h1>
-    <p>This page has proper structure. Open DevTools and inspect the tree.</p>
-    <ul>
-      <li>DOCTYPE at the top</li>
-      <li>html wraps everything</li>
-      <li>head holds metadata</li>
-      <li>body holds content</li>
-    </ul>
+    <h1>Ada Lovelace</h1>
+    <p>I write algorithms and I am learning web development.</p>
   </body>
 </html>`}
 </CodeExample>
 
+Three things in `<head>` matter most:
+
+1. `<meta charset="utf-8">` sets the character encoding, so accented letters and emoji decode correctly.
+2. `<meta name="viewport" ...>` makes the page scale properly on phones.
+3. `<title>` is the text shown in the browser tab and in search-engine results. Notice it does not appear on the page itself — it is metadata, so it lives in `<head>`.
+
+## Content vs metadata
+
+A quick test for where something belongs: *will the visitor see it?* If yes, it goes in `<body>`. If it only describes or configures the page, it goes in `<head>`. The `<h1>` heading is visible, so it is content. The `<title>` shows in the tab, not the page, so it is metadata.
+
 <Exercise
-  title="Build your first page"
-  goal="Create a valid HTML file that includes your name, a short bio, and a list of three things you want to learn."
+  title="Build the profile page skeleton"
+  goal="Create a valid HTML document for your profile page with a correct head and body, then commit it."
   steps={[
-    "Open VS Code and create a new file named index.html.",
-    "Type the DOCTYPE declaration on line 1.",
-    "Add the html element with lang=\"en\".",
-    "Inside head, add charset, viewport, and a title with your name.",
-    "Inside body, add an h1 with your name, a p with a one-sentence bio, and a ul with three list items.",
-    "Open the file with Live Server (or drag it into a browser tab) to view the result."
+    "Open your profile-page project in VS Code and open index.html (or create it).",
+    "On line 1, type the DOCTYPE declaration.",
+    "Add the html element with lang=\"en\" wrapping everything below.",
+    "Inside head, add the charset meta tag, the viewport meta tag, and a title with your name.",
+    "Inside body, add an h1 with your name and a p with a one-sentence bio.",
+    "Save and view it with Live Server, then commit in GitHub Desktop with the message 'Build profile skeleton'."
   ]}
-  expected="A page that shows your name as a heading, a bio paragraph, and a three-item list."
+  expected="A browser tab titled with your name, showing your name as a heading and a one-line bio below it."
   solution={`<!doctype html>
 <html lang="en">
   <head>
@@ -113,11 +115,6 @@ Here is a minimal complete page. See how the browser renders it on the right.
   <body>
     <h1>Ada Lovelace</h1>
     <p>I find patterns in numbers and write algorithms for fun.</p>
-    <ul>
-      <li>HTML structure and semantics</li>
-      <li>CSS layout and design</li>
-      <li>JavaScript interactivity</li>
-    </ul>
   </body>
 </html>`}
 />
@@ -126,7 +123,15 @@ Here is a minimal complete page. See how the browser renders it on the right.
   {
     id: "q1",
     type: "multiple-choice",
-    prompt: "What is the correct DOCTYPE declaration for HTML5?",
+    prompt: "In <a href=\"/about\">About</a>, what is href?",
+    options: ["The element", "A closing tag", "An attribute", "The content"],
+    answer: 2,
+    explanation: "href is an attribute: a name=\"value\" pair inside the opening tag that configures the element. 'About' is the content, and <a>…</a> is the element."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What is the correct DOCTYPE declaration for modern HTML?",
     options: [
       "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">",
       "<!doctype html>",
@@ -134,39 +139,35 @@ Here is a minimal complete page. See how the browser renders it on the right.
       "<?xml version=\"1.0\"?>"
     ],
     answer: 1,
-    explanation: "HTML5 uses the short form <!doctype html>. Older doctypes referenced a DTD file — HTML5 dropped that requirement."
+    explanation: "HTML5 uses the short form <!doctype html>. Older doctypes referenced a DTD file, which HTML5 dropped."
   },
   {
-    id: "q2",
+    id: "q3",
     type: "multiple-choice",
-    prompt: "Which element holds content the user sees on the page?",
+    prompt: "Where does the <title> element appear?",
+    options: [
+      "As the largest heading on the page",
+      "In the browser tab and search results, not on the page",
+      "Nowhere — it is ignored",
+      "At the bottom of the body"
+    ],
+    answer: 1,
+    explanation: "<title> is metadata. It shows in the browser tab and search results but is not rendered in the page body."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which element holds content the visitor sees on the page?",
     options: ["<head>", "<html>", "<body>", "<meta>"],
     answer: 2,
     explanation: "<body> contains all visible content. <head> holds metadata, <html> wraps both, and <meta> is a metadata tag inside <head>."
   },
   {
-    id: "q3",
+    id: "q5",
     type: "fill-in",
-    prompt: "Which meta tag attribute sets the character encoding?",
-    answer: "charset",
-    accept: ["charset", "charset=\"utf-8\""],
-    explanation: "The charset attribute on <meta> tells the browser how to decode the bytes in the file. utf-8 handles virtually every character."
-  },
-  {
-    id: "q4",
-    type: "multiple-choice",
-    prompt: "What does the lang attribute on <html> do?",
-    options: [
-      "Sets the page language for styling purposes",
-      "Tells browsers and screen readers which language the page is written in",
-      "Prevents the browser from translating the page",
-      "It has no effect in modern browsers"
-    ],
-    answer: 1,
-    explanation: "lang is used by screen readers to select the right voice, by browsers for spell-check, and by translation tools to detect the source language."
+    prompt: "Which attribute on <html> states the page's language?",
+    answer: "lang",
+    accept: ["lang", "lang attribute", "lang=\"en\""],
+    explanation: "The lang attribute tells screen readers, browsers, and translation tools which language the page is written in."
   }
 ]} />
-
-<ReadMore title="Where HTML goes next: components and templates">
-Raw HTML files work, but modern web apps rarely write markup by hand for every page. Frameworks like **React** and **Vue** let you define reusable *components* — custom elements with their own logic and styles. React uses **JSX**, a syntax that looks like HTML but compiles to JavaScript. **Next.js** builds on React and adds routing, server rendering, and more. When you are comfortable with HTML structure, exploring JSX will feel familiar — the tags are the same; the mental model is what changes.
-</ReadMore>

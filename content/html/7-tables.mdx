@@ -1,0 +1,182 @@
+---
+title: "Tables"
+module: "html"
+order: 7
+goal: "Build a simple data table with proper headers — and know when not to use one."
+objectives:
+  - "Build a table with <table>, <tr>, <th>, <td>"
+  - "Group rows with <thead> and <tbody>"
+  - "Add a <caption>"
+  - "Explain that tables are for data, not layout"
+estMinutes: 20
+prerequisites: ["html/6-forms"]
+---
+
+A table presents data in rows and columns — a schedule, a price list, a set of stats. HTML tables have a specific structure of nested elements, and getting the headers right is what makes them readable and accessible. In this chapter you add a small data table to your profile page, such as your skills with proficiency levels.
+
+## Rows and cells
+
+A table is built from rows, and each row holds cells. The elements:
+
+- `<table>` wraps the whole thing.
+- `<tr>` is a table row.
+- `<th>` is a header cell (bold and centered by default).
+- `<td>` is a data cell.
+
+<CodeExample language="html" preview>
+{`<table>
+  <tr>
+    <th>Skill</th>
+    <th>Level</th>
+  </tr>
+  <tr>
+    <td>HTML</td>
+    <td>Confident</td>
+  </tr>
+  <tr>
+    <td>CSS</td>
+    <td>Learning</td>
+  </tr>
+</table>`}
+</CodeExample>
+
+Each `<tr>` is a row read left to right; the cells inside it line up into columns. Use `<th>` for the labels at the top of each column so the table announces them as headers.
+
+## Group rows with thead and tbody
+
+For a clearer structure, group the header row in a `<thead>` and the data rows in a `<tbody>`. This separates the labels from the data, both visually for tools and semantically for screen readers.
+
+<CodeExample language="html" preview>
+{`<table>
+  <thead>
+    <tr>
+      <th>Skill</th>
+      <th>Level</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>HTML</td>
+      <td>Confident</td>
+    </tr>
+    <tr>
+      <td>JavaScript</td>
+      <td>Beginner</td>
+    </tr>
+  </tbody>
+</table>`}
+</CodeExample>
+
+`<thead>` holds the header row; `<tbody>` holds the body rows. On long tables this also lets the header stay put while the body scrolls.
+
+## Add a caption
+
+A `<caption>` gives the table a title, placed as the first child of `<table>`. Screen readers announce it, so the user knows what the table is about before reading the cells.
+
+<CodeExample language="html" preview>
+{`<table>
+  <caption>My skills and current level</caption>
+  <thead>
+    <tr><th>Skill</th><th>Level</th></tr>
+  </thead>
+  <tbody>
+    <tr><td>HTML</td><td>Confident</td></tr>
+    <tr><td>CSS</td><td>Learning</td></tr>
+  </tbody>
+</table>`}
+</CodeExample>
+
+## Tables are for data, not layout
+
+In the early web, people used tables to position things on a page. Do not. Tables are for **tabular data** — information that genuinely belongs in rows and columns. For arranging boxes on a page, use CSS layout (the CSS module covers this). Misusing tables for layout confuses screen readers, which try to read out rows and columns that are not really data.
+
+The test: if your content has a natural row-and-column relationship, a table is right. If you just want things side by side, it is a layout job for CSS.
+
+<Exercise
+  title="Add a skills table to your profile"
+  goal="Replace or supplement your skills list with a proper data table that has a caption, a header group, and a body."
+  steps={[
+    "In index.html, go to your Skills section.",
+    "Add a <table> with a <caption> describing it (for example 'My skills and current level').",
+    "Add a <thead> with one <tr> of <th> cells for your columns (Skill, Level).",
+    "Add a <tbody> with one <tr> per skill, using <td> cells for the values.",
+    "Save and confirm the table renders with bold headers in Live Server, then commit in GitHub Desktop with the message 'Add skills table'."
+  ]}
+  expected="A captioned table showing each skill and its level, with a clearly separated header row."
+  solution={`<section id="skills">
+  <h2>Skills</h2>
+  <table>
+    <caption>My skills and current level</caption>
+    <thead>
+      <tr>
+        <th>Skill</th>
+        <th>Level</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>HTML</td>
+        <td>Confident</td>
+      </tr>
+      <tr>
+        <td>CSS</td>
+        <td>Learning</td>
+      </tr>
+      <tr>
+        <td>JavaScript</td>
+        <td>Beginner</td>
+      </tr>
+    </tbody>
+  </table>
+</section>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which element is a header cell in a table?",
+    options: ["<td>", "<th>", "<tr>", "<thead>"],
+    answer: 1,
+    explanation: "<th> is a header cell. <td> is a data cell, <tr> is a row, and <thead> groups header rows."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What is the role of <tbody>?",
+    options: [
+      "It styles the table border",
+      "It groups the table's data rows, separate from the header",
+      "It is required around every cell",
+      "It adds a caption to the table"
+    ],
+    answer: 1,
+    explanation: "<tbody> groups the body (data) rows, while <thead> groups the header rows."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Where does a <caption> go, and what is it for?",
+    options: [
+      "After </table>, to add a footer",
+      "As the first child of <table>, to title the table for everyone including screen readers",
+      "Inside each <td>, to label the cell",
+      "Inside <thead>, to replace the header row"
+    ],
+    answer: 1,
+    explanation: "<caption> is the first child of <table> and gives the whole table an announced title."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "When should you use a table?",
+    options: [
+      "To position page sections side by side",
+      "To create a grid layout for cards",
+      "For genuinely tabular data with rows and columns",
+      "Whenever you want bold, centered text"
+    ],
+    answer: 2,
+    explanation: "Tables are for tabular data. Page layout is a job for CSS, not tables."
+  }
+]} />

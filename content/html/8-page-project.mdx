@@ -1,0 +1,264 @@
+---
+title: "Putting it together — a multi-section page"
+module: "html"
+order: 8
+goal: "Combine everything into one well-structured, semantic, multi-section HTML page (no CSS yet)."
+objectives:
+  - "Plan a page from semantic landmarks"
+  - "Combine headings, text, lists, links, images, a form, and a table into one page"
+  - "Use in-page navigation linking to section ids"
+  - "Check the page for valid, accessible markup"
+estMinutes: 40
+prerequisites: ["html/7-tables"]
+---
+
+You have learned every piece individually: structure, text, links, media, semantics, forms, and tables. This chapter brings them into one complete profile page. There is no CSS yet — the goal is clean, semantic, accessible markup that would still make sense if you stripped every style away. That is the real test of good HTML.
+
+## Plan the page from landmarks first
+
+Before writing tags, sketch the regions. A solid profile page is a handful of landmarks, each with a clear job:
+
+- `<header>` — your name and the navigation menu.
+- `<main>` — everything important, split into `<section>`s: About, Skills, Projects, Contact.
+- `<footer>` — contact line or copyright.
+
+Planning the landmarks first means the rest is just filling each region with the right elements. This is the same habit professional teams use: structure before details.
+
+## Wire up in-page navigation
+
+Give each `<section>` an `id`, then point the header's `<nav>` links at those ids with `#`. Now the menu jumps the visitor straight to any section — the same fragment-link technique from the links chapter, applied across the whole page.
+
+<CodeExample language="html">
+{`<nav>
+  <a href="#about">About</a> ·
+  <a href="#skills">Skills</a> ·
+  <a href="#projects">Projects</a> ·
+  <a href="#contact">Contact</a>
+</nav>`}
+</CodeExample>
+
+## Assemble the full page
+
+Here is everything from the module combined into one coherent document. Read it top to bottom and notice how each element you learned plays its part.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ada Lovelace — Profile</title>
+  </head>
+  <body>
+    <header>
+      <h1>Ada Lovelace</h1>
+      <img src="https://placehold.co/120x120" alt="Portrait of Ada Lovelace"
+           width="120" height="120">
+      <nav>
+        <a href="#about">About</a> ·
+        <a href="#skills">Skills</a> ·
+        <a href="#projects">Projects</a> ·
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="about">
+        <h2>About me</h2>
+        <p>I find patterns in numbers and I am learning to build for the web.</p>
+        <p>My goal is to ship a real project by the end of this course.</p>
+      </section>
+
+      <section id="skills">
+        <h2>Skills</h2>
+        <table>
+          <caption>My skills and current level</caption>
+          <thead>
+            <tr><th>Skill</th><th>Level</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HTML</td><td>Confident</td></tr>
+            <tr><td>CSS</td><td>Learning</td></tr>
+            <tr><td>JavaScript</td><td>Beginner</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="projects">
+        <h2>Projects</h2>
+        <article>
+          <h3>Analytical Engine notes</h3>
+          <p>My write-up on an early computing idea.</p>
+          <p>See the <a href="https://example.com" target="_blank" rel="noopener">full write-up</a>.</p>
+        </article>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <form action="/contact" method="post">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email"
+                 placeholder="you@example.com" required>
+
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4"></textarea>
+
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>Contact: ada@example.com</p>
+    </footer>
+  </body>
+</html>`}
+</CodeExample>
+
+Every element earns its place: semantic landmarks define the regions, the table holds real tabular data, the form has labelled inputs, links carry meaningful text, and the image has alt text.
+
+## Review for valid, accessible markup
+
+Before you call a page done, run a quick checklist:
+
+- **One `<h1>`**, and headings descend without skipping levels.
+- **One `<main>`**, with content grouped into semantic landmarks.
+- **Every `<img>` has an `alt`** (a description, or empty for decorative).
+- **Every input has a `<label>`** tied by `for`/`id`.
+- **Link text makes sense out of context** — no bare "click here."
+- **Nesting is correct** — tags close in the order they opened.
+
+A fast way to catch validity errors is to paste your HTML into the [W3C validator](https://validator.w3.org/). It flags unclosed tags, misplaced elements, and missing attributes. Clean markup now saves debugging later, and it is the foundation CSS and JavaScript build on.
+
+<Exercise
+  title="Build your complete profile page"
+  goal="Combine everything from the module into one valid, semantic, multi-section profile page with working in-page navigation."
+  steps={[
+    "Open index.html in your profile-page project.",
+    "Make sure the page has a header (name, photo, nav), a single main, and a footer.",
+    "Inside main, build sections for About, Skills, Projects, and Contact, each with a unique id.",
+    "Include the elements from the whole module: headings, paragraphs, a list or table, a link, an image with alt, and a labelled form.",
+    "Point each nav link at the matching section id and confirm clicking them scrolls correctly in Live Server.",
+    "Run the page through validator.w3.org and fix any errors, then commit in GitHub Desktop with the message 'Complete HTML profile page'."
+  ]}
+  expected="A single valid HTML page with a header, four navigable sections, and a footer — using semantic landmarks, accessible images and forms, and no validation errors."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ada Lovelace — Profile</title>
+  </head>
+  <body>
+    <header>
+      <h1>Ada Lovelace</h1>
+      <img src="images/profile.jpg" alt="Portrait of me" width="120" height="120">
+      <nav>
+        <a href="#about">About</a> ·
+        <a href="#skills">Skills</a> ·
+        <a href="#projects">Projects</a> ·
+        <a href="#contact">Contact</a>
+      </nav>
+    </header>
+
+    <main>
+      <section id="about">
+        <h2>About me</h2>
+        <p>I am learning web development from the ground up.</p>
+      </section>
+
+      <section id="skills">
+        <h2>Skills</h2>
+        <table>
+          <caption>My skills and current level</caption>
+          <thead>
+            <tr><th>Skill</th><th>Level</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>HTML</td><td>Confident</td></tr>
+            <tr><td>CSS</td><td>Learning</td></tr>
+            <tr><td>JavaScript</td><td>Beginner</td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section id="projects">
+        <h2>Projects</h2>
+        <article>
+          <h3>My first project</h3>
+          <p>A short description, with a <a href="https://example.com" target="_blank" rel="noopener">live link</a>.</p>
+        </article>
+      </section>
+
+      <section id="contact">
+        <h2>Contact</h2>
+        <form action="/contact" method="post">
+          <label for="email">Email</label>
+          <input type="email" id="email" name="email" placeholder="you@example.com" required>
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="4"></textarea>
+          <button type="submit">Send</button>
+        </form>
+      </section>
+    </main>
+
+    <footer>
+      <p>Contact: ada@example.com</p>
+    </footer>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the best first step when building a multi-section page?",
+    options: [
+      "Write every paragraph before anything else",
+      "Plan the semantic landmarks (header, main, sections, footer)",
+      "Add all the CSS",
+      "Validate the empty file"
+    ],
+    answer: 1,
+    explanation: "Planning the landmarks first gives the page a clear structure; filling each region with content comes after."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What makes in-page navigation links scroll to a section?",
+    options: [
+      "A class on each section",
+      "The link's href set to #sectionId matching the section's id",
+      "Setting target=\"_blank\"",
+      "Wrapping the section in <article>"
+    ],
+    answer: 1,
+    explanation: "A fragment link, href=\"#id\", scrolls to the element whose id matches. Each section needs a unique id."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which item belongs on an accessibility/validity checklist?",
+    options: [
+      "Use as many <h1> elements as possible",
+      "Skip heading levels to control size",
+      "Pair every input with a <label> via for/id",
+      "Use a table to lay out the whole page"
+    ],
+    answer: 2,
+    explanation: "Every input should have an associated label. Use one <h1>, do not skip heading levels, and reserve tables for data."
+  },
+  {
+    id: "q4",
+    type: "fill-in",
+    prompt: "What free online tool checks your HTML for markup errors? (one word, the organization's initials)",
+    answer: "W3C",
+    accept: ["W3C", "w3c", "W3C validator", "validator"],
+    explanation: "The W3C validator at validator.w3.org flags unclosed tags, misplaced elements, and missing attributes."
+  }
+]} />
+
+<ReadMore title="What's next: building HTML from reusable components">
+Writing one long HTML file by hand works for a profile page, but real apps have dozens of repeated pieces — cards, buttons, headers — and copy-pasting markup quickly gets unmanageable. Modern tools solve this by building pages from reusable **components**. In **React**, a component is just a JavaScript function that returns markup written in **JSX** — a syntax that looks almost exactly like the HTML you just learned, but is a bit stricter and can include dynamic data. You write a `Card` component once and reuse it everywhere, and **Next.js** builds on React to add routing and server rendering for full sites. The browser also has a native version of this idea, **Web Components**, where you define your own custom elements with the platform's `customElements.define`. The reassuring part: the tags and structure you mastered here carry straight over — what changes is that you compose them from smaller, reusable pieces instead of one big file. See [React: Your First Component](https://react.dev/learn/your-first-component), [the Next.js docs](https://nextjs.org/docs), and [MDN on Web Components](https://developer.mozilla.org/en-US/docs/Web/API/Web_components).
+</ReadMore>

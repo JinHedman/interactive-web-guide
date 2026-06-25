@@ -1,0 +1,209 @@
+---
+title: "Semantic structure"
+module: "html"
+order: 5
+goal: "Lay out a page with semantic landmarks instead of generic boxes."
+objectives:
+  - "Use <header>, <nav>, <main>, <section>, <article>, <footer> for their meaning"
+  - "Choose <div> and <span> only when no semantic element fits"
+  - "Tell block from inline elements"
+  - "Explain why semantics help accessibility and SEO"
+  - "Build a page skeleton from landmarks"
+estMinutes: 30
+prerequisites: ["html/4-images-media"]
+---
+
+You could build any page out of plain boxes, but HTML offers elements that name the *role* of each region — header, navigation, main content, footer. These are called semantic elements, and using them makes your page easier for assistive tech, search engines, and your future self to understand. In this chapter you reorganize your profile page around semantic landmarks.
+
+## Landmarks name the regions of a page
+
+Semantic landmark elements describe what a region *is*, not how it looks. The common ones:
+
+- `<header>` — introductory content at the top, often a logo or page title.
+- `<nav>` — a block of navigation links.
+- `<main>` — the page's primary content. Use exactly one per page.
+- `<section>` — a thematic grouping of content, usually with its own heading.
+- `<article>` — a self-contained piece that would make sense on its own, like a blog post or a card.
+- `<footer>` — closing content at the bottom, like contact info or copyright.
+
+<CodeExample language="html" preview>
+{`<header>
+  <h1>Ada Lovelace</h1>
+  <nav>
+    <a href="#about">About</a> ·
+    <a href="#projects">Projects</a>
+  </nav>
+</header>
+
+<main>
+  <section id="about">
+    <h2>About me</h2>
+    <p>A short bio.</p>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+    <article>
+      <h3>Analytical Engine notes</h3>
+      <p>My write-up on an early computing idea.</p>
+    </article>
+  </section>
+</main>
+
+<footer>
+  <p>Contact: ada@example.com</p>
+</footer>`}
+</CodeExample>
+
+Notice the page reads like an outline of itself. A screen-reader user can jump straight to "main" or list all the navigation regions, because these elements announce their roles.
+
+## section vs article
+
+The two grouping elements confuse people. A quick guide:
+
+- Use `<section>` for a themed part of a larger whole — a chunk of the page that has a heading.
+- Use `<article>` when the content would stand on its own if you lifted it out — a single project card, a comment, a news story.
+
+When in doubt, ask: would this still make sense pasted somewhere else by itself? If yes, it is probably an `<article>`.
+
+## div and span: the fallbacks
+
+Sometimes you need to group elements purely for styling or scripting, with no semantic meaning. That is what `<div>` (a block-level generic box) and `<span>` (an inline generic box) are for.
+
+<CodeExample language="html">
+{`<!-- Generic grouping for layout, no inherent meaning -->
+<div class="card">
+  <p>I am <span class="highlight">currently available</span> for projects.</p>
+</div>`}
+</CodeExample>
+
+Reach for `<div>` and `<span>` only when no semantic element fits. If a region is really the navigation, use `<nav>`, not `<div class="nav">`.
+
+## Block vs inline
+
+Elements fall into two display categories by default:
+
+- **Block** elements start on a new line and stretch across the available width. Examples: `<p>`, `<h1>`, `<div>`, `<section>`.
+- **Inline** elements sit within a line of text and take only as much width as their content. Examples: `<a>`, `<strong>`, `<em>`, `<span>`.
+
+<CodeExample language="html" preview>
+{`<p>This paragraph is a <strong>block</strong> element.</p>
+<p>The <em>emphasized words</em> here are <a href="#">inline</a> elements.</p>`}
+</CodeExample>
+
+This is why `<div>` (block) stacks vertically while `<span>` (inline) flows inside text. You will control display in detail with CSS later; for now, just know the two categories exist.
+
+## Why semantics matter
+
+Semantic markup pays off in three ways:
+
+- **Accessibility** — screen readers expose landmarks so users can skip directly to navigation or main content.
+- **SEO** — search engines read your structure to understand and rank the page.
+- **Maintainability** — `<nav>` and `<footer>` tell the next developer (often future you) what each region is at a glance.
+
+Same visual result, far more meaning. That trade is almost always worth it.
+
+<Exercise
+  title="Restructure your profile with landmarks"
+  goal="Wrap your profile page content in semantic landmark elements: header, nav, main, sections, and footer."
+  steps={[
+    "Open index.html. Wrap your h1 and the nav menu in a <header>.",
+    "Wrap all the page's primary content in a single <main>.",
+    "Turn each topic (About, Skills, Projects) into a <section> with an id and its own heading.",
+    "If you have a self-contained item like a project, wrap it in an <article>.",
+    "Add a <footer> at the bottom with a contact line.",
+    "Save, confirm it looks the same in Live Server, then commit in GitHub Desktop with the message 'Use semantic landmarks'."
+  ]}
+  expected="A page that looks the same as before but is now organized into header, nav, main, sections, and footer landmarks."
+  solution={`<body>
+  <header>
+    <h1>Ada Lovelace</h1>
+    <nav>
+      <a href="#about">About</a> ·
+      <a href="#skills">Skills</a> ·
+      <a href="#projects">Projects</a>
+    </nav>
+  </header>
+
+  <main>
+    <section id="about">
+      <h2>About me</h2>
+      <p>I am learning web development from the ground up.</p>
+    </section>
+
+    <section id="skills">
+      <h2>Skills I'm learning</h2>
+      <ul>
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+      </ul>
+    </section>
+
+    <section id="projects">
+      <h2>Projects</h2>
+      <article>
+        <h3>Analytical Engine notes</h3>
+        <p>My write-up on an early computing idea.</p>
+      </article>
+    </section>
+  </main>
+
+  <footer>
+    <p>Contact: ada@example.com</p>
+  </footer>
+</body>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which element should wrap the page's primary content, used once per page?",
+    options: ["<section>", "<main>", "<div>", "<article>"],
+    answer: 1,
+    explanation: "<main> holds the primary content and should appear once per page. <section> and <article> group content within it."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "When is <div> the right choice?",
+    options: [
+      "For the page's navigation links",
+      "For the main content region",
+      "When you need a generic box for styling and no semantic element fits",
+      "For every block of text"
+    ],
+    answer: 2,
+    explanation: "<div> is a meaningless generic box for layout or scripting. Use a semantic element whenever one fits the role."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which of these is an inline element by default?",
+    options: ["<p>", "<section>", "<span>", "<div>"],
+    answer: 2,
+    explanation: "<span> is inline — it flows within a line of text. <p>, <section>, and <div> are block elements that start on a new line."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "You have a self-contained project card that would make sense pasted elsewhere on its own. Which element fits best?",
+    options: ["<article>", "<aside>", "<div>", "<header>"],
+    answer: 0,
+    explanation: "<article> is for self-contained content that stands on its own, like a card or post."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Which is NOT a benefit of semantic HTML?",
+    options: [
+      "Screen readers can expose landmarks for quick navigation",
+      "Search engines better understand the page structure",
+      "It automatically makes the page faster to download",
+      "The markup is easier for other developers to read"
+    ],
+    answer: 2,
+    explanation: "Semantics help accessibility, SEO, and readability. They do not change download speed."
+  }
+]} />

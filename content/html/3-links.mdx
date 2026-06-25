@@ -1,0 +1,182 @@
+---
+title: "Links and navigation"
+module: "html"
+order: 3
+goal: "Link between pages and to external sites, and jump within a page using anchors."
+objectives:
+  - "Write a link with <a href>"
+  - "Tell the difference between relative and absolute URLs"
+  - "Link to a section of the same page with id and #fragment"
+  - "Open a link in a new tab with target=\"_blank\" and add rel=\"noopener\""
+  - "Write link text that makes sense out of context"
+estMinutes: 25
+prerequisites: ["html/2-text"]
+---
+
+Links are what make the web a web. The anchor element, `<a>`, connects your page to other pages, to external sites, and even to specific spots within the same page. In this chapter you add links and in-page navigation to your profile page.
+
+## The anchor element
+
+A link is an `<a>` element with an `href` attribute. `href` ("hypertext reference") is the destination; the content between the tags is the clickable text.
+
+<CodeExample language="html" preview>
+{`<p>Find me on <a href="https://github.com">GitHub</a>.</p>`}
+</CodeExample>
+
+The text inside the tags is what the visitor clicks. The `href` is where they go.
+
+## Relative vs absolute URLs
+
+The value of `href` can point two ways:
+
+- An **absolute URL** includes the full address with the scheme, like `https://example.com/about`. Use it to link to other sites.
+- A **relative URL** is a path relative to the current page, like `about.html` or `projects/web.html`. Use it to link within your own site.
+
+<CodeExample language="html">
+{`<!-- Absolute: another website -->
+<a href="https://developer.mozilla.org">MDN Web Docs</a>
+
+<!-- Relative: another page in your own project -->
+<a href="projects.html">My projects</a>`}
+</CodeExample>
+
+Relative links keep working if you move the whole site to a new domain, because they do not hard-code the host. Reach for relative links inside your own project and absolute links for the outside world.
+
+## Linking within a page
+
+To jump to a section of the *same* page, give the target element an `id`, then link to it with `#` plus that id. This is called a fragment link.
+
+<CodeExample language="html" preview>
+{`<nav>
+  <a href="#about">About</a> ·
+  <a href="#projects">Projects</a>
+</nav>
+
+<h2 id="about">About me</h2>
+<p>A short bio goes here.</p>
+
+<h2 id="projects">Projects</h2>
+<p>A list of things I've built.</p>`}
+</CodeExample>
+
+An `id` must be unique on the page. Clicking the link scrolls to the element whose `id` matches the fragment. This is exactly how a "jump to section" menu works.
+
+## Opening in a new tab
+
+To open a link in a new browser tab, add `target="_blank"`. When you do, also add `rel="noopener"`.
+
+<CodeExample language="html">
+{`<a href="https://example.com" target="_blank" rel="noopener">My portfolio</a>`}
+</CodeExample>
+
+Why `rel="noopener"`? Without it, the page you open can gain a reference back to your page through `window.opener`, which is a security and performance risk. `rel="noopener"` severs that link. Make it a habit: `target="_blank"` and `rel="noopener"` travel together.
+
+## Write link text that stands alone
+
+Link text should describe its destination on its own, without surrounding sentences. Screen-reader users often jump from link to link, so a list of "click here" links tells them nothing.
+
+<CodeExample language="html">
+{`<!-- Weak: meaningless out of context -->
+<p>To see my work, <a href="projects.html">click here</a>.</p>
+
+<!-- Strong: the link text describes the destination -->
+<p>Browse <a href="projects.html">my recent projects</a>.</p>`}
+</CodeExample>
+
+Aim for link text that names where it goes. It is better for accessibility and reads more naturally too.
+
+<Exercise
+  title="Add navigation and links to your profile"
+  goal="Add an in-page navigation menu and at least one external link to your profile page."
+  steps={[
+    "Open index.html. Give your 'About me' heading an id of 'about' and your 'Skills' heading an id of 'skills'.",
+    "Near the top of the body, add a nav with two links: one to #about and one to #skills.",
+    "Add a paragraph with an external link to a real site (for example your GitHub), using descriptive link text.",
+    "Make the external link open in a new tab with target=\"_blank\" and rel=\"noopener\".",
+    "Save, then in Live Server click the nav links and confirm the page scrolls to each section.",
+    "Commit in GitHub Desktop with the message 'Add navigation and links'."
+  ]}
+  expected="A nav menu whose links scroll to the matching sections, plus an external link that opens in a new tab and reads meaningfully on its own."
+  solution={`<body>
+  <h1>Ada Lovelace</h1>
+
+  <nav>
+    <a href="#about">About</a> ·
+    <a href="#skills">Skills</a>
+  </nav>
+
+  <h2 id="about">About me</h2>
+  <p>I am learning web development from the ground up.</p>
+  <p>Browse <a href="https://github.com" target="_blank" rel="noopener">my GitHub profile</a>.</p>
+
+  <h2 id="skills">Skills I'm learning</h2>
+  <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>JavaScript</li>
+  </ul>
+</body>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "fill-in",
+    prompt: "Which attribute on <a> sets the link's destination?",
+    answer: "href",
+    accept: ["href", "href attribute"],
+    explanation: "href holds the URL or fragment the link points to."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which is a relative URL?",
+    options: [
+      "https://example.com/about",
+      "about.html",
+      "mailto:me@example.com",
+      "//cdn.example.com/app.js"
+    ],
+    answer: 1,
+    explanation: "about.html is relative to the current page. The others include a scheme or host, making them absolute."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "How do you link to a section with id=\"projects\" on the same page?",
+    options: [
+      "href=\"projects\"",
+      "href=\".projects\"",
+      "href=\"#projects\"",
+      "href=\"id:projects\""
+    ],
+    answer: 2,
+    explanation: "A fragment link uses # followed by the target element's id, so href=\"#projects\"."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Why add rel=\"noopener\" to a link with target=\"_blank\"?",
+    options: [
+      "It makes the new tab load faster only",
+      "It stops the opened page from accessing your page via window.opener",
+      "It is required for the link to open at all",
+      "It hides the link from search engines"
+    ],
+    answer: 1,
+    explanation: "rel=\"noopener\" severs the opened page's reference back to yours through window.opener, closing a security and performance hole."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Which link text is best for accessibility?",
+    options: [
+      "click here",
+      "this link",
+      "read more",
+      "my recent projects"
+    ],
+    answer: 3,
+    explanation: "Link text should describe its destination on its own. 'my recent projects' makes sense without the surrounding sentence."
+  }
+]} />

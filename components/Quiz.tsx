@@ -2,7 +2,7 @@
 
 import { useEffect, useId, useReducer, useRef } from "react";
 import type { QuizQuestion } from "@/lib/types";
-import { setQuizScore } from "@/lib/progress";
+import { setQuizScore, type ProgressEventDetail } from "@/lib/progress";
 
 export interface QuizProps {
   questions: QuizQuestion[];
@@ -74,6 +74,25 @@ export default function Quiz({ questions = [], chapterId }: QuizProps) {
       setQuizScore(chapterId, score);
     }
   }, [state.finished, chapterId, score]);
+
+  // Return to a fresh, re-takeable state when this chapter is reset (per-chapter
+  // "Reset this section" or the global "Reset all progress").
+  useEffect(() => {
+    function onProgress(e: Event) {
+      const detail = (e as CustomEvent<ProgressEventDetail>).detail;
+      if (!detail) return;
+      const affectsUs =
+        detail.kind === "clear-all" ||
+        (detail.kind === "reset-chapter" && detail.chapterId === chapterId);
+      if (affectsUs) {
+        dispatch({ type: "RESET" });
+        setSubmitted(-1, false); // clear all per-question submitted flags
+      }
+    }
+    window.addEventListener("guide:progress", onProgress);
+    return () => window.removeEventListener("guide:progress", onProgress);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [chapterId]);
 
   function handleSelect(qi: number, value: number | string) {
     if (submitted.get(qi)) return;

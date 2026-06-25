@@ -1,0 +1,285 @@
+---
+title: "Layout: display and flexbox"
+module: "css"
+order: 3
+goal: "Arrange elements in rows and columns with flexbox, and recognize when grid fits better."
+objectives:
+  - "Use display: block, inline, inline-block, none"
+  - "Build a flex container and control direction, wrapping, and alignment"
+  - "Use justify-content, align-items, and gap"
+  - "Recognize a 2D layout where display: grid is the better tool"
+prerequisites: ["css/2-box-model-typography"]
+estMinutes: 35
+---
+
+So far your card stacks everything top to bottom. Real layouts place things side by side, center them, and space them evenly. This chapter covers `display` — the property that controls how an element flows — and **flexbox**, the modern tool for arranging items in a row or column. We will turn the profile card into an avatar beside a block of details.
+
+## display: how an element flows
+
+Every element has a default `display` value that governs its layout behavior.
+
+- **`block`** — takes the full width available and starts on a new line. `<div>`, `<p>`, headings.
+- **`inline`** — flows within a line of text and ignores width/height. `<span>`, `<a>`.
+- **`inline-block`** — flows inline like text, but *accepts* width, height, and vertical padding.
+- **`none`** — removes the element from the page entirely (no space reserved).
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .tag {
+        display: inline-block;
+        background: navy;
+        color: white;
+        padding: 4px 10px;
+        border-radius: 999px;
+        margin-right: 6px;
+      }
+      .hidden { display: none; }
+    </style>
+  </head>
+  <body>
+    <p>
+      <span class="tag">math</span>
+      <span class="tag">writing</span>
+      <span class="tag hidden">secret</span>
+    </p>
+  </body>
+</html>`}
+</CodeExample>
+
+The third tag has `display: none`, so it takes up no space at all.
+
+## Flexbox: rows and columns made easy
+
+Set `display: flex` on a container and its direct children become **flex items**, laid out in a row by default. Flexbox handles spacing and alignment for you — no floats, no margin tricks.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .card {
+        display: flex;
+        gap: 1rem;
+        max-width: 420px;
+        padding: 1rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+      }
+      .avatar {
+        width: 64px;
+        height: 64px;
+        border-radius: 50%;
+        background: navy;
+        flex-shrink: 0;
+      }
+      .details h1 { font-size: 1.25rem; margin: 0; }
+      .details p { margin: 0.25rem 0 0; color: #444; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <div class="avatar"></div>
+      <div class="details">
+        <h1>Ada Lovelace</h1>
+        <p>Mathematician and writer.</p>
+      </div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+The avatar and the details sit side by side because the `.card` is a flex container. `gap: 1rem` puts space between them without any margins.
+
+## Direction, alignment, and wrapping
+
+A few properties on the flex container do most of the work:
+
+- **`flex-direction`** — `row` (default) or `column` to stack vertically.
+- **`justify-content`** — aligns items along the main axis: `flex-start`, `center`, `space-between`, `space-around`.
+- **`align-items`** — aligns items along the cross axis: `stretch` (default), `center`, `flex-start`.
+- **`gap`** — space between items.
+- **`flex-wrap`** — `wrap` lets items drop onto a new line when they run out of room.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        padding: 0.75rem 1rem;
+        background: #f3f4f6;
+        border-radius: 8px;
+      }
+      .links { display: flex; gap: 1rem; }
+      .links a { color: navy; text-decoration: none; }
+      strong { font-size: 1.1rem; }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar">
+      <strong>Ada Lovelace</strong>
+      <nav class="links">
+        <a href="#about">About</a>
+        <a href="#work">Work</a>
+        <a href="#contact">Contact</a>
+      </nav>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+`justify-content: space-between` pushes the name to the left and the links to the right; `align-items: center` keeps them vertically centered. This row-with-something-on-each-end pattern is everywhere on the web.
+
+## A peek at grid
+
+Flexbox excels at laying out items in *one* direction — a row or a column. When you need to control rows **and** columns at the same time — a true two-dimensional layout like a photo gallery or a dashboard — `display: grid` is the better tool.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1rem; }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 0.75rem;
+      }
+      .gallery div {
+        background: navy;
+        aspect-ratio: 1;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="gallery">
+      <div></div><div></div><div></div>
+      <div></div><div></div><div></div>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+`grid-template-columns: repeat(3, 1fr)` makes three equal columns; items flow into rows automatically. You do not need to learn grid in depth now — just recognize the situation: aligning content in two dimensions means grid, while a single row or column means flexbox. The Read more in the next chapter links to a full grid reference.
+
+<Exercise
+  title="Lay out the card with flexbox"
+  goal="Turn your stacked profile card into a flex layout: an avatar beside the name and bio, with a row of links above."
+  steps={[
+    "Open your project in VS Code (index.html + styles.css).",
+    "In index.html, wrap the card content so you have a div class=\"avatar\" next to a div class=\"details\" holding the h1 and p.",
+    "In styles.css, set .card to display: flex with gap: 1rem and align-items: center.",
+    "Give .avatar a fixed width and height, border-radius: 50%, a background color, and flex-shrink: 0 so it stays round.",
+    "Add a nav of three links above the card and make it a flex row with gap and justify-content: space-between.",
+    "View with Live Server, adjust the gap until it looks balanced, then commit in GitHub Desktop."
+  ]}
+  expected="A round avatar sitting to the left of the name and bio, with an evenly spaced row of links above the card."
+  solution={`<!-- index.html (body) -->
+<nav class="links">
+  <a href="#about">About</a>
+  <a href="#work">Work</a>
+  <a href="#contact">Contact</a>
+</nav>
+
+<div class="card">
+  <div class="avatar"></div>
+  <div class="details">
+    <h1 id="name">Ada Lovelace</h1>
+    <p>I find patterns in numbers and write algorithms for fun.</p>
+  </div>
+</div>
+
+/* styles.css (additions) */
+.links {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  max-width: 360px;
+  margin-bottom: 1rem;
+}
+
+.card {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: navy;
+  flex-shrink: 0;
+}
+
+.details h1 { margin: 0; }
+.details p { margin: 0.25rem 0 0; }`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which display value removes an element from the page with no space reserved?",
+    options: ["inline", "block", "none", "hidden"],
+    answer: 2,
+    explanation: "display: none removes the element entirely. (hidden is not a display value — visibility: hidden hides the element but keeps its space.)"
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What does setting display: flex on a container do?",
+    options: [
+      "Makes the container itself float",
+      "Lays out its direct children as flex items, in a row by default",
+      "Hides the container's children",
+      "Switches the page to two columns"
+    ],
+    answer: 1,
+    explanation: "display: flex turns the element into a flex container; its direct children become flex items, arranged in a row unless you change flex-direction."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which property spaces flex items along the main axis (e.g. space-between)?",
+    options: ["align-items", "justify-content", "gap", "flex-wrap"],
+    answer: 1,
+    explanation: "justify-content aligns items along the main axis. align-items handles the cross axis, gap sets spacing, and flex-wrap allows wrapping."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "You need to align content in both rows and columns at once, like a photo gallery. Which is the better tool?",
+    options: [
+      "Flexbox, because it handles two dimensions",
+      "display: grid, because it is two-dimensional",
+      "display: inline-block on each item",
+      "Margins set by hand"
+    ],
+    answer: 1,
+    explanation: "Grid is two-dimensional and built for row-and-column layouts. Flexbox is best for a single row or column."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which flex-container property adds space between items without using margins?",
+    answer: "gap",
+    accept: ["gap", "gap property"],
+    explanation: "gap sets the spacing between flex (and grid) items, replacing fiddly margins."
+  }
+]} />

@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { getProgress, markExerciseDone } from "@/lib/progress";
+import { useState } from "react";
+import { markExerciseDone } from "@/lib/progress";
+import { useChapterProgress } from "@/lib/useProgress";
 
 export interface ExerciseProps {
   title: string;
@@ -21,28 +22,13 @@ export default function Exercise({
   chapterId,
 }: ExerciseProps) {
   const [showSolution, setShowSolution] = useState(false);
-  const [done, setDone] = useState(false);
 
-  // Hydration-safe: read localStorage after mount
-  useEffect(() => {
-    if (chapterId) {
-      setDone(getProgress(chapterId).exerciseDone);
-    }
-
-    function onProgress(e: Event) {
-      const detail = (e as CustomEvent).detail;
-      if (detail?.chapterId === chapterId) {
-        setDone(detail.progress.exerciseDone);
-      }
-    }
-
-    window.addEventListener("guide:progress", onProgress);
-    return () => window.removeEventListener("guide:progress", onProgress);
-  }, [chapterId]);
+  // Live, hydration-safe completion state. Reflects "Mark complete" as well as
+  // any per-chapter / global reset — no manual refresh needed.
+  const done = useChapterProgress(chapterId ?? "").exerciseDone;
 
   function handleMarkDone() {
     if (chapterId) markExerciseDone(chapterId);
-    setDone(true);
   }
 
   return (

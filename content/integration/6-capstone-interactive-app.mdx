@@ -1,0 +1,404 @@
+---
+title: "Capstone — build an interactive app"
+module: "integration"
+order: 6
+goal: "Build a working to-do list app that combines selection, events, form input, and dynamic rendering."
+objectives:
+  - "Plan the app: data shape, user actions, and what each renders"
+  - "Capture input and add items to an array"
+  - "Render the array to the DOM and re-render on change"
+  - "Handle add, complete, and remove actions"
+  - "Style the app and confirm it works end to end"
+estMinutes: 60
+prerequisites: ["integration/5-creating-elements", "css/3-layout-flexbox", "javascript/7-functions"]
+---
+
+This is where it all comes together. You have selected elements, changed content and styles, listened for events, read form input, and created and removed elements. Now you will assemble those skills into one complete, working **to-do list app** — the project you have been building toward all module. Take your time; this chapter is a build, not a read.
+
+## Plan before you code
+
+A few minutes of planning saves an hour of confusion. Three questions:
+
+1. **What is the data?** A list of tasks. Each task has text and a done flag — so an **array of objects**, like `{ text: "Buy milk", done: false }`.
+2. **What can the user do?** Add a task, toggle a task complete, and delete a task.
+3. **What renders?** A list where each task shows its text, looks crossed-out when done, and has a delete button.
+
+The guiding rule, from the last chapter: **the array is the source of truth.** Every user action changes the array, then you call `render` to redraw the page from it. You never hand-edit the DOM and the data separately — that is how apps get out of sync.
+
+## Build the structure and styles
+
+Start with the HTML shell and a little CSS. A flex row keeps each task's text, checkbox, and delete button aligned. The `done` class provides the crossed-out look.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+      form { display: flex; gap: 0.5rem; }
+      input[type="text"] { flex: 1; padding: 0.4rem; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+      li span { flex: 1; }
+      .done span { text-decoration: line-through; color: gray; }
+    </style>
+  </head>
+  <body>
+    <h1>My Tasks</h1>
+    <form id="taskForm">
+      <input type="text" id="taskInput" placeholder="What needs doing?">
+      <button type="submit">Add</button>
+    </form>
+    <ul id="taskList"></ul>
+  </body>
+</html>`}
+</CodeExample>
+
+This is just the layout — no behavior yet. The list is empty because JavaScript will fill it.
+
+## Render the task array
+
+Now the engine. Hold the tasks in an array. The `render` function clears the list, loops over the array, and builds one `<li>` per task — text in a `<span>`, plus a checkbox and a delete button. Re-running `render` always redraws from the current data.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+      li span { flex: 1; }
+      .done span { text-decoration: line-through; color: gray; }
+    </style>
+  </head>
+  <body>
+    <h1>My Tasks</h1>
+    <ul id="taskList"></ul>
+    <script>
+      const list = document.getElementById("taskList");
+
+      const tasks = [
+        { text: "Buy milk", done: false },
+        { text: "Walk the dog", done: true },
+      ];
+
+      function render() {
+        list.textContent = "";
+        for (const task of tasks) {
+          const li = document.createElement("li");
+          if (task.done) {
+            li.classList.add("done");
+          }
+
+          const span = document.createElement("span");
+          span.textContent = task.text;
+
+          li.append(span);
+          list.append(li);
+        }
+      }
+
+      render();
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+One starter task is already done, so it renders crossed out — proof the `done` flag drives the look. Next you add the actions.
+
+## Add, complete, and remove
+
+Here is the finished app. Read each handler as "change the array, then `render`":
+
+- **Add** — the form's submit handler trims the input, pushes a new `{ text, done: false }` object, clears the input, and re-renders.
+- **Complete** — each task's checkbox click flips `task.done`, then re-renders so the strike-through appears or disappears.
+- **Remove** — each task's delete button splices that task out of the array, then re-renders.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+      form { display: flex; gap: 0.5rem; }
+      input[type="text"] { flex: 1; padding: 0.4rem; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+      li span { flex: 1; }
+      .done span { text-decoration: line-through; color: gray; }
+      .empty { color: gray; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <h1>My Tasks</h1>
+    <form id="taskForm">
+      <input type="text" id="taskInput" placeholder="What needs doing?">
+      <button type="submit">Add</button>
+    </form>
+    <ul id="taskList"></ul>
+
+    <script>
+      const form = document.getElementById("taskForm");
+      const input = document.getElementById("taskInput");
+      const list = document.getElementById("taskList");
+
+      const tasks = [
+        { text: "Buy milk", done: false },
+        { text: "Walk the dog", done: true },
+      ];
+
+      function render() {
+        list.textContent = "";
+
+        if (tasks.length === 0) {
+          const li = document.createElement("li");
+          li.textContent = "No tasks yet. Add one above.";
+          li.className = "empty";
+          list.append(li);
+          return;
+        }
+
+        tasks.forEach(function (task, index) {
+          const li = document.createElement("li");
+          if (task.done) {
+            li.classList.add("done");
+          }
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.done;
+          checkbox.addEventListener("change", function () {
+            tasks[index].done = checkbox.checked;
+            render();
+          });
+
+          const span = document.createElement("span");
+          span.textContent = task.text;
+
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete";
+          delBtn.addEventListener("click", function () {
+            tasks.splice(index, 1);
+            render();
+          });
+
+          li.append(checkbox, span, delBtn);
+          list.append(li);
+        });
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (text === "") {
+          return;
+        }
+        tasks.push({ text: text, done: false });
+        input.value = "";
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Try the whole thing in the preview: add a task, tick it to cross it off, untick it, and delete one. When you remove the last task, the empty-state message appears. Every action follows the same shape — update `tasks`, call `render` — and the page stays perfectly in sync with the data. That single discipline is what makes the app reliable.
+
+A couple of notes on the new pieces. `tasks.forEach(function (task, index) { ... })` gives you both the task and its position, and you use `index` to update or splice the right one. `splice(index, 1)` removes one item starting at `index`. And because the checkbox and delete listeners are attached inside `render`, every freshly drawn task gets its own working handlers.
+
+<Exercise
+  title="Build and ship your to-do app"
+  goal="Assemble the complete to-do app in one file, run it with Live Server, and commit it with GitHub Desktop."
+  steps={[
+    "In VS Code, open your project folder and create (or finish) todo.html.",
+    "Add the HTML shell: an h1, a form with a text input and submit button, and an empty ul with id taskList.",
+    "Add the style block from the example so tasks lay out in a flex row and the done class crosses them out.",
+    "In a script before the closing body tag, declare the tasks array with one or two starter objects shaped { text, done }.",
+    "Write the render function: clear the list, show an empty-state message if there are no tasks, otherwise forEach over tasks building a checkbox, a span, and a delete button for each.",
+    "Wire the checkbox change to flip tasks[index].done and re-render; wire the delete click to splice the task and re-render.",
+    "Add the form submit handler: preventDefault, trim the input, return if empty, push a new task, clear the input, and re-render. Call render() once at the end.",
+    "Open with Live Server and test every action: add, complete, un-complete, delete, and empty the list.",
+    "In GitHub Desktop, write a commit message like \"Add to-do list capstone\", commit to your branch, and push."
+  ]}
+  expected="A working to-do app: typing and submitting adds a task, the checkbox crosses it off and back, Delete removes it, an empty list shows a friendly message, and your work is committed and pushed."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Tasks</title>
+    <style>
+      body { font-family: system-ui, sans-serif; max-width: 28rem; margin: 2rem auto; }
+      form { display: flex; gap: 0.5rem; }
+      input[type="text"] { flex: 1; padding: 0.4rem; }
+      ul { list-style: none; padding: 0; }
+      li { display: flex; align-items: center; gap: 0.5rem; padding: 0.4rem 0; }
+      li span { flex: 1; }
+      .done span { text-decoration: line-through; color: gray; }
+      .empty { color: gray; font-style: italic; }
+    </style>
+  </head>
+  <body>
+    <h1>My Tasks</h1>
+    <form id="taskForm">
+      <input type="text" id="taskInput" placeholder="What needs doing?">
+      <button type="submit">Add</button>
+    </form>
+    <ul id="taskList"></ul>
+
+    <script>
+      const form = document.getElementById("taskForm");
+      const input = document.getElementById("taskInput");
+      const list = document.getElementById("taskList");
+
+      const tasks = [
+        { text: "Buy milk", done: false },
+        { text: "Walk the dog", done: true },
+      ];
+
+      function render() {
+        list.textContent = "";
+
+        if (tasks.length === 0) {
+          const li = document.createElement("li");
+          li.textContent = "No tasks yet. Add one above.";
+          li.className = "empty";
+          list.append(li);
+          return;
+        }
+
+        tasks.forEach(function (task, index) {
+          const li = document.createElement("li");
+          if (task.done) {
+            li.classList.add("done");
+          }
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.checked = task.done;
+          checkbox.addEventListener("change", function () {
+            tasks[index].done = checkbox.checked;
+            render();
+          });
+
+          const span = document.createElement("span");
+          span.textContent = task.text;
+
+          const delBtn = document.createElement("button");
+          delBtn.textContent = "Delete";
+          delBtn.addEventListener("click", function () {
+            tasks.splice(index, 1);
+            render();
+          });
+
+          li.append(checkbox, span, delBtn);
+          list.append(li);
+        });
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (text === "") {
+          return;
+        }
+        tasks.push({ text: text, done: false });
+        input.value = "";
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What data shape holds the to-do tasks in this app?",
+    options: [
+      "A single string of comma-separated tasks",
+      "An array of objects, each with text and done",
+      "One object whose keys are task names",
+      "A list of DOM elements"
+    ],
+    answer: 1,
+    explanation: "Each task is an object { text, done } and they live in an array, which is the single source of truth for the app."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What is the repeated shape of every user action in the app?",
+    options: [
+      "Edit the DOM directly, then update the array",
+      "Update the array, then call render",
+      "Reload the page after each action",
+      "Call render, then update the array"
+    ],
+    answer: 1,
+    explanation: "Every handler changes the tasks array and then calls render, so the view is always rebuilt from current data."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "How does a task get its crossed-out look when completed?",
+    options: [
+      "Its text is deleted from the array",
+      "The li gets the done class, which the CSS styles with line-through",
+      "An inline style is set on every keystroke",
+      "The task is removed and re-added"
+    ],
+    answer: 1,
+    explanation: "When task.done is true, render adds the done class to the li, and the .done span CSS rule crosses out the text."
+  },
+  {
+    id: "q4",
+    type: "fill-in",
+    prompt: "Which array method removes one task at a given index?",
+    answer: "splice",
+    accept: ["splice", "splice()", "tasks.splice", "Array.prototype.splice"],
+    explanation: "tasks.splice(index, 1) removes one element starting at index; render then redraws the shorter list."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "Why are the checkbox and delete listeners attached inside the render function?",
+    options: [
+      "So they only run once",
+      "So each newly created task element gets its own working handlers",
+      "Because listeners cannot be attached outside a function",
+      "To make the code shorter"
+    ],
+    answer: 1,
+    explanation: "render rebuilds the elements every time, so the listeners are attached there to ensure every fresh element is interactive."
+  },
+  {
+    id: "q6",
+    type: "multiple-choice",
+    prompt: "What happens when the tasks array becomes empty?",
+    options: [
+      "The app crashes",
+      "render shows a friendly empty-state message",
+      "The form disappears",
+      "The page reloads"
+    ],
+    answer: 1,
+    explanation: "render checks tasks.length === 0 first and shows an empty-state message instead of an empty list."
+  }
+]} />
+
+<ReadMore title="Why frameworks exist: from manual DOM to React and Next.js">
+Look back at your `render` function. Every time the data changes, you wipe the list and rebuild every element by hand with `createElement`, `textContent`, `classList`, and fresh event listeners. For a to-do list that is fine — but as an app grows, keeping the DOM and your data in sync this way gets tangled fast, and it is easy to update one and forget the other. Modern frameworks were built to remove exactly this chore. **React** (currently version 19) flips the model: instead of telling the browser *how* to update each element, you write components that **declare** what the UI should look like for a given piece of **state**, and React figures out the changes for you. Under the hood it compares a lightweight in-memory copy of the page — the **virtual DOM** — against the previous one and updates only what actually changed, so you never write the wipe-and-rebuild loop yourself. The mental shift is from "find this element and change it" to "describe the result; let the framework reconcile it." **Next.js** (version 16) is the most popular production framework built on React, adding routing, server rendering, and build tooling on top. The instincts you just built — state in a variable, re-render when it changes, components made of small pieces — are precisely the instincts React formalizes, so the leap will feel natural.
+
+- [React — Reacting to input with state](https://react.dev/learn/reacting-to-input-with-state)
+- [React — official site](https://react.dev)
+- [Next.js — official site](https://nextjs.org)
+</ReadMore>

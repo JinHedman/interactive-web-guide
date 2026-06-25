@@ -1,0 +1,246 @@
+---
+title: "Creating and removing elements"
+module: "integration"
+order: 5
+goal: "Build and remove page elements from JavaScript at runtime."
+objectives:
+  - "Create an element with createElement"
+  - "Add it to the page with append or appendChild"
+  - "Remove an element with remove"
+  - "Render a list by looping over an array"
+estMinutes: 35
+prerequisites: ["integration/4-reading-form-input", "javascript/6-loops"]
+---
+
+Until now you have changed elements that already existed in your HTML. But a to-do app cannot know its tasks ahead of time — the user adds them as they go. So you need to **create** new elements from JavaScript and add them to the page, and **remove** them when they are no longer wanted. This chapter gives you those final building blocks. After this, you have everything you need for the capstone.
+
+## Create an element
+
+`document.createElement` makes a fresh element of the tag you name. It exists only in memory at first — it is not on the page until you add it.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <ul id="taskList"></ul>
+    <script>
+      const list = document.getElementById("taskList");
+
+      const li = document.createElement("li");
+      li.textContent = "Buy milk";
+      list.append(li);
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Three steps: create the element, set its content, and add it to the page. The list started empty in the HTML; the script filled it in.
+
+## Add elements with append
+
+`append` adds your new element as the last child of a parent. (You will also see `appendChild`, the older method — it does the same job for a single element. `append` is newer and a little more flexible, so prefer it.)
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <ul id="taskList">
+      <li>Existing task</li>
+    </ul>
+    <script>
+      const list = document.getElementById("taskList");
+
+      const first = document.createElement("li");
+      first.textContent = "Walk the dog";
+      list.append(first);
+
+      const second = document.createElement("li");
+      second.textContent = "Write some code";
+      list.append(second);
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Each `append` puts the new item at the end, so they appear in the order you added them, after the task that was already there.
+
+## Remove an element
+
+Any element you hold in a variable can remove itself from the page with `remove`. No parent reference needed.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <ul id="taskList">
+      <li id="keep">Keep this one</li>
+      <li id="drop">Remove this one</li>
+    </ul>
+    <button id="delBtn">Delete the second task</button>
+    <script>
+      const drop = document.getElementById("drop");
+      const delBtn = document.getElementById("delBtn");
+
+      delBtn.addEventListener("click", function () {
+        drop.remove();
+      });
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Click the button and the second item disappears. In a to-do app, each task will carry its own delete button whose click handler calls `remove` on that task.
+
+## Render a list from an array
+
+Here is the pattern your capstone is built on. Keep your data in an **array**, then loop over it to build the matching elements. When the data changes, you clear the list and rebuild it — so what you see always reflects the data.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <ul id="taskList"></ul>
+    <script>
+      const list = document.getElementById("taskList");
+      const tasks = ["Buy milk", "Walk the dog", "Write some code"];
+
+      function render() {
+        list.textContent = "";
+        for (const task of tasks) {
+          const li = document.createElement("li");
+          li.textContent = task;
+          list.append(li);
+        }
+      }
+
+      render();
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Read the `render` function closely. It first empties the list with `list.textContent = ""`, then loops over `tasks` and creates one `<li>` per item. Call `render` again any time `tasks` changes and the page redraws itself from the current data. This "data in an array, render from the array" idea is the whole engine of the capstone — and, as you will see at the end of the module, the core idea behind modern frameworks too.
+
+<Exercise
+  title="Render tasks from an array and add new ones"
+  goal="Combine everything so far: keep tasks in an array, render them as list items, and add a new task on submit by pushing to the array and re-rendering."
+  steps={[
+    "Open your todo.html with the form (id taskForm), input (id taskInput), and an empty ul (id taskList).",
+    "In the script, create an array named tasks holding two starter strings.",
+    "Write a render function that clears the list with list.textContent = \"\", then loops over tasks with for...of, creating an li for each and appending it.",
+    "Call render() once so the starter tasks show.",
+    "In the submit handler, after preventDefault, read const text = input.value.trim() and return early if it is empty.",
+    "Push text onto the tasks array, clear the input, then call render() again.",
+    "Open with Live Server. Confirm the starter tasks appear, then add a few and watch the list grow."
+  ]}
+  expected="The page shows the starter tasks on load, and each submitted task appears at the bottom of the list while the input clears."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To-Do List</title>
+  </head>
+  <body>
+    <h1 id="appTitle">My Tasks</h1>
+    <form id="taskForm">
+      <input id="taskInput" placeholder="What needs doing?">
+      <button type="submit">Add</button>
+    </form>
+    <ul id="taskList"></ul>
+
+    <script>
+      const form = document.getElementById("taskForm");
+      const input = document.getElementById("taskInput");
+      const list = document.getElementById("taskList");
+
+      const tasks = ["Buy milk", "Walk the dog"];
+
+      function render() {
+        list.textContent = "";
+        for (const task of tasks) {
+          const li = document.createElement("li");
+          li.textContent = task;
+          list.append(li);
+        }
+      }
+
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        const text = input.value.trim();
+        if (text === "") {
+          return;
+        }
+        tasks.push(text);
+        input.value = "";
+        render();
+      });
+
+      render();
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "After document.createElement(\"li\"), is the new element on the page?",
+    options: [
+      "Yes, createElement adds it immediately",
+      "No, it exists in memory until you append it to a parent",
+      "Only if it has an id",
+      "Only after the page reloads"
+    ],
+    answer: 1,
+    explanation: "createElement builds the element in memory. It appears on the page only once you append it to an element that is already in the document."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What does parent.append(child) do?",
+    options: [
+      "Replaces the parent with the child",
+      "Adds the child as the last child of the parent",
+      "Adds the child before the parent",
+      "Copies the parent's styles to the child"
+    ],
+    answer: 1,
+    explanation: "append inserts the element as the parent's last child. appendChild does the same for a single element."
+  },
+  {
+    id: "q3",
+    type: "fill-in",
+    prompt: "Which method, called on an element, takes it off the page?",
+    answer: "remove",
+    accept: ["remove", "remove()", ".remove()", "element.remove()"],
+    explanation: "element.remove() detaches the element from the DOM without needing a reference to its parent."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "In the render pattern, why set list.textContent = \"\" before the loop?",
+    options: [
+      "To delete the array",
+      "To clear the old elements so you can rebuild the list from the current data",
+      "To reset the input field",
+      "It is optional and does nothing useful"
+    ],
+    answer: 1,
+    explanation: "Clearing the container first prevents duplicates, so each render redraws the list freshly from the array."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "What is the core idea behind rendering a list from an array?",
+    options: [
+      "The DOM is the single source of truth",
+      "Keep data in the array; loop over it to build elements; re-render when the data changes",
+      "Use one createElement call for the whole list",
+      "Avoid loops and write each element by hand"
+    ],
+    answer: 1,
+    explanation: "The array is the source of truth. You build the UI from it and re-render whenever it changes, so the view always matches the data."
+  }
+]} />

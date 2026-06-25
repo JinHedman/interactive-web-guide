@@ -1,0 +1,162 @@
+---
+title: "Your tools and your first page"
+module: "setup"
+order: 1
+goal: "Set up VS Code and GitHub Desktop, then create an index.html and open it in a browser with Live Server."
+objectives:
+  - "Install the Live Server and Prettier extensions in VS Code"
+  - "Clone a repo with GitHub Desktop, then commit and push a change"
+  - "Create an index.html file and open it with Live Server"
+  - "Make an edit and see the browser reload"
+  - "Format a file with Prettier"
+estMinutes: 25
+prerequisites: []
+---
+
+Before you write any HTML, you need a workflow: an editor, a way to preview your work in a browser, and a way to save versions of your project. This chapter sets up the exact tools you will use for the rest of the course and walks you through your first page. You will build a personal profile page across the HTML module, and this is where the project folder starts.
+
+## The tools you need
+
+Three tools carry the whole course:
+
+- **VS Code** — your editor. You write code here.
+- **GitHub Desktop** — saves snapshots of your project and syncs them to GitHub.
+- **A browser** — Chrome, Firefox, or Edge. You already have one.
+
+Install [VS Code](https://code.visualstudio.com/) and [GitHub Desktop](https://desktop.github.com/) if you have not already. Sign in to GitHub Desktop with your GitHub account.
+
+## Install two VS Code extensions
+
+Extensions add features to VS Code. Open the Extensions panel (the icon with four squares in the left sidebar, or `Cmd/Ctrl + Shift + X`) and install these two:
+
+- **Live Server** (by Ritwick Dey) — runs a tiny local web server and reloads the browser every time you save. No more manually refreshing.
+- **Prettier - Code formatter** — reformats your file to clean, consistent spacing with one command.
+
+Search for each by name, then click **Install**.
+
+## Make Prettier the default formatter
+
+Tell VS Code to use Prettier whenever you format a file. Open Settings (`Cmd/Ctrl + ,`), search for **format on save**, and turn on **Editor: Format On Save**. Then search for **default formatter** and set it to **Prettier - Code formatter**.
+
+Now every save tidies your code automatically. You can also format on demand with `Shift + Alt + F` (Windows/Linux) or `Shift + Option + F` (Mac).
+
+## Get a project folder with GitHub Desktop
+
+You need a folder to hold your project, tracked by Git so you can save versions. The cleanest way to start is to create a repository on GitHub and clone it to your computer.
+
+1. On [github.com](https://github.com), click **New** to create a repository. Name it `profile-page`, check **Add a README file**, and create it.
+2. In GitHub Desktop, choose **File → Clone repository**, pick `profile-page`, and choose where to save it on your computer. Cloning downloads the repo to a local folder.
+3. In GitHub Desktop, click **Open in Visual Studio Code** to open the folder in your editor.
+
+"Clone" means copy a repository from GitHub down to your machine, with the connection between them kept intact.
+
+## Create your first index.html
+
+In VS Code, create a new file in the project folder and name it exactly `index.html`. The name matters: `index.html` is the default page a web server serves for a folder, so it is the conventional home page of any site.
+
+Type this in:
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Profile</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <p>This is the start of my profile page.</p>
+  </body>
+</html>`}
+</CodeExample>
+
+You will learn what each line does in the next chapter. For now, save the file (`Cmd/Ctrl + S`).
+
+## Open it with Live Server
+
+Right-click `index.html` in the VS Code file list and choose **Open with Live Server**. Your browser opens to an address like `http://127.0.0.1:5500/index.html` and shows your heading and paragraph.
+
+Leave the browser open. Change `Hello, world!` to your name, then save. The browser reloads on its own and shows the new text. That instant feedback loop — edit, save, see the result — is how you will work for the rest of the course.
+
+## Save your work: commit and push
+
+A **commit** is a labelled snapshot of your project. **Pushing** sends your commits up to GitHub so they are backed up and shareable.
+
+1. Switch to GitHub Desktop. It already lists your new and changed files under **Changes**.
+2. In the bottom-left box, write a short summary like `Add first index.html`. This is the commit message.
+3. Click **Commit to main**.
+4. Click **Push origin** at the top to upload the commit to GitHub.
+
+Get into the habit of committing each time you finish something that works. Small, frequent commits make it easy to look back or undo a mistake later.
+
+<Exercise
+  title="Set up the project and ship your first page"
+  goal="Create a Git-tracked project with an index.html, preview it with Live Server, then commit and push it to GitHub."
+  steps={[
+    "In VS Code, confirm Live Server and Prettier are installed and that Format On Save uses Prettier.",
+    "Create a repository named profile-page on GitHub with a README, then clone it with GitHub Desktop and open it in VS Code.",
+    "Create a file named index.html and paste in the minimal page from this chapter.",
+    "Change the h1 text to your name and the paragraph to a one-line intro, then save.",
+    "Right-click index.html and choose Open with Live Server to view it in the browser.",
+    "In GitHub Desktop, commit with the message 'Add first index.html', then click Push origin."
+  ]}
+  expected="A browser tab served from Live Server showing your name and intro, and a commit visible in your profile-page repo on GitHub."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My Profile</title>
+  </head>
+  <body>
+    <h1>Ada Lovelace</h1>
+    <p>I write algorithms and I am learning web development.</p>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What does the Live Server extension do?",
+    options: [
+      "Deploys your site to a public URL on the internet",
+      "Runs a local server and reloads the browser when you save",
+      "Formats your HTML and CSS automatically",
+      "Stores snapshots of your project"
+    ],
+    answer: 1,
+    explanation: "Live Server serves your files locally and refreshes the browser on every save. It does not deploy anywhere or format code."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What is the conventional file name for a site's home page?",
+    options: ["home.html", "main.html", "index.html", "start.html"],
+    answer: 2,
+    explanation: "Web servers serve index.html by default for a folder, so it is the standard home page name."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "In GitHub Desktop, what is the difference between commit and push?",
+    options: [
+      "Commit uploads to GitHub; push saves a local snapshot",
+      "They are two names for the same action",
+      "Commit saves a local snapshot; push uploads commits to GitHub",
+      "Commit formats the code; push saves it"
+    ],
+    answer: 2,
+    explanation: "A commit is a local labelled snapshot. Pushing sends your commits up to GitHub."
+  },
+  {
+    id: "q4",
+    type: "fill-in",
+    prompt: "Which extension reformats your code to consistent spacing on save?",
+    answer: "Prettier",
+    accept: ["Prettier", "prettier", "Prettier - Code formatter"],
+    explanation: "Prettier is the formatter; pairing it with Format On Save tidies your file every time you save."
+  }
+]} />

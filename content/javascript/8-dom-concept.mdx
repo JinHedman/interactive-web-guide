@@ -1,0 +1,191 @@
+---
+title: "The DOM, conceptually"
+module: "javascript"
+order: 8
+goal: "Explain what the DOM is and how JavaScript can reach into a page — the bridge to integration."
+objectives:
+  - "Describe the DOM as a live tree the browser builds from HTML"
+  - "Locate the document object as the entry point"
+  - "Explain that changing the DOM changes what the user sees"
+  - "Preview how the next module selects and changes elements"
+estMinutes: 20
+prerequisites: ["javascript/7-functions", "html/5-semantics"]
+---
+
+You can now write real JavaScript: variables, conditions, loops, and functions. But so far it has only printed to the console. This short chapter is the bridge to the next module — it explains the one idea that lets JavaScript actually change a web page: the **DOM**. There is little new code here; the goal is the mental model.
+
+## From HTML text to a live tree
+
+When the browser loads your HTML, it does not keep the file as text. It reads the tags and builds a tree of objects in memory — one object per element, nested exactly like your tags are nested. That in-memory tree is the **DOM**: the Document Object Model.
+
+Think about this HTML:
+
+<CodeExample language="html">
+{`<body>
+  <header>
+    <h1>My hobbies</h1>
+  </header>
+  <main>
+    <ul>
+      <li>Reading</li>
+      <li>Cycling</li>
+    </ul>
+  </main>
+</body>`}
+</CodeExample>
+
+The browser turns it into a tree shaped like this:
+
+<CodeExample language="js">
+{`// A rough sketch of the DOM tree for the HTML above:
+//
+// body
+//  ├─ header
+//  │   └─ h1  ("My hobbies")
+//  └─ main
+//      └─ ul
+//          ├─ li ("Reading")
+//          └─ li ("Cycling")`}
+</CodeExample>
+
+Every box in that tree is a **node**. Element nodes (`<h1>`, `<ul>`, `<li>`) hold the page's structure; text nodes hold the words inside them. The nesting in the tree matches the nesting in your HTML exactly.
+
+## document — the entry point
+
+JavaScript reaches the DOM through one global object: `document`. It represents the whole page and is the starting point for everything you do with the DOM. You can prove it exists with a single log:
+
+<CodeExample language="js" preview>
+{`// In a real page, document is provided by the browser.
+console.log(typeof document); // "object"
+
+// document is the root you start from to find and change elements.
+// For example (preview): the page title is reachable as document.title
+console.log("The DOM entry point is the global 'document' object.");`}
+</CodeExample>
+
+From `document` you can search the tree for elements, read their content, and change them. Everything in the next module starts with `document`.
+
+## The DOM is live
+
+The key idea: the DOM is **live**. It is not a one-time snapshot of your HTML — it is the page as it exists *right now*. When JavaScript changes a node in the DOM, the browser immediately re-renders, and the user sees the change. No reload, no new file.
+
+Here is a tiny taste, using the same `<script>` approach from chapter 1. Watch the heading change after the page loads:
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Live DOM</title>
+  </head>
+  <body>
+    <h1 id="title">Original heading</h1>
+
+    <script>
+      // Find a node in the DOM, then change it.
+      const heading = document.getElementById("title");
+      heading.textContent = "Changed by JavaScript!";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+The HTML said "Original heading," but the script reached into the DOM and rewrote it. Because the DOM is live, the page shows the new text. That single move — find a node, change it — is the heart of interactive web pages.
+
+## What comes next
+
+The next module turns this idea into skills. You will learn to:
+
+- **Select** elements from the page (`getElementById`, `querySelector`).
+- **Change** their text, classes, and styles.
+- **Listen** for events like clicks and typing, and run your functions in response.
+- **Create and remove** elements to build interfaces from data.
+
+Every one of those builds directly on the JavaScript you already know — variables hold the selected elements, functions handle the events, loops render lists. The DOM is simply the bridge between your code and what the user sees.
+
+<Exercise
+  title="Change the page with the DOM"
+  goal="Prove the DOM is live by changing an element's text after the page loads, then add one more change of your own."
+  steps={[
+    "In VS Code, create dom.html with the basic document skeleton.",
+    "In the body, add an h1 with id=\"title\" and text Hello, and a p with id=\"note\" and text Loading.",
+    "Just before </body>, add a script tag.",
+    "Inside the script, select the heading with document.getElementById(\"title\") and set its textContent to a new message.",
+    "Do the same for the paragraph: select #note and change its textContent. Open with Live Server and confirm both changed even though the HTML said something else."
+  ]}
+  expected="The page loads and immediately shows your two new strings, not the original Hello and Loading text — proof the DOM updated live."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Live DOM</title>
+  </head>
+  <body>
+    <h1 id="title">Hello</h1>
+    <p id="note">Loading</p>
+
+    <script>
+      const heading = document.getElementById("title");
+      heading.textContent = "Changed by JavaScript!";
+
+      const note = document.getElementById("note");
+      note.textContent = "The DOM is live.";
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the DOM?",
+    options: [
+      "A copy of your HTML file saved on disk",
+      "A live, in-memory tree of objects the browser builds from your HTML",
+      "A JavaScript library you install",
+      "A CSS feature for layout"
+    ],
+    answer: 1,
+    explanation: "The DOM is the Document Object Model — a live tree of element and text nodes the browser builds from the HTML and keeps updated."
+  },
+  {
+    id: "q2",
+    type: "fill-in",
+    prompt: "Which global object is JavaScript's entry point to the page?",
+    answer: "document",
+    accept: ["document"],
+    explanation: "document represents the whole page and is where every DOM operation begins."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Why does the heading visibly change when JavaScript edits its DOM node?",
+    options: [
+      "Because the HTML file on disk is rewritten",
+      "Because the DOM is live, so the browser re-renders the change immediately",
+      "Because the page reloads automatically",
+      "It does not change until you refresh"
+    ],
+    answer: 1,
+    explanation: "The DOM represents the page as it is right now. Editing a node makes the browser re-render at once — no reload needed."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "The boxes in a DOM tree (elements and text) are called...",
+    options: ["tags", "nodes", "selectors", "scripts"],
+    answer: 1,
+    explanation: "Each item in the DOM tree is a node — element nodes for tags, text nodes for the text inside them."
+  }
+]} />
+
+<ReadMore title="Where JavaScript goes next: modern JS, TypeScript, and React/Next.js">
+The JavaScript in this module is the real language, but day-to-day code uses newer features layered on top. **ES modules** let you split code across files and `import`/`export` what you need, instead of one big script. You have already met the modern essentials — `let`/`const` instead of `var`, template literals, and arrow functions — and the other one to know is `async`/`await`, the clean way to handle work that takes time, like fetching data from a server. Next, many teams add **TypeScript**, a superset of JavaScript that lets you label the *types* of your values (this is a `string`, that returns a `number`) so mistakes are caught while you type rather than at runtime.
+
+The biggest shift is in how the DOM itself is handled. Manually selecting and updating nodes — what the next module teaches — works, but gets unwieldy in large apps. **React** flips it around: you describe what the UI *should* look like for a given piece of data, and React updates the DOM for you when that data changes. **Next.js** builds on React to add routing, server rendering, and project structure for full applications. Learn the manual DOM first (it is what every framework sits on), then these tools will feel like a natural upgrade rather than magic.
+
+- [React documentation](https://react.dev) — the official guide, including "Learn React."
+- [Next.js documentation](https://nextjs.org/docs) — the React framework for production apps.
+- [TypeScript handbook](https://www.typescriptlang.org/docs/) — typed JavaScript, from the basics up.
+</ReadMore>

@@ -1,0 +1,144 @@
+---
+title: "Images and media"
+module: "html"
+order: 4
+goal: "Add images with correct src and alt, and embed basic audio/video."
+objectives:
+  - "Add an image with <img src> and a meaningful alt"
+  - "Use relative paths to local images"
+  - "Explain when alt should be empty (decorative images)"
+  - "Embed audio and video with <audio> and <video controls>"
+  - "Note width/height and why they reduce layout shift"
+estMinutes: 25
+prerequisites: ["html/3-links"]
+---
+
+A profile page is more inviting with a photo. HTML embeds images, audio, and video with a small set of elements. The key skill is doing it accessibly — describing images so everyone can understand them. In this chapter you add a profile photo and learn the media basics.
+
+## The img element
+
+An image is an `<img>` element. It is an empty element — no closing tag — configured entirely by attributes. The two essential ones are `src` (where the image is) and `alt` (a text description).
+
+<CodeExample language="html" preview>
+{`<img
+  src="https://placehold.co/200x200"
+  alt="Portrait of Ada Lovelace"
+  width="200"
+  height="200">`}
+</CodeExample>
+
+`src` is the image's address. `alt` is alternative text, read aloud by screen readers and shown if the image fails to load.
+
+## Relative paths to local images
+
+For images stored in your own project, use a relative path, just like relative links. Keep images in a folder such as `images/` to stay organized.
+
+<CodeExample language="html">
+{`<!-- image file lives at images/profile.jpg next to index.html -->
+<img src="images/profile.jpg" alt="A photo of me at the beach">`}
+</CodeExample>
+
+The path is relative to the HTML file. `images/profile.jpg` means "the `images` folder beside this page, then `profile.jpg` inside it."
+
+## Good alt text, and when it should be empty
+
+Write `alt` as a short description of what the image shows and why it matters here — not the word "image" (the browser already knows it is one).
+
+There is one exception. If an image is purely **decorative** and adds no information — a divider flourish, a background swirl — give it an empty `alt=""`. That tells screen readers to skip it rather than announce a meaningless filename.
+
+<CodeExample language="html">
+{`<!-- Informative: describe it -->
+<img src="images/profile.jpg" alt="Me speaking at a meetup">
+
+<!-- Decorative: empty alt so screen readers skip it -->
+<img src="images/divider.png" alt="">`}
+</CodeExample>
+
+Every `<img>` needs an `alt` attribute. The choice is between a real description and an intentionally empty one — never leave it off.
+
+## width and height reduce layout shift
+
+Set `width` and `height` attributes (in pixels, no units) on images. They let the browser reserve the right amount of space before the image downloads, so text does not jump around as images load. That jumping is called layout shift, and it is annoying.
+
+<CodeExample language="html">
+{`<img src="images/profile.jpg" alt="A photo of me" width="320" height="240">`}
+</CodeExample>
+
+These set the image's intrinsic size. You can still resize it later with CSS; the attributes mainly tell the browser the aspect ratio up front.
+
+## Audio and video
+
+Embed sound with `<audio>` and video with `<video>`. Add the `controls` attribute so the visitor gets play, pause, and volume controls.
+
+<CodeExample language="html">
+{`<audio src="audio/intro.mp3" controls></audio>
+
+<video src="video/demo.mp4" controls width="480"></video>`}
+</CodeExample>
+
+Both elements need a closing tag. Without `controls` the player shows no buttons, so include it unless you plan to control playback with JavaScript later.
+
+<Exercise
+  title="Add a profile photo"
+  goal="Add an accessible profile image to your page using a relative path and meaningful alt text."
+  steps={[
+    "In your profile-page project, create an images folder and add a photo named profile.jpg (or use a placeholder URL like https://placehold.co/200x200).",
+    "In index.html, just under your h1, add an img with src pointing to your image.",
+    "Write descriptive alt text that says what the photo shows.",
+    "Add width and height attributes matching the image's proportions.",
+    "Save and confirm the image appears in Live Server, then commit in GitHub Desktop with the message 'Add profile photo'."
+  ]}
+  expected="A profile photo displayed under your name, with alt text and reserved space so the layout does not jump as it loads."
+  solution={`<body>
+  <h1>Ada Lovelace</h1>
+  <img src="images/profile.jpg" alt="Portrait of me smiling outdoors" width="200" height="200">
+
+  <h2 id="about">About me</h2>
+  <p>I am learning web development from the ground up.</p>
+</body>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "fill-in",
+    prompt: "Which attribute gives an image its text description for screen readers?",
+    answer: "alt",
+    accept: ["alt", "alt attribute", "alt text"],
+    explanation: "The alt attribute is read aloud by screen readers and shown if the image fails to load."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "When should an image's alt be empty (alt=\"\")?",
+    options: [
+      "Always — alt is optional",
+      "When the image is purely decorative and adds no information",
+      "When the image is very large",
+      "When the image is loaded from another site"
+    ],
+    answer: 1,
+    explanation: "An empty alt tells screen readers to skip a decorative image. Informative images still need a real description, and alt should never be omitted."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Why set width and height attributes on an <img>?",
+    options: [
+      "They are required or the image will not load",
+      "They let the browser reserve space, reducing layout shift as the image loads",
+      "They compress the image file",
+      "They replace the need for alt text"
+    ],
+    answer: 1,
+    explanation: "width and height let the browser reserve the right space before download, so surrounding content does not jump (layout shift)."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which attribute makes a <video> show play and pause buttons?",
+    options: ["play", "controls", "buttons", "autoplay"],
+    answer: 1,
+    explanation: "Adding controls gives the visitor play, pause, and volume controls. autoplay starts playback but shows no controls."
+  }
+]} />

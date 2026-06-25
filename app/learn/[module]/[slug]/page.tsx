@@ -5,6 +5,7 @@ import { getChapter, getPrevNext, getAllParams } from "@/lib/content";
 import { getMDXComponents } from "@/components/mdx-components";
 import PrevNext from "@/components/PrevNext";
 import MarkRead from "@/components/MarkRead";
+import ChapterReset from "@/components/ChapterReset";
 
 interface PageProps {
   params: Promise<{ module: string; slug: string }>;
@@ -107,6 +108,9 @@ export default async function LessonPage({ params }: PageProps) {
           }}
         />
       </div>
+
+      {/* Per-chapter reset — clears this chapter's read/exercise/quiz progress */}
+      <ChapterReset chapterId={chapterId} />
 
       {/* Prev / Next navigation */}
       <PrevNext prev={prev} next={next} />

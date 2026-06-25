@@ -1,0 +1,190 @@
+---
+title: "Arrays and objects"
+module: "javascript"
+order: 4
+goal: "Store and read collections of data in arrays and objects."
+objectives:
+  - "Create an array and read items by index"
+  - "Use push, pop, and length"
+  - "Create an object with key/value pairs"
+  - "Read and update properties with dot and bracket notation"
+  - "Nest arrays and objects"
+estMinutes: 35
+prerequisites: ["javascript/3-strings-numbers-booleans"]
+---
+
+A single variable holds one value. Real programs work with *collections*: a list of hobbies, a person's details, a set of to-do items. JavaScript has two core structures for this — **arrays** for ordered lists and **objects** for labelled values.
+
+## Arrays: ordered lists
+
+An array is an ordered list, written with square brackets. You read items by their *index* — and indexes start at `0`.
+
+<CodeExample language="js" preview>
+{`const hobbies = ["reading", "cycling", "cooking"];
+
+console.log(hobbies[0]); // reading  — the first item
+console.log(hobbies[2]); // cooking  — the third item
+console.log(hobbies.length); // 3     — how many items`}
+</CodeExample>
+
+The first item is at index `0`, so the last item of a list with `length` 3 is at index `2`. `length` always tells you how many items the array holds.
+
+## Adding and removing items
+
+`push` adds to the end of an array; `pop` removes the last item and hands it back.
+
+<CodeExample language="js" preview>
+{`const hobbies = ["reading", "cycling"];
+
+hobbies.push("cooking");
+console.log(hobbies);        // ["reading", "cycling", "cooking"]
+console.log(hobbies.length); // 3
+
+const removed = hobbies.pop();
+console.log(removed);        // cooking
+console.log(hobbies);        // ["reading", "cycling"]`}
+</CodeExample>
+
+Notice these change the array in place even though it is declared with `const`. `const` stops you from *reassigning* the variable to a whole new array — it does not freeze the contents.
+
+## Objects: labelled values
+
+An object groups related values under named *keys*, written with curly braces. Each entry is a `key: value` pair.
+
+<CodeExample language="js" preview>
+{`const person = {
+  name: "Ada",
+  age: 30,
+  isMember: true
+};
+
+console.log(person.name);  // Ada
+console.log(person.age);   // 30`}
+</CodeExample>
+
+Where an array answers "what is at position 2?", an object answers "what is the `name`?". Use an array for a list of similar things, and an object for one thing with several named attributes.
+
+## Dot vs bracket notation
+
+There are two ways to read or set a property.
+
+<CodeExample language="js" preview>
+{`const person = { name: "Ada", age: 30 };
+
+// Dot notation — the usual choice
+console.log(person.name);   // Ada
+
+// Bracket notation — needed when the key is in a variable
+const key = "age";
+console.log(person[key]);   // 30
+
+// Updating and adding properties
+person.age = 31;            // update
+person.city = "London";     // add a new key
+console.log(person);        // { name: "Ada", age: 31, city: "London" }`}
+</CodeExample>
+
+Use dot notation by default. Reach for bracket notation when the key comes from a variable, or when a key contains spaces or other awkward characters.
+
+## Nesting
+
+Arrays and objects can hold each other, which is how you model anything realistic — a list of people, where each person has a list of hobbies.
+
+<CodeExample language="js" preview>
+{`const person = {
+  name: "Ada",
+  hobbies: ["reading", "cycling"],
+  address: {
+    city: "London",
+    country: "UK"
+  }
+};
+
+console.log(person.hobbies[0]);     // reading
+console.log(person.address.city);   // London
+console.log(person.hobbies.length); // 2`}
+</CodeExample>
+
+To reach deep into a structure, chain the steps: `person.address.city` reads the `address` object, then its `city` key. `person.hobbies[0]` reads the `hobbies` array, then its first item.
+
+<Exercise
+  title="Model a profile"
+  goal="Build an object that nests an array, then read and update its values."
+  steps={[
+    "Create profile.js.",
+    "Create a const me object with keys: name (a string), age (a number), and hobbies (an array of three strings).",
+    "Log me.name and me.hobbies.length.",
+    "Add a fourth hobby with me.hobbies.push(...) and log the new length.",
+    "Update me.age with dot notation, then add a new key country, and log the whole object to confirm the changes."
+  ]}
+  expected="The console shows your name, an initial hobby count of 3, then 4 after pushing, and finally the full object with the updated age and new country key."
+  solution={`const me = {
+  name: "Ada",
+  age: 30,
+  hobbies: ["reading", "cycling", "cooking"]
+};
+
+console.log(me.name);            // Ada
+console.log(me.hobbies.length);  // 3
+
+me.hobbies.push("photography");
+console.log(me.hobbies.length);  // 4
+
+me.age = 31;
+me.country = "UK";
+console.log(me);
+// { name: "Ada", age: 31, hobbies: [...4 items], country: "UK" }`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "fill-in",
+    prompt: "Given const a = [\"x\", \"y\", \"z\"]; what is a[1]?",
+    answer: "y",
+    accept: ["y", "\"y\""],
+    explanation: "Indexes start at 0, so a[0] is \"x\", a[1] is \"y\", and a[2] is \"z\"."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which method adds an item to the end of an array?",
+    options: ["push", "pop", "add", "append"],
+    answer: 0,
+    explanation: "push adds to the end and returns the new length; pop removes and returns the last item."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "When do you need bracket notation instead of dot notation?",
+    options: [
+      "Never; they are interchangeable in every case",
+      "When the property key is stored in a variable or contains awkward characters",
+      "Only for arrays",
+      "Only inside loops"
+    ],
+    answer: 1,
+    explanation: "Dot notation needs a literal, valid name. Use brackets when the key is in a variable or has spaces/special characters."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Why can you push to an array declared with const?",
+    options: [
+      "const arrays are a special exception",
+      "const prevents reassigning the variable, but not changing the array's contents",
+      "push secretly uses let",
+      "You cannot; this throws an error"
+    ],
+    answer: 1,
+    explanation: "const blocks reassignment of the variable. The array's contents can still change via methods like push and pop."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Given const p = { address: { city: \"London\" } }; how do you read \"London\"?",
+    answer: "p.address.city",
+    accept: ["p.address.city", "p[\"address\"][\"city\"]"],
+    explanation: "Chain the steps: read the address object, then its city key — p.address.city."
+  }
+]} />

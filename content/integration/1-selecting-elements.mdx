@@ -1,0 +1,200 @@
+---
+title: "Selecting elements"
+module: "integration"
+order: 1
+goal: "Find elements on a page from JavaScript so you can work with them."
+objectives:
+  - "Select one element with getElementById"
+  - "Select with querySelector using CSS selectors"
+  - "Select many elements with querySelectorAll"
+  - "Store a selected element in a variable and check for null"
+estMinutes: 30
+prerequisites: ["javascript/8-dom-concept", "css/1-how-css-works"]
+---
+
+You know the DOM is a live tree the browser builds from your HTML. Now you will reach into that tree from JavaScript. Before you can change anything on a page, you have to *find* the element you want. This chapter is about selecting elements — the first step in every piece of interactivity you will ever write.
+
+Through this module you will build toward one project: a working to-do list. We start by learning how to grab the pieces of its page.
+
+## Select one element by id
+
+The most direct way to find an element is by its `id`. Give an element an `id` in your HTML, then call `document.getElementById` with that exact id string.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <h1 id="appTitle">My To-Do List</h1>
+    <script>
+      const title = document.getElementById("appTitle");
+      title.textContent = "Selected from JavaScript!";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+The script ran after the page loaded, found the `<h1>`, and changed its text. Notice `getElementById` takes the id *without* a `#` in front of it — just the plain string `"appTitle"`.
+
+## Select with querySelector
+
+`getElementById` only works for ids. `querySelector` is more flexible: you pass it a **CSS selector** — the same kind you wrote in the CSS module — and it returns the **first** matching element.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <h1 class="title">My To-Do List</h1>
+    <p class="note">Pick the first matching element.</p>
+    <script>
+      const heading = document.querySelector(".title");
+      const para = document.querySelector("p");
+      heading.textContent = "Found by class selector";
+      para.textContent = "Found by element selector";
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Because it takes a CSS selector, you write `".title"` with the dot for a class, `"#appTitle"` with the hash for an id, and `"p"` for a tag. If nothing matches, `querySelector` returns `null`.
+
+## Select many with querySelectorAll
+
+`querySelector` stops at the first match. To get **every** matching element, use `querySelectorAll`. It returns a `NodeList` — a list you can loop over.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <ul>
+      <li>Buy milk</li>
+      <li>Walk the dog</li>
+      <li>Write some code</li>
+    </ul>
+    <script>
+      const items = document.querySelectorAll("li");
+      items.forEach((item) => {
+        item.textContent = item.textContent.toUpperCase();
+      });
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+`querySelectorAll` always returns a list, even if only one element matches (or none). You loop over it with `forEach`, just like an array. Each `item` in the loop is one element you can work with.
+
+## Store the result and check for null
+
+Selecting an element gives you back a value. Store it in a `const` so you can use it more than once. But remember: if the selector matches nothing, you get `null` — and trying to use `null` throws an error.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <body>
+    <p id="status">Checking...</p>
+    <script>
+      const status = document.getElementById("status");
+      const missing = document.getElementById("doesNotExist");
+
+      if (missing === null) {
+        status.textContent = "The element 'doesNotExist' was not found.";
+      } else {
+        status.textContent = "Found it.";
+      }
+    </script>
+  </body>
+</html>`}
+</CodeExample>
+
+Guarding against `null` is a habit worth building now. A typo in a selector, or a script that runs before the element exists, both produce `null` — and a clear check saves you a confusing crash later.
+
+<Exercise
+  title="Select the parts of your to-do page"
+  goal="Build the static HTML shell of a to-do list and select each part from JavaScript to confirm your selectors work."
+  steps={[
+    "In VS Code, create a new file named todo.html with the basic HTML document structure.",
+    "Inside body, add an h1 with id=\"appTitle\" and the text To-Do List.",
+    "Add an input with id=\"taskInput\" and a button with id=\"addBtn\".",
+    "Add an empty ul with id=\"taskList\".",
+    "Add a script tag before the closing body tag.",
+    "In the script, select each element by its id and store it in a const (title, input, addBtn, list).",
+    "Set title.textContent to \"My Tasks\" so you can confirm the selection worked.",
+    "Open todo.html with Live Server and check that the heading text changed."
+  ]}
+  expected="A page with a heading that now reads My Tasks, an empty input, an Add button, and an empty list — proving every element was selected correctly."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>To-Do List</title>
+  </head>
+  <body>
+    <h1 id="appTitle">To-Do List</h1>
+    <input id="taskInput" placeholder="What needs doing?">
+    <button id="addBtn">Add</button>
+    <ul id="taskList"></ul>
+
+    <script>
+      const title = document.getElementById("appTitle");
+      const input = document.getElementById("taskInput");
+      const addBtn = document.getElementById("addBtn");
+      const list = document.getElementById("taskList");
+
+      title.textContent = "My Tasks";
+    </script>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "How do you pass an id to getElementById?",
+    options: [
+      "With a # in front, like \"#appTitle\"",
+      "As the plain id string, like \"appTitle\"",
+      "With a dot in front, like \".appTitle\"",
+      "As a CSS selector object"
+    ],
+    answer: 1,
+    explanation: "getElementById takes the bare id string with no symbol. The # prefix is only for CSS selectors used by querySelector."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What does querySelector return when the selector matches several elements?",
+    options: [
+      "A list of all matches",
+      "The first matching element",
+      "The last matching element",
+      "An error"
+    ],
+    answer: 1,
+    explanation: "querySelector returns only the first match. Use querySelectorAll to get every match."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which selector string finds elements by class with querySelector?",
+    options: ["\"title\"", "\"#title\"", "\".title\"", "\"@title\""],
+    answer: 2,
+    explanation: "querySelector uses CSS selector syntax, so a class is written with a leading dot: \".title\"."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "What value do getElementById and querySelector return when nothing matches?",
+    options: ["undefined", "an empty string", "null", "false"],
+    answer: 2,
+    explanation: "Both return null when no element matches. Check for null before using the result to avoid an error."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which method returns every element that matches a CSS selector?",
+    answer: "querySelectorAll",
+    accept: ["querySelectorAll", "document.querySelectorAll", "querySelectorAll()"],
+    explanation: "querySelectorAll returns a NodeList of all matches, which you can loop over with forEach."
+  }
+]} />

@@ -1,0 +1,213 @@
+---
+title: "Functions"
+module: "javascript"
+order: 7
+goal: "Write reusable functions that take parameters and return values."
+objectives:
+  - "Declare a function and call it"
+  - "Pass parameters and read arguments"
+  - "Return a value and use it"
+  - "Explain scope: local vs global"
+  - "Write a function expression (and meet arrow function syntax)"
+estMinutes: 35
+prerequisites: ["javascript/6-loops"]
+---
+
+A function is a named block of code you can run whenever you want, as many times as you want. Functions are how you avoid repeating yourself and how you break a program into understandable pieces. This is the most important chapter in the module — almost everything you write from here on lives inside functions.
+
+## Declaring and calling
+
+You *declare* a function with the `function` keyword, then *call* it by writing its name followed by parentheses.
+
+<CodeExample language="js" preview>
+{`function greet() {
+  console.log("Hello!");
+}
+
+greet(); // Hello!
+greet(); // Hello!  — call it as often as you like`}
+</CodeExample>
+
+Declaring a function does not run it. The body only executes when you *call* it with `greet()`.
+
+## Parameters and arguments
+
+A function becomes useful when it can work on different inputs. *Parameters* are the named inputs in the declaration; *arguments* are the actual values you pass when calling.
+
+<CodeExample language="js" preview>
+{`function greet(name) {
+  console.log(\`Hello, \${name}!\`);
+}
+
+greet("Ada");   // Hello, Ada!
+greet("Grace"); // Hello, Grace!`}
+</CodeExample>
+
+Here `name` is the parameter; `"Ada"` and `"Grace"` are the arguments. You can take several parameters, separated by commas.
+
+<CodeExample language="js" preview>
+{`function describe(name, hobby) {
+  console.log(\`\${name} enjoys \${hobby}.\`);
+}
+
+describe("Ada", "cycling"); // Ada enjoys cycling.`}
+</CodeExample>
+
+## Returning a value
+
+`console.log` only prints. To hand a *result* back so other code can use it, a function must `return` a value.
+
+<CodeExample language="js" preview>
+{`function add(a, b) {
+  return a + b;
+}
+
+const sum = add(3, 4);
+console.log(sum);        // 7
+console.log(add(10, 5)); // 15`}
+</CodeExample>
+
+`return` does two things: it sends the value back to the caller, and it ends the function immediately — any code after a reached `return` does not run. A function with no `return` gives back `undefined`.
+
+A returned value can be used like any other value: stored in a variable, logged, or passed into another function.
+
+<CodeExample language="js" preview>
+{`function double(n) {
+  return n * 2;
+}
+
+console.log(double(double(5))); // double(5) is 10, then double(10) is 20`}
+</CodeExample>
+
+## Scope: local vs global
+
+Variables declared **inside** a function are *local* — they exist only while the function runs and cannot be seen from outside. Variables declared outside any function are *global* and visible everywhere.
+
+<CodeExample language="js" preview>
+{`const appName = "Calculator"; // global
+
+function showInfo() {
+  const version = "1.0"; // local to showInfo
+  console.log(\`\${appName} v\${version}\`); // can read the global
+}
+
+showInfo();              // Calculator v1.0
+console.log(appName);    // Calculator — fine, it's global
+// console.log(version); // would error — version is local to showInfo`}
+</CodeExample>
+
+Keeping variables local is a feature: each function manages its own values without stepping on the rest of the program. Lean on local variables and avoid piling everything into the global scope.
+
+## Function expressions and arrow functions
+
+A function is also a value, so you can store one in a variable. That is a *function expression*.
+
+<CodeExample language="js" preview>
+{`const square = function (n) {
+  return n * n;
+};
+
+console.log(square(5)); // 25`}
+</CodeExample>
+
+Modern JavaScript has a shorter syntax for this called an **arrow function**. It drops the `function` keyword and uses `=>`.
+
+<CodeExample language="js" preview>
+{`const square = (n) => {
+  return n * n;
+};
+
+// For a single return, you can shorten it even more:
+const cube = (n) => n * n * n;
+
+console.log(square(5)); // 25
+console.log(cube(3));   // 27`}
+</CodeExample>
+
+When the body is just one expression, you can drop the braces and `return` — the value is returned automatically. You will see arrow functions everywhere in modern code (and constantly in React), so it is worth recognizing both forms. They do the same job; arrows are just more compact.
+
+<Exercise
+  title="A tiny calculator"
+  goal="Write functions that take parameters and return values, then combine their results."
+  steps={[
+    "Create calc.js.",
+    "Write a function add(a, b) that returns a + b, and a function multiply(a, b) that returns a * b.",
+    "Call them and log the results: log add(2, 3) and multiply(4, 5).",
+    "Write an arrow function const square = (n) => n * n; and log square(6).",
+    "Combine them: compute and log add(square(2), multiply(3, 3)) — work out what it should be first, then confirm."
+  ]}
+  expected="The console shows 5, 20, 36, and finally 13 (square(2) is 4, multiply(3,3) is 9, 4 + 9 is 13)."
+  solution={`function add(a, b) {
+  return a + b;
+}
+
+function multiply(a, b) {
+  return a * b;
+}
+
+console.log(add(2, 3));      // 5
+console.log(multiply(4, 5)); // 20
+
+const square = (n) => n * n;
+console.log(square(6));      // 36
+
+console.log(add(square(2), multiply(3, 3))); // 4 + 9 = 13`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the difference between a parameter and an argument?",
+    options: [
+      "They are the same thing",
+      "A parameter is the named input in the declaration; an argument is the actual value passed when calling",
+      "A parameter is the return value; an argument is the input",
+      "Arguments are only for arrow functions"
+    ],
+    answer: 1,
+    explanation: "Parameters are the placeholders named in the function definition; arguments are the concrete values supplied at the call."
+  },
+  {
+    id: "q2",
+    type: "fill-in",
+    prompt: "Which keyword sends a value back from a function to its caller?",
+    answer: "return",
+    accept: ["return"],
+    explanation: "return hands a value back and ends the function. Without it, a function evaluates to undefined."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "A variable declared inside a function is...",
+    options: [
+      "global and visible everywhere",
+      "local and only accessible inside that function",
+      "automatically returned",
+      "shared with every other function"
+    ],
+    answer: 1,
+    explanation: "Variables declared inside a function are local to it and cannot be read from outside."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Which is a correct arrow function that returns n times 2?",
+    options: [
+      "const d = (n) => n * 2;",
+      "const d = function => n * 2;",
+      "const d = (n) -> n * 2;",
+      "arrow d(n) { return n * 2; }"
+    ],
+    answer: 0,
+    explanation: "Arrow syntax is (params) => expression. With a single expression body, the value is returned automatically."
+  },
+  {
+    id: "q5",
+    type: "multiple-choice",
+    prompt: "What does a function return if it has no return statement?",
+    options: ["null", "0", "undefined", "an error"],
+    answer: 2,
+    explanation: "A function with no return (or a bare return) evaluates to undefined."
+  }
+]} />

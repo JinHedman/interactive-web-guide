@@ -1,0 +1,235 @@
+---
+title: "How CSS works, selectors, and where it lives"
+module: "css"
+order: 1
+goal: "Write CSS rules with element, class, and id selectors, and attach styles via an external stylesheet."
+objectives:
+  - "Read a rule as selector + declaration block (property: value)"
+  - "Use element, class, and id selectors"
+  - "Compare inline, internal, and external CSS, and prefer external"
+  - "Link a stylesheet with link rel=stylesheet"
+  - "Explain the cascade and specificity at a basic level"
+estMinutes: 30
+prerequisites: ["html/8-page-project"]
+---
+
+Your HTML page already works, but it looks plain — black text, blue links, default fonts. CSS (Cascading Style Sheets) is the language that controls how that markup *looks*: colors, spacing, fonts, and layout. In this module you will progressively style a personal profile card. This first chapter covers the shape of a CSS rule, the three kinds of selectors you will use most, and where to put your styles.
+
+## A rule is a selector plus declarations
+
+Every CSS rule has two parts: a **selector** that picks which elements to style, and a **declaration block** in `{ }` that lists what to change. Each declaration is a `property: value` pair ending in a semicolon.
+
+<CodeExample language="css">
+{`h1 {
+  color: navy;
+  font-size: 32px;
+}`}
+</CodeExample>
+
+Read that as: "find every `<h1>`, then set its `color` to `navy` and its `font-size` to `32px`." `h1` is the selector; `color` and `font-size` are properties; `navy` and `32px` are their values.
+
+## Element, class, and id selectors
+
+You have three everyday ways to target elements.
+
+- **Element selector** — matches every tag of that type: `p`, `h1`, `a`.
+- **Class selector** — matches elements with a given `class` attribute. Write it with a leading dot: `.card`. Classes are reusable; many elements can share one.
+- **Id selector** — matches the one element with a given `id`. Write it with a leading hash: `#intro`. An `id` must be unique on the page.
+
+<CodeExample language="css">
+{`/* every paragraph */
+p {
+  line-height: 1.5;
+}
+
+/* any element with class="card" */
+.card {
+  background: white;
+}
+
+/* the single element with id="intro" */
+#intro {
+  font-weight: bold;
+}`}
+</CodeExample>
+
+Reach for classes by default. They are reusable and keep your styling flexible. Use element selectors for broad defaults, and ids sparingly.
+
+## See selectors in action
+
+Here is the start of our profile card. The HTML carries a `class` and an `id`; the `<style>` block targets each one.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1.5rem; }
+      .card { background: #f3f4f6; padding: 1rem; }
+      #name { color: navy; }
+      p { color: #444; }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h1 id="name">Ada Lovelace</h1>
+      <p>I find patterns in numbers and write algorithms for fun.</p>
+    </div>
+  </body>
+</html>`}
+</CodeExample>
+
+## Three places CSS can live
+
+CSS can sit in three places, from least to most maintainable.
+
+**Inline** — a `style` attribute on a single element. Quick, but it styles only that one element and is hard to reuse or override.
+
+<CodeExample language="html">
+{`<h1 style="color: navy; font-size: 32px;">Ada Lovelace</h1>`}
+</CodeExample>
+
+**Internal** — a `<style>` block in the `<head>`. Fine for a quick demo or a one-page site (it is what the previews above use), but the styles cannot be shared across pages.
+
+<CodeExample language="html">
+{`<head>
+  <style>
+    h1 { color: navy; }
+  </style>
+</head>`}
+</CodeExample>
+
+**External** — a separate `.css` file linked from the `<head>`. This is the one to prefer: one stylesheet can style every page, and your HTML stays clean.
+
+<CodeExample language="html">
+{`<head>
+  <link rel="stylesheet" href="styles.css">
+</head>`}
+</CodeExample>
+
+The `<link>` tag points `href` at the file. The matching `styles.css` holds your rules:
+
+<CodeExample language="css">
+{`h1 {
+  color: navy;
+  font-size: 32px;
+}`}
+</CodeExample>
+
+## The cascade and specificity, briefly
+
+What happens when two rules set the same property on the same element? CSS resolves the conflict with two ideas.
+
+**The cascade**: when rules are equally specific, the one written *later* wins. Source order matters.
+
+**Specificity**: a more specific selector beats a less specific one, regardless of order. The rough ranking is: id (`#name`) beats class (`.card`) beats element (`h1`). An inline `style` attribute is stronger still.
+
+<CodeExample language="css">
+{`p { color: gray; }        /* element: weak */
+.card p { color: black; } /* class + element: stronger, wins */`}
+</CodeExample>
+
+You do not need to master specificity now. Just remember the order of strength, and that you can usually avoid conflicts by leaning on classes and keeping your stylesheet tidy.
+
+<Exercise
+  title="Move styles into an external stylesheet"
+  goal="Style the profile card from a separate styles.css file linked into your HTML, using element, class, and id selectors."
+  steps={[
+    "In VS Code, open the folder with your project (or create a new one with GitHub Desktop and open it in VS Code).",
+    "Create index.html with a div class=\"card\" containing an h1 id=\"name\" (your name) and a p (a one-line bio).",
+    "In the head, add <link rel=\"stylesheet\" href=\"styles.css\">.",
+    "Create a second file named styles.css in the same folder.",
+    "In styles.css, write a .card rule (give it a background and padding), a #name rule (set a color), and a p rule (set a color).",
+    "Open index.html with Live Server and confirm the styles apply. Commit both files in GitHub Desktop."
+  ]}
+  expected="A profile card whose background, name color, and bio color all come from styles.css — with no style attributes or style block in the HTML."
+  solution={`<!-- index.html -->
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ada Lovelace</title>
+    <link rel="stylesheet" href="styles.css">
+  </head>
+  <body>
+    <div class="card">
+      <h1 id="name">Ada Lovelace</h1>
+      <p>I find patterns in numbers and write algorithms for fun.</p>
+    </div>
+  </body>
+</html>
+
+/* styles.css */
+.card {
+  background: #f3f4f6;
+  padding: 1rem;
+}
+
+#name {
+  color: navy;
+}
+
+p {
+  color: #444;
+}`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "In the rule .card { padding: 1rem; }, what is .card?",
+    options: [
+      "A property",
+      "A value",
+      "A selector",
+      "A declaration block"
+    ],
+    answer: 2,
+    explanation: ".card is the selector — it picks which elements to style. padding is the property, 1rem is the value, and the whole { ... } is the declaration block."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which character starts a class selector in CSS?",
+    options: ["#", ".", "@", "&"],
+    answer: 1,
+    explanation: "A dot (.) starts a class selector, as in .card. A hash (#) starts an id selector."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "Which is the best default place to keep your CSS?",
+    options: [
+      "Inline style attributes on each element",
+      "An internal <style> block in the head",
+      "An external .css file linked with <link>",
+      "A comment at the top of the HTML"
+    ],
+    answer: 2,
+    explanation: "An external stylesheet can be reused across pages and keeps HTML clean, so prefer it. Inline and internal styles are fine for tiny demos only."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Two equally specific rules set color on the same element. Which wins?",
+    options: [
+      "The first one written",
+      "The last one written",
+      "Whichever sets a darker color",
+      "Neither — it is an error"
+    ],
+    answer: 1,
+    explanation: "That is the cascade: when specificity is equal, the rule written later in source order wins."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which HTML tag links an external stylesheet to the page?",
+    answer: "link",
+    accept: ["link", "<link>", "link rel=stylesheet", "<link rel=\"stylesheet\">"],
+    explanation: "<link rel=\"stylesheet\" href=\"styles.css\"> in the head connects the stylesheet to the page."
+  }
+]} />

@@ -1,0 +1,178 @@
+---
+title: "Variables, data types, and operators"
+module: "javascript"
+order: 2
+goal: "Declare variables and use the core data types and operators."
+objectives:
+  - "Declare variables with let and const (and why not var)"
+  - "Name the primitive types: string, number, boolean, null, undefined"
+  - "Use arithmetic and assignment operators"
+  - "Choose const by default, let when reassigning"
+estMinutes: 30
+prerequisites: ["javascript/1-what-is-js"]
+---
+
+A variable is a name for a value. Instead of repeating `"Ada"` everywhere, you store it once and refer to it by name. This chapter covers how to declare variables, the basic kinds of values JavaScript holds, and the operators that work on them.
+
+## Declaring variables
+
+You create a variable with `const` or `let`, followed by a name, an `=`, and a value.
+
+<CodeExample language="js" preview>
+{`const name = "Ada";
+let age = 30;
+
+console.log(name);
+console.log(age);`}
+</CodeExample>
+
+- `const` creates a value you will **not reassign**. Try to change it and JavaScript throws an error.
+- `let` creates a value you **can reassign** later.
+
+<CodeExample language="js" preview>
+{`let score = 10;
+console.log(score);
+
+score = 25; // reassigning is fine with let
+console.log(score);`}
+</CodeExample>
+
+**Rule of thumb: reach for `const` by default.** Use `let` only when you know the value will change. This makes your intent obvious and prevents accidental changes.
+
+You may see older code use `var`. Avoid it — its scoping rules are surprising and `let`/`const` replaced it. If you write new code, you do not need `var`.
+
+## The primitive types
+
+A *type* describes what kind of value you have. JavaScript has a handful of basic, or *primitive*, types. These five cover almost everything you will do at first:
+
+<CodeExample language="js" preview>
+{`const title = "Hobbies";     // string  — text, in quotes
+const count = 3;              // number  — integer or decimal
+const isPublic = true;        // boolean — true or false
+const middleName = null;      // null    — intentionally empty
+let nickname;                 // undefined — declared but no value yet
+
+console.log(title, count, isPublic, middleName, nickname);`}
+</CodeExample>
+
+- **string**: text wrapped in quotes — `"hello"` or `'hello'`.
+- **number**: any number, whole or decimal — `42`, `3.14`. JavaScript has just one number type.
+- **boolean**: `true` or `false`.
+- **null**: a deliberate "no value." You set it on purpose.
+- **undefined**: a variable that exists but was never given a value.
+
+You can check a value's type with `typeof`.
+
+<CodeExample language="js" preview>
+{`console.log(typeof "hello");  // "string"
+console.log(typeof 42);       // "number"
+console.log(typeof true);     // "boolean"
+console.log(typeof undefined);// "undefined"`}
+</CodeExample>
+
+## Arithmetic operators
+
+Numbers support the math operators you would expect.
+
+<CodeExample language="js" preview>
+{`const a = 7;
+const b = 2;
+
+console.log(a + b);  // 9   addition
+console.log(a - b);  // 5   subtraction
+console.log(a * b);  // 14  multiplication
+console.log(a / b);  // 3.5 division
+console.log(a % b);  // 1   remainder (modulo)`}
+</CodeExample>
+
+The `%` (modulo) operator gives the remainder after division. It is handy for "every Nth time" logic and checking if a number is even (`n % 2 === 0`).
+
+## Assignment operators
+
+The plain `=` assigns a value. There are shorthands for updating a variable based on its current value.
+
+<CodeExample language="js" preview>
+{`let total = 100;
+
+total += 20; // same as: total = total + 20
+console.log(total); // 120
+
+total -= 50; // total = total - 50
+console.log(total); // 70
+
+total *= 2;  // total = total * 2
+console.log(total); // 140`}
+</CodeExample>
+
+These only work with `let`, since they reassign the variable.
+
+<Exercise
+  title="A tiny receipt"
+  goal="Use variables and arithmetic operators to compute a small total, and log a clear result."
+  steps={[
+    "In VS Code, create receipt.js (or reuse the page from the previous chapter and point its script at this file).",
+    "Declare const itemName = \"Notebook\"; and const price = 4; using const because they will not change.",
+    "Declare let quantity = 3; with let, since you will change it.",
+    "Declare const total = price * quantity; and log itemName, quantity, and total.",
+    "Now reassign quantity to 5, recompute a new total in a let variable, and log it. Open the console and confirm both totals print."
+  ]}
+  expected="The console shows the item name and a total of 12 for 3 items, then a new total of 20 after the quantity changes to 5."
+  solution={`const itemName = "Notebook";
+const price = 4;
+let quantity = 3;
+
+const total = price * quantity;
+console.log(itemName, quantity, total); // Notebook 3 12
+
+quantity = 5;
+let newTotal = price * quantity;
+console.log(itemName, quantity, newTotal); // Notebook 5 20`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "Which declaration should you use by default for a value you do not plan to reassign?",
+    options: ["var", "let", "const", "static"],
+    answer: 2,
+    explanation: "Prefer const by default; it signals the value will not be reassigned and prevents accidental changes. Use let only when reassigning."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "What is the type of the value true?",
+    options: ["string", "number", "boolean", "null"],
+    answer: 2,
+    explanation: "true and false are the two boolean values."
+  },
+  {
+    id: "q3",
+    type: "fill-in",
+    prompt: "What does the expression 7 % 2 evaluate to?",
+    answer: "1",
+    accept: ["1"],
+    explanation: "The % operator gives the remainder. 7 divided by 2 is 3 with a remainder of 1."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "What is the difference between null and undefined?",
+    options: [
+      "They are identical",
+      "null is set on purpose to mean 'no value'; undefined means a variable was never assigned a value",
+      "undefined is for numbers, null is for strings",
+      "null is older syntax for undefined"
+    ],
+    answer: 1,
+    explanation: "You assign null intentionally to mean empty. undefined is the default for a declared-but-unassigned variable."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "After let x = 5; x += 3; what is the value of x?",
+    answer: "8",
+    accept: ["8"],
+    explanation: "x += 3 is shorthand for x = x + 3, so 5 + 3 is 8."
+  }
+]} />

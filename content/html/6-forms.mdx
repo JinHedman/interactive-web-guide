@@ -1,0 +1,216 @@
+---
+title: "Forms and inputs"
+module: "html"
+order: 6
+goal: "Build an accessible form with labelled inputs, a textarea, a select, and a button."
+objectives:
+  - "Build a <form> and explain what action and method do"
+  - "Pair every input with a <label> via for/id"
+  - "Use common <input> types: text, email, password, checkbox, radio, number"
+  - "Add <textarea> and <select> with <option>"
+  - "Use <button> types and basic validation attributes (required, placeholder)"
+estMinutes: 35
+prerequisites: ["html/5-semantics"]
+---
+
+Forms are how a page collects input: a contact message, a sign-up, a search box. HTML gives you inputs for text, choices, and more, plus the labels and buttons that tie them together. In this chapter you add a contact form to your profile page. (Hooking the form up to actually do something comes later with JavaScript — here you build the markup.)
+
+## The form element
+
+A `<form>` wraps a group of inputs. Two attributes describe what happens when it is submitted:
+
+- `action` — the URL the form data is sent to.
+- `method` — how it is sent: `get` (appends data to the URL, for searches) or `post` (sends data in the request body, for anything that changes data).
+
+<CodeExample language="html">
+{`<form action="/contact" method="post">
+  <!-- inputs go here -->
+</form>`}
+</CodeExample>
+
+You will not have a real server to receive this yet, so submitting will not do much. The markup is what matters for now.
+
+## Labels pair with inputs
+
+Every input needs a `<label>`. Connect them by giving the input an `id` and pointing the label's `for` attribute at that same id. Clicking the label then focuses the input, and screen readers announce the label when the input is focused.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="name">Your name</label>
+  <input type="text" id="name" name="name">
+</form>`}
+</CodeExample>
+
+The `name` attribute is the key under which the value is submitted. The `for`/`id` pair is what makes the label and input one accessible unit. Always include both.
+
+## Common input types
+
+The `type` attribute changes how an `<input>` behaves and which on-screen keyboard mobile devices show.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="email">Email</label>
+  <input type="email" id="email" name="email">
+
+  <label for="pw">Password</label>
+  <input type="password" id="pw" name="pw">
+
+  <label for="age">Age</label>
+  <input type="number" id="age" name="age">
+
+  <p>Newsletter?
+    <input type="checkbox" id="news" name="news">
+    <label for="news">Yes, sign me up</label>
+  </p>
+
+  <p>Experience level:</p>
+  <input type="radio" id="beginner" name="level" value="beginner">
+  <label for="beginner">Beginner</label>
+  <input type="radio" id="pro" name="level" value="pro">
+  <label for="pro">Pro</label>
+</form>`}
+</CodeExample>
+
+A note on radio buttons: give every option in a group the **same `name`** so only one can be selected at a time. Each option's `value` is what gets submitted.
+
+## Textareas and selects
+
+For multi-line text, use `<textarea>` (which has a closing tag, unlike `<input>`). For a dropdown of choices, use `<select>` with an `<option>` for each choice.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="message">Message</label>
+  <textarea id="message" name="message" rows="4"></textarea>
+
+  <label for="topic">Topic</label>
+  <select id="topic" name="topic">
+    <option value="job">Job opportunity</option>
+    <option value="collab">Collaboration</option>
+    <option value="hello">Just saying hi</option>
+  </select>
+</form>`}
+</CodeExample>
+
+Each `<option>` carries a `value` that is submitted; the text between the tags is what the visitor sees.
+
+## Buttons and basic validation
+
+A `<button>` submits or resets the form, or runs JavaScript. The `type` attribute decides which:
+
+- `type="submit"` (the default inside a form) sends the form.
+- `type="button"` does nothing on its own — you wire it up with JavaScript later.
+- `type="reset"` clears the fields.
+
+You can add lightweight validation right in the markup. `required` blocks submission if the field is empty, and `placeholder` shows greyed-out hint text inside the field.
+
+<CodeExample language="html" preview>
+{`<form>
+  <label for="contact-email">Email</label>
+  <input type="email" id="contact-email" name="email"
+         placeholder="you@example.com" required>
+
+  <button type="submit">Send</button>
+</form>`}
+</CodeExample>
+
+`placeholder` is a hint, not a label — it disappears as soon as the visitor types, so it can never replace a real `<label>`.
+
+<Exercise
+  title="Add a contact form to your profile"
+  goal="Build an accessible contact form with labelled inputs, a textarea, a select, and a submit button."
+  steps={[
+    "In index.html, add a new <section id=\"contact\"> inside main with an <h2>Contact</h2>.",
+    "Inside it, add a <form>. Add a text input for name and an email input, each with a matching <label> via for/id.",
+    "Add a <select> with at least two <option>s for a topic.",
+    "Add a <textarea> for a message, with its own label.",
+    "Mark the email input as required and give it a placeholder, then add a <button type=\"submit\">Send</button>.",
+    "Save, check the form in Live Server (try submitting with an empty email to see the required check), then commit in GitHub Desktop with the message 'Add contact form'."
+  ]}
+  expected="A contact form where each field has a clickable label, a topic dropdown, a multi-line message box, and a Send button that refuses to submit an empty email."
+  solution={`<section id="contact">
+  <h2>Contact</h2>
+  <form action="/contact" method="post">
+    <label for="name">Your name</label>
+    <input type="text" id="name" name="name">
+
+    <label for="email">Email</label>
+    <input type="email" id="email" name="email"
+           placeholder="you@example.com" required>
+
+    <label for="topic">Topic</label>
+    <select id="topic" name="topic">
+      <option value="job">Job opportunity</option>
+      <option value="collab">Collaboration</option>
+      <option value="hello">Just saying hi</option>
+    </select>
+
+    <label for="message">Message</label>
+    <textarea id="message" name="message" rows="4"></textarea>
+
+    <button type="submit">Send</button>
+  </form>
+</section>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "How do you correctly associate a <label> with its <input>?",
+    options: [
+      "Put the input's name in the label's for attribute",
+      "Match the label's for attribute to the input's id",
+      "Nest the input inside a <legend>",
+      "Give them the same class"
+    ],
+    answer: 1,
+    explanation: "Set the label's for attribute to the input's id. That makes them one accessible unit and lets clicking the label focus the input."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "For a group of radio buttons where only one can be selected, what must be true?",
+    options: [
+      "Each radio has a different name",
+      "All radios share the same name",
+      "All radios share the same id",
+      "Radios cannot be grouped in HTML"
+    ],
+    answer: 1,
+    explanation: "Radios in one group share the same name, which makes them mutually exclusive. Each still has its own value and id."
+  },
+  {
+    id: "q3",
+    type: "multiple-choice",
+    prompt: "What does the required attribute do?",
+    options: [
+      "Sends the form automatically",
+      "Shows hint text inside the field",
+      "Blocks submission while the field is empty",
+      "Marks the field as read-only"
+    ],
+    answer: 2,
+    explanation: "required prevents the form from submitting until the field has a value. placeholder is what shows hint text."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "Why is placeholder not a substitute for a <label>?",
+    options: [
+      "Placeholders are invalid HTML",
+      "Placeholder text disappears once the user types, so it cannot persistently label the field",
+      "Placeholders are not visible on screen",
+      "Placeholders only work on buttons"
+    ],
+    answer: 1,
+    explanation: "A placeholder is a hint that vanishes on input, so it cannot serve as the field's accessible label. Always pair a real <label>."
+  },
+  {
+    id: "q5",
+    type: "fill-in",
+    prompt: "Which element creates a multi-line text input?",
+    answer: "textarea",
+    accept: ["textarea", "<textarea>", "<textarea> element"],
+    explanation: "<textarea> accepts multi-line text and, unlike <input>, has a closing tag."
+  }
+]} />
