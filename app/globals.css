@@ -1,0 +1,189 @@
+@import "tailwindcss";
+
+/* ─── Design tokens ─────────────────────────────────────────────────────── */
+:root {
+  /* Backgrounds */
+  --bg-base:        #f8f7f4;
+  --bg-surface:     #ffffff;
+  --bg-subtle:      #f1f0ec;
+  --bg-accent:      #fffbeb;
+
+  /* Foregrounds */
+  --fg-base:        #1a1916;
+  --fg-muted:       #6b6a65;
+  --fg-subtle:      #9e9d97;
+
+  /* Brand (a calm teal-indigo) */
+  --brand:          #3d63dd;
+  --brand-light:    #dce6ff;
+  --brand-hover:    #2b4fbf;
+
+  /* Code */
+  --code-bg:        #1e2030;
+  --code-fg:        #cdd6f4;
+
+  /* Borders */
+  --border:         #e2e1db;
+  --border-strong:  #c4c3bb;
+
+  /* Progress colors */
+  --progress-read:     #16a34a;
+  --progress-exercise: #d97706;
+  --progress-quiz:     #2563eb;
+
+  /* Typography scale */
+  --font-sans: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "JetBrains Mono", "Fira Code", "Cascadia Code", ui-monospace, monospace;
+  --font-serif: Georgia, "Times New Roman", serif;
+}
+
+[data-theme="dark"] {
+  --bg-base:        #13131a;
+  --bg-surface:     #1e1e2a;
+  --bg-subtle:      #252535;
+  --bg-accent:      #1c1a12;
+
+  --fg-base:        #e8e7e3;
+  --fg-muted:       #a09fa0;
+  --fg-subtle:      #6b6a70;
+
+  --brand:          #7c9ef7;
+  --brand-light:    #1e2e60;
+  --brand-hover:    #a0b4fa;
+
+  --code-bg:        #0f1117;
+  --code-fg:        #cdd6f4;
+
+  --border:         #2e2e3e;
+  --border-strong:  #3e3e50;
+
+  --progress-read:     #22c55e;
+  --progress-exercise: #f59e0b;
+  --progress-quiz:     #60a5fa;
+}
+
+/* ─── Tailwind v4 theme mapping ─────────────────────────────────────────── */
+@theme inline {
+  --color-bg-base:        var(--bg-base);
+  --color-bg-surface:     var(--bg-surface);
+  --color-bg-subtle:      var(--bg-subtle);
+  --color-bg-accent:      var(--bg-accent);
+  --color-fg-base:        var(--fg-base);
+  --color-fg-muted:       var(--fg-muted);
+  --color-fg-subtle:      var(--fg-subtle);
+  --color-brand:          var(--brand);
+  --color-brand-light:    var(--brand-light);
+  --color-brand-hover:    var(--brand-hover);
+  --color-border:         var(--border);
+  --color-border-strong:  var(--border-strong);
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
+/* ─── Base reset & typography ────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--fg-base);
+  font-family: var(--font-sans);
+  line-height: 1.7;
+  margin: 0;
+}
+
+/* ─── Focus ring (keyboard navigation) ───────────────────────────────────── */
+:focus-visible {
+  outline: 2px solid var(--brand);
+  outline-offset: 2px;
+  border-radius: 3px;
+}
+
+/* ─── Prose styles for lesson content ───────────────────────────────────── */
+.prose {
+  color: var(--fg-base);
+  max-width: 72ch;
+}
+
+.prose h1 { font-size: 2rem; font-weight: 700; line-height: 1.2; margin: 0 0 0.75rem; letter-spacing: -0.02em; }
+.prose h2 { font-size: 1.375rem; font-weight: 600; line-height: 1.3; margin: 2.25rem 0 0.75rem; letter-spacing: -0.01em; }
+.prose h3 { font-size: 1.125rem; font-weight: 600; line-height: 1.4; margin: 1.75rem 0 0.5rem; }
+.prose h4 { font-size: 1rem; font-weight: 600; margin: 1.5rem 0 0.375rem; }
+
+.prose p { margin: 0 0 1.125rem; }
+
+.prose ul,
+.prose ol {
+  margin: 0 0 1.125rem 1.25rem;
+  padding: 0;
+}
+.prose li { margin-bottom: 0.375rem; }
+
+.prose a {
+  color: var(--brand);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.prose a:hover { color: var(--brand-hover); }
+
+.prose strong { font-weight: 600; }
+.prose em { font-style: italic; }
+
+.prose code {
+  font-family: var(--font-mono);
+  font-size: 0.875em;
+  background: var(--bg-subtle);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  padding: 0.1em 0.35em;
+}
+
+.prose pre {
+  margin: 1.25rem 0;
+}
+
+.prose blockquote {
+  border-left: 3px solid var(--border-strong);
+  padding-left: 1rem;
+  color: var(--fg-muted);
+  margin: 1.25rem 0;
+  font-style: italic;
+}
+
+.prose hr {
+  border: none;
+  border-top: 1px solid var(--border);
+  margin: 2rem 0;
+}
+
+/* ─── Scrollbar styling ──────────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--fg-subtle); }
+
+/* ─── Shiki code block overrides ─────────────────────────────────────────── */
+.shiki {
+  border-radius: 6px;
+  overflow: auto;
+  padding: 1rem 1.25rem;
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  line-height: 1.65;
+}
+
+.shiki code {
+  background: none;
+  border: none;
+  padding: 0;
+  font-size: inherit;
+}

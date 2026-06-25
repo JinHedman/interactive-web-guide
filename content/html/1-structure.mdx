@@ -1,0 +1,172 @@
+---
+title: "HTML Document Structure"
+module: "html"
+order: 1
+goal: "Write a valid HTML document from scratch and understand what every part does."
+objectives:
+  - "Understand the purpose of the DOCTYPE declaration"
+  - "Use html, head, and body elements correctly"
+  - "Add a title, charset, and viewport meta tag"
+  - "Write semantic content inside body"
+estMinutes: 15
+prerequisites: []
+---
+
+Every web page is an HTML document. Before a browser renders a single pixel, it reads a plain text file and builds a tree of elements. This chapter covers that foundational structure — the skeleton every page shares.
+
+## The DOCTYPE declaration
+
+The first line of every HTML file is a DOCTYPE declaration. It tells the browser which version of HTML you are using.
+
+<CodeExample language="html">
+{`<!doctype html>`}
+</CodeExample>
+
+For modern HTML (HTML5) the declaration is always exactly `<!doctype html>`. Nothing else is needed.
+
+## The root element
+
+After the DOCTYPE comes the `<html>` element. It wraps the entire document. The `lang` attribute tells browsers and assistive technologies which language the page is written in.
+
+<CodeExample language="html">
+{`<!doctype html>
+<html lang="en">
+</html>`}
+</CodeExample>
+
+Always include `lang`. It is a small addition with a large accessibility benefit.
+
+## head and body
+
+Inside `<html>` live exactly two children: `<head>` and `<body>`.
+
+- `<head>` holds metadata — information *about* the page that the browser uses but does not display directly.
+- `<body>` holds everything the user sees.
+
+<CodeExample language="html">
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>My First Page</title>
+  </head>
+  <body>
+    <h1>Hello, world!</h1>
+    <p>This is my first web page.</p>
+  </body>
+</html>`}
+</CodeExample>
+
+Three things in `<head>` matter most:
+
+1. `<meta charset="utf-8">` — ensures the browser uses the right character encoding (it handles accented letters, emoji, etc.).
+2. `<meta name="viewport" ...>` — makes the page scale correctly on mobile screens.
+3. `<title>` — the text that appears in the browser tab and in search results.
+
+## Try it
+
+Here is a minimal complete page. See how the browser renders it on the right.
+
+<CodeExample language="html" preview>
+{`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Demo page</title>
+    <style>
+      body { font-family: system-ui, sans-serif; padding: 1.5rem; }
+    </style>
+  </head>
+  <body>
+    <h1>Hello from HTML</h1>
+    <p>This page has proper structure. Open DevTools and inspect the tree.</p>
+    <ul>
+      <li>DOCTYPE at the top</li>
+      <li>html wraps everything</li>
+      <li>head holds metadata</li>
+      <li>body holds content</li>
+    </ul>
+  </body>
+</html>`}
+</CodeExample>
+
+<Exercise
+  title="Build your first page"
+  goal="Create a valid HTML file that includes your name, a short bio, and a list of three things you want to learn."
+  steps={[
+    "Open VS Code and create a new file named index.html.",
+    "Type the DOCTYPE declaration on line 1.",
+    "Add the html element with lang=\"en\".",
+    "Inside head, add charset, viewport, and a title with your name.",
+    "Inside body, add an h1 with your name, a p with a one-sentence bio, and a ul with three list items.",
+    "Open the file with Live Server (or drag it into a browser tab) to view the result."
+  ]}
+  expected="A page that shows your name as a heading, a bio paragraph, and a three-item list."
+  solution={`<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Ada Lovelace</title>
+  </head>
+  <body>
+    <h1>Ada Lovelace</h1>
+    <p>I find patterns in numbers and write algorithms for fun.</p>
+    <ul>
+      <li>HTML structure and semantics</li>
+      <li>CSS layout and design</li>
+      <li>JavaScript interactivity</li>
+    </ul>
+  </body>
+</html>`}
+/>
+
+<Quiz questions={[
+  {
+    id: "q1",
+    type: "multiple-choice",
+    prompt: "What is the correct DOCTYPE declaration for HTML5?",
+    options: [
+      "<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\">",
+      "<!doctype html>",
+      "<DOCTYPE html>",
+      "<?xml version=\"1.0\"?>"
+    ],
+    answer: 1,
+    explanation: "HTML5 uses the short form <!doctype html>. Older doctypes referenced a DTD file — HTML5 dropped that requirement."
+  },
+  {
+    id: "q2",
+    type: "multiple-choice",
+    prompt: "Which element holds content the user sees on the page?",
+    options: ["<head>", "<html>", "<body>", "<meta>"],
+    answer: 2,
+    explanation: "<body> contains all visible content. <head> holds metadata, <html> wraps both, and <meta> is a metadata tag inside <head>."
+  },
+  {
+    id: "q3",
+    type: "fill-in",
+    prompt: "Which meta tag attribute sets the character encoding?",
+    answer: "charset",
+    accept: ["charset", "charset=\"utf-8\""],
+    explanation: "The charset attribute on <meta> tells the browser how to decode the bytes in the file. utf-8 handles virtually every character."
+  },
+  {
+    id: "q4",
+    type: "multiple-choice",
+    prompt: "What does the lang attribute on <html> do?",
+    options: [
+      "Sets the page language for styling purposes",
+      "Tells browsers and screen readers which language the page is written in",
+      "Prevents the browser from translating the page",
+      "It has no effect in modern browsers"
+    ],
+    answer: 1,
+    explanation: "lang is used by screen readers to select the right voice, by browsers for spell-check, and by translation tools to detect the source language."
+  }
+]} />
+
+<ReadMore title="Where HTML goes next: components and templates">
+Raw HTML files work, but modern web apps rarely write markup by hand for every page. Frameworks like **React** and **Vue** let you define reusable *components* — custom elements with their own logic and styles. React uses **JSX**, a syntax that looks like HTML but compiles to JavaScript. **Next.js** builds on React and adds routing, server rendering, and more. When you are comfortable with HTML structure, exploring JSX will feel familiar — the tags are the same; the mental model is what changes.
+</ReadMore>
