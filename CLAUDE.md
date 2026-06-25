@@ -61,3 +61,10 @@ Tailwind v4, configured in CSS — `app/globals.css` holds all design tokens (`@
 ## Deployment
 
 Targets the Eyevinn Open Source Cloud (OSC) "My Apps" Node.js runner — a long-running server, **not** a static export (no `output: 'export'`). `npm start` binds `$PORT` (default 8080). See `.claude/skills/osc-deploy/SKILL.md` for the deploy runbook.
+
+## Commit conventions
+
+This is a single-author repository — the owner is the sole contributor. When committing:
+- Author commits as the repo owner; do **not** author them as "Claude Code" or any AI identity.
+- Do **not** add `Co-Authored-By:` trailers (Claude or otherwise) or "Generated with …" lines to commit messages.
+- Keep the history attributed solely to the owner.
