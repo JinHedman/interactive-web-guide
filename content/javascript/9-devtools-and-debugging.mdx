@@ -13,7 +13,13 @@ estMinutes: 30
 prerequisites: ["javascript/1-what-is-js-and-running-it", "javascript/8-dom-concept"]
 ---
 
+<InShort>**DevTools** is the browser's control room: inspect the live DOM in **Elements**, run code and read errors in the **Console**, and pause your code with a breakpoint in **Sources**.</InShort>
+
 You have used `console.log` to peek at your code, and you know the DOM is a live tree the browser builds from your HTML. **DevTools** is the control room for all of that — a panel built into every browser where you inspect the page, run JavaScript, read errors, and pause your code mid-run. Learning to read DevTools turns "it's broken and I don't know why" into a quick, methodical check. This chapter is your tour.
+
+<WhyItMatters>
+Every developer spends more time reading code that misbehaves than writing code that works the first time. DevTools is how you stop guessing: a red error names the cause and the exact line, and a `console.log` shows you the real value instead of the one you assumed. Getting comfortable here is what separates "stuck for an hour" from "fixed in a minute."
+</WhyItMatters>
 
 ## Opening DevTools
 
@@ -53,6 +59,8 @@ console.log("hi".toUpperCase());
 This is the fastest way to test a single line, check a value, or poke at the DOM (`document.title`, `document.querySelectorAll("p")`) without editing a file. And crucially: **errors print here too**, in red. Keeping the Console open while you work means you see problems the instant they happen.
 
 ## Reading error messages
+
+<InShort>An error is structured information — *type*, *description*, and a clickable *file:line*; a `ReferenceError` is a missing/misspelled name, a `TypeError` is a value used in a way its type does not allow.</InShort>
 
 An error in the Console looks alarming, but it is structured information. Read it as: *type of error*, *a short description*, and a *file:line* link you can click to jump to the exact spot. Two errors come up constantly.
 

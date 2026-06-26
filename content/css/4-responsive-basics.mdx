@@ -12,11 +12,19 @@ prerequisites: ["css/3-layout-and-flexbox"]
 estMinutes: 30
 ---
 
+<InShort>Responsive design adapts one page to any screen with three tools: the **viewport meta tag**, **fluid sizing** (`max-width` and relative units), and **media queries** at chosen breakpoints.</InShort>
+
 Your profile card looks fine on a laptop, but phones, tablets, and large monitors all have different widths. **Responsive** design means one page that adapts to whatever screen it lands on. This closing chapter covers the three tools that make it happen: the viewport meta tag, fluid sizing, and media queries.
 
 ## The viewport meta tag
 
+<InShort>The viewport meta tag tells mobile browsers to use the device's **real width** instead of pretending the screen is ~980px and zooming out.</InShort>
+
 Without help, mobile browsers pretend the screen is about 980px wide and shrink the whole page to fit — text becomes tiny. The viewport meta tag tells the browser to use the device's real width and not zoom out. Put it in the `<head>` of every page (you have seen it since the HTML module):
+
+<WhyItMatters>
+This is why a "finished" page can look perfect on your laptop yet shrink to unreadable on a phone. Without this one line, none of your media queries or fluid sizing will ever kick in on mobile — it is the prerequisite for everything else in this chapter.
+</WhyItMatters>
 
 <CodeExample language="html">
 {`<meta name="viewport" content="width=device-width, initial-scale=1">`}
@@ -43,6 +51,8 @@ Before reaching for media queries, let the layout flex on its own. Two habits do
 That card is already responsive: full width on a phone, capped and centered on a desktop — with no media query at all. Reach for fluid sizing first; add breakpoints only where the layout genuinely needs to change.
 
 ## Media queries
+
+<InShort>A media query like `@media (min-width: 600px) { … }` applies CSS only above a chosen **breakpoint** — write the small-screen layout first, then layer on changes for wider screens (**mobile-first**).</InShort>
 
 A media query applies a block of CSS only when a condition is true — usually a screen-width range. You write the base styles for small screens, then add a query that adjusts them once there is more room. This **mobile-first** approach keeps the simplest layout as the default.
 

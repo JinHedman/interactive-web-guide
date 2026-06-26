@@ -14,11 +14,19 @@ estMinutes: 35
 prerequisites: ["html/6-forms", "html/5-semantics", "html/7-tables"]
 ---
 
+<InShort>An optional, deeper layer: built-in form validation, `<fieldset>`/`<legend>`, `<figure>`/`<figcaption>`, native `<details>`/`<summary>`, `<dl>`, and accessible tables — all with **zero JavaScript**.</InShort>
+
 This is an **optional, deeper chapter**. Everything in chapters 1–9 stands on its own — you can already build a page, a form, and a table. But HTML has a second layer most tutorials skip: the browser will validate your forms for free, caption your media as one unit, collapse a panel with no JavaScript, and make a table genuinely navigable by a screen reader. None of this is exotic. It is the difference between markup that *works* and markup that is correct, accessible, and does more with less code.
 
 Each section teaches one tool with a runnable example, then you will drill them and finish with a quiz. Take it at your own pace.
 
+<WhyItMatters>
+It is easy to reach for JavaScript the moment a page needs to validate input or toggle a panel, but the platform already does much of this — for free, accessibly, and with less code to maintain. Knowing this second layer is what separates markup that merely renders from markup a professional would ship.
+</WhyItMatters>
+
 ## What `required` actually does
+
+<InShort>`required` is *constraint validation*: the browser refuses to submit and shows its own message until the field has a value — no JavaScript.</InShort>
 
 In chapter 6 you added `required` to an input. Here is what it means: the browser **refuses to submit the form** and shows its own message until that field has a value. No JavaScript involved — the browser enforces it. This is called *constraint validation*, and `required` is just the first of several constraints you can declare in the markup.
 
@@ -63,6 +71,8 @@ Click Sign up with the field empty and the browser blocks it with a "Please fill
 Try submitting with `not-an-email` in the email field — the browser stops you. The `title` on the `pattern` field is what the browser shows if the value does not match, so always give a human-readable hint there. These checks are a first line of defence and a convenience for the user; a real server still re-checks everything, because anyone can bypass the browser.
 
 ## Grouping controls with `<fieldset>` and `<legend>`
+
+<InShort>Wrap related controls in a `<fieldset>` and label the whole group with a `<legend>` — the accessible answer to labelling a set of radios or checkboxes.</InShort>
 
 Related controls — especially a set of radio buttons or checkboxes — belong in a `<fieldset>`. A `<legend>` (its first child) gives the whole group a visible, announced label. Screen readers read the legend together with each option, so the user hears "Contact preference: Email" instead of a bare "Email".
 
@@ -134,6 +144,8 @@ You know ordered and unordered lists. There is a third kind for **name-and-value
 One term can have several descriptions (stack multiple `<dd>` under one `<dt>`), and several terms can share one description (stack multiple `<dt>` before one `<dd>`). Reach for a `<dl>` whenever your data is genuinely "this label means this value" — it carries more meaning than faking it with paragraphs or a two-column table.
 
 ## Tables that screen readers can read: `scope`
+
+<InShort>`scope="col"` and `scope="row"` tell assistive tech which cells each `<th>` governs, so a screen reader can connect every data cell to its headers.</InShort>
 
 In chapter 7 you used `<th>` only across the top, as column headers. Real tables often have headers down the side too — the first cell of each row naming what that row is. The `scope` attribute tells assistive tech which cells a header governs: `scope="col"` for a column header, `scope="row"` for a row header. Without it, a screen reader cannot reliably connect a data cell to its headers.
 

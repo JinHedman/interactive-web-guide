@@ -13,6 +13,8 @@ estMinutes: 30
 prerequisites: ["html/8-page-project"]
 ---
 
+<InShort>A CSS rule is a **selector** plus a `{ }` block of `property: value` pairs; you target elements with `element`, `.class`, and `#id` selectors, and keep your rules in an external stylesheet linked with `<link>`.</InShort>
+
 Your HTML page already works, but it looks plain — black text, blue links, default fonts. CSS (Cascading Style Sheets) is the language that controls how that markup *looks*: colors, spacing, fonts, and layout. In this module you will progressively style a personal profile card. This first chapter covers the shape of a CSS rule, the three kinds of selectors you will use most, and where to put your styles.
 
 ## A rule is a selector plus declarations
@@ -191,7 +193,13 @@ The `<link>` tag's `href` points at the file; the matching `styles.css` holds yo
 
 ## The cascade and specificity, briefly
 
+<InShort>When two rules clash, the more **specific** selector wins (`#id` beats `.class` beats `element`); when they are equally specific, the one written **later** wins.</InShort>
+
 What happens when two rules set the same property on the same element? CSS resolves the conflict with two ideas.
+
+<WhyItMatters>
+This is the single most common source of "why won't my CSS apply?" confusion. Knowing that an `#id` rule quietly overrides your `.class` rule — no matter where you put it — saves hours of staring at a style that refuses to take effect.
+</WhyItMatters>
 
 **The cascade**: when rules are equally specific, the one written *later* wins. Source order matters.
 

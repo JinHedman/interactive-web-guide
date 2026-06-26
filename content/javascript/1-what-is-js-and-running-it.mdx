@@ -13,6 +13,8 @@ estMinutes: 25
 prerequisites: ["html/1-structure"]
 ---
 
+<InShort>JavaScript adds **behavior** to a page; this chapter is about getting it to run — where the code goes, how to read its output in the console, and how to leave comments.</InShort>
+
 HTML gives a page structure. CSS gives it style. JavaScript gives it *behavior* — the page can respond to clicks, change its own content, do math, and talk to servers. This chapter is about getting JavaScript to run at all: where the code goes, how to see its output, and how to leave notes for yourself.
 
 ## What JavaScript adds
@@ -40,6 +42,8 @@ console.log(2 + 2);`}
 In these lessons, the result pane on the right shows whatever you `console.log`. In a real browser you would open the devtools console to see the same output (more on that below).
 
 ## Adding a script to a page
+
+<InShort>JavaScript lives in its own `.js` file, attached with `<script src>` just before `</body>` so the page exists by the time the code runs.</InShort>
 
 In a real project, JavaScript lives in its **own `.js` file**, separate from your HTML. You attach it to the page with a `<script>` tag and a `src` attribute, just like a stylesheet. These are two files in the same folder:
 

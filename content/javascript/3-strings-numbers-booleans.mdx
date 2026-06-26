@@ -12,6 +12,8 @@ estMinutes: 30
 prerequisites: ["javascript/2-variables-and-types"]
 ---
 
+<InShort>Work with stored values: join and inspect text (best with **template literals**), do reliable number work, convert between strings and numbers, and learn which values count as *truthy* or *falsy*.</InShort>
+
 Now that you can store values, this chapter is about working with them: joining and inspecting text, doing reliable number work, converting between the two, and understanding why `if` statements treat some values as "true" even when they are not literally `true`.
 
 ## Joining strings
@@ -93,7 +95,13 @@ console.log(Number("12px"));     // NaN — Number is stricter`}
 
 When you accidentally add a number to a string, JavaScript turns the number into a string and joins them. Converting first avoids that bug.
 
+<WhyItMatters>
+Everything a user types into a form arrives as a string — including numbers. Forgetting to convert is one of the most common beginner bugs: `"5" + 1` gives `"51"`, not `6`. Converting input to a number before doing math saves you from quietly wrong totals.
+</WhyItMatters>
+
 ## Truthy and falsy
+
+<InShort>In a condition, every value is either *truthy* or *falsy* — only `false`, `0`, `""`, `null`, `undefined`, and `NaN` are falsy; everything else is truthy.</InShort>
 
 In a condition, JavaScript treats every value as either *truthy* or *falsy*. Only a short list of values are **falsy**:
 

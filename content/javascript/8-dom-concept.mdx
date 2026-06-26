@@ -12,7 +12,13 @@ estMinutes: 20
 prerequisites: ["javascript/7-functions", "html/5-semantics"]
 ---
 
+<InShort>The **DOM** is the live, in-memory tree of objects the browser builds from your HTML; JavaScript reaches it through the global `document`, and changing a node changes what the user sees.</InShort>
+
 You can now write real JavaScript: variables, conditions, loops, and functions. But so far it has only printed to the console. This short chapter is the bridge to the next module — it explains the one idea that lets JavaScript actually change a web page: the **DOM**. There is little new code here; the goal is the mental model.
+
+<WhyItMatters>
+Everything that makes a page *interactive* — updating text, reacting to a click, building a list from data — works by changing the DOM. Without this mental model, the next module's code looks like a pile of unfamiliar method names; with it, every one of those methods is just "find a node, change it."
+</WhyItMatters>
 
 ## From HTML text to a live tree
 
