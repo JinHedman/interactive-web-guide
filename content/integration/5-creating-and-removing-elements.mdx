@@ -12,6 +12,8 @@ estMinutes: 35
 prerequisites: ["integration/4-reading-form-input", "javascript/6-loops"]
 ---
 
+<InShort>`createElement` builds a new element, `append` adds it to the page, and `remove` takes one off — the building blocks for a UI that grows and shrinks at runtime.</InShort>
+
 Until now you have changed elements that already existed in your HTML. But a to-do app cannot know its tasks ahead of time — the user adds them as they go. So you need to **create** new elements from JavaScript and add them to the page, and **remove** them when they are no longer wanted. This chapter gives you those final building blocks. After this, you have everything you need for the capstone.
 
 ## Create an element
@@ -122,6 +124,8 @@ delBtn.addEventListener("click", function () {
 Click the button and the second item disappears. In a to-do app, each task will carry its own delete button whose click handler calls `remove` on that task.
 
 ## Render a list from an array
+
+<InShort>Keep your data in an **array** and rebuild the matching elements from it whenever it changes — the array is the source of truth, and this "render from the array" pattern is the engine of the capstone.</InShort>
 
 Here is the pattern your capstone is built on. Keep your data in an **array**, then loop over it to build the matching elements. When the data changes, you clear the list and rebuild it — so what you see always reflects the data. Notice the shape of the data: each task is an **object** like `{ text: "Buy milk" }`, not a bare string. That gives each task room to grow more fields later (the capstone adds a `done` flag), so we use that shape from the start.
 

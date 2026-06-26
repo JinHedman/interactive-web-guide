@@ -14,7 +14,13 @@ prerequisites: ["integration/6-capstone-interactive-app", "javascript/4-arrays-a
 estMinutes: 45
 ---
 
+<InShort>Request data from a server with **`fetch()`**, parse the **JSON** it returns into an array of objects, then render it with the same loop-and-build pattern you already know.</InShort>
+
 Your to-do app held its data in an array you typed by hand. Real apps usually get their data from somewhere else — a server, over the network. This chapter covers how: what an **API** is, the **JSON** format that data arrives in, and how to request it with **`fetch()`** and render it into the page. The good news is you already know the hard part — once the data is an array of objects, you render it exactly the way you rendered tasks in the capstone.
+
+<WhyItMatters>
+Almost every app you use loads its data from a server rather than shipping it hard-coded — your feed, your messages, a product list. `fetch` is the browser's built-in way to make that request, so this is the chapter that connects your page to the wider web.
+</WhyItMatters>
 
 ## What an API is
 
@@ -39,6 +45,8 @@ The data comes back as **JSON** (JavaScript Object Notation). JSON is just text 
 Two small differences from a JavaScript object literal: in JSON every **key is wrapped in double quotes**, and JSON holds only data — no functions, no comments. The full `/users` response is an **array** of objects like this one, exactly the array-of-objects shape your to-do tasks used. Once you have that array, rendering it is familiar territory.
 
 ## fetch and async/await
+
+<InShort>`fetch()` returns a **promise** because the request takes time; **`await`** pauses for the result without freezing the page, and it only works inside a function marked **`async`**.</InShort>
 
 You request a URL with the built-in **`fetch()`** function. The catch: a network request takes time — milliseconds to seconds — and JavaScript does not freeze the page waiting for it. Instead `fetch()` returns a **promise**: a placeholder for a value that will arrive *later*. The clean way to wait for that value is the **`await`** keyword, which pauses inside the function until the result is ready. `await` only works inside a function marked **`async`**.
 

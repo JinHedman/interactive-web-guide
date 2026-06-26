@@ -13,6 +13,8 @@ estMinutes: 30
 prerequisites: ["integration/1-selecting-elements"]
 ---
 
+<InShort>Once you hold an element, you change it through `textContent` (text), `classList` (classes), `style` (inline CSS), and `getAttribute`/`setAttribute` (attributes) — and the page updates instantly.</InShort>
+
 Selecting an element is only useful if you can then change it. Once you hold an element in a variable, you can rewrite its text, switch its classes, tweak its styles, and edit its attributes — and the page updates instantly. This is how a to-do item gets crossed off, or a status message appears. This chapter covers the four ways you will change elements every day.
 
 ## Change text with textContent
@@ -202,6 +204,8 @@ report.textContent =
 `setAttribute` takes two arguments: the attribute name and its new value. `getAttribute` takes just the name and returns the current value.
 
 ## Stash your own data with data-* attributes
+
+<InShort>Custom `data-*` attributes let an element carry your own data — most often *which* item it represents — and you read them through the `dataset` property (`data-id` becomes `element.dataset.id`).</InShort>
 
 HTML lets you invent your own attributes as long as they start with `data-`, like `data-id="42"`. They are a clean place to attach information an element needs — most often *which* item of your data this element represents. You could read them with `getAttribute("data-id")`, but JavaScript gives you a tidier path: the `dataset` property. A `data-id` attribute shows up as `element.dataset.id` (the `data-` prefix is dropped).
 

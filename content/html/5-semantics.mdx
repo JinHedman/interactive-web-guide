@@ -13,7 +13,13 @@ estMinutes: 30
 prerequisites: ["html/4-images-media"]
 ---
 
+<InShort>Semantic elements like `<header>`, `<nav>`, `<main>`, `<section>`, `<article>`, and `<footer>` name the **role** of each region; fall back to `<div>`/`<span>` only when none fits.</InShort>
+
 You could build any page out of plain boxes, but HTML offers elements that name the *role* of each region — header, navigation, main content, footer. These are called semantic elements, and using them makes your page easier for assistive tech, search engines, and your future self to understand. In this chapter you reorganize your profile page around semantic landmarks.
+
+<WhyItMatters>
+A `<div class="header">` and a `<header>` can look identical on screen, so it is tempting to ask why the distinction matters. It matters to everyone who is not looking at the pixels: a screen-reader user jumps straight to "main content," a search engine reads your structure to rank the page, and the next developer understands each region at a glance. Same visual result, far more meaning.
+</WhyItMatters>
 
 ## Landmarks name the regions of a page
 

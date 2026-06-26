@@ -13,6 +13,8 @@ prerequisites: ["css/1-how-css-works"]
 estMinutes: 35
 ---
 
+<InShort>Every element is a box of **content → padding → border → margin**; you color it with named/hex/`rgb`/`hsl` values, size it with `px`/`rem`/`em`/`%`, and style its text with a few `font-*` properties.</InShort>
+
 You can target elements now. This chapter gives you the properties that do most of the visual work: spacing through the box model, colors in their common formats, the units you measure with, and the handful of properties that style text. We will keep refining the same profile card.
 
 ## Every element is a box
@@ -59,7 +61,13 @@ You can set each side separately (`padding-top`, `margin-left`) or use shorthand
 
 ## box-sizing: border-box
 
+<InShort>`box-sizing: border-box` makes `width` include padding and border, so a `300px` box stays `300px` — set it on `*` once at the top of every stylesheet.</InShort>
+
 By default, `width` measures only the content. Padding and border are then *added on top*, so a box you set to `width: 200px` with `20px` of padding actually takes up `240px`. That math is annoying.
+
+<WhyItMatters>
+Side-by-side boxes that mysteriously overflow onto a second line are almost always this default biting you. One `* { box-sizing: border-box; }` line makes widths behave the way you expect — which is why nearly every real stylesheet opens with it.
+</WhyItMatters>
 
 Set `box-sizing: border-box` and `width` includes padding and border instead — what you ask for is what you get. Apply it to everything once at the top of your stylesheet:
 

@@ -13,11 +13,15 @@ estMinutes: 45
 prerequisites: ["css/3-layout-and-flexbox", "css/4-responsive-basics", "css/5-grid-in-depth"]
 ---
 
+<InShort>An optional deeper layer: **custom properties** (`var()`) for theming, the **grow/shrink/basis** mechanics behind `flex: 1`, fluid sizing with **`clamp()`** and dark mode, and precise grid placement by **line number** and **name**.</InShort>
+
 This is an **optional, deeper chapter**. Chapters 1–6 already give you a working stylesheet — you can style boxes, build flex and grid layouts, and make them responsive. This chapter goes one layer down into the tools real stylesheets lean on: variables for theming, the precise mechanics of how flex items share space, fluid sizing that needs no breakpoint, and pixel-accurate grid placement. None of it replaces what you know; it sharpens it.
 
 Each section teaches one idea with a runnable example, most with a `preview` so you can see the result. Then you will drill them and finish with a quiz. Take it at your own pace.
 
 ## Custom properties (CSS variables)
+
+<InShort>Declare a variable with a `--name` (usually on `:root`) and read it anywhere with `var(--name)` — change the value in one place and every rule that references it updates.</InShort>
 
 You have repeated the same color in a dozen rules and then had to change it in a dozen places. **Custom properties** — CSS's own variables — fix that. You *declare* one with a name starting with two dashes, then *read* it anywhere with the `var()` function.
 
@@ -110,7 +114,13 @@ Both cards use `var(--accent)`, but the second one redefines `--accent` on itsel
 
 ## Flex items: grow, shrink, and basis
 
+<InShort>Three item-level properties decide how each item shares the row: `flex-grow` (take leftover space), `flex-shrink` (give up space when tight), and `flex-basis` (starting size) — and `flex: 1` is shorthand for all three.</InShort>
+
 The flexbox chapter set properties on the *container*. The interesting control lives on the *items* — three properties decide how each item shares the row's space.
+
+<WhyItMatters>
+`flex: 1` is the shortcut everyone uses, but the moment you need one item to hold its size while another fills the rest — a fixed avatar beside a stretchy search box — you have to know the three properties underneath. This is what separates "it mostly works" from layouts that hold up at every width.
+</WhyItMatters>
 
 - **`flex-grow`** — how greedily an item takes *leftover* space. `0` (default) means "don't grow." A higher number means "take more of the extra room." The numbers are ratios: an item with `flex-grow: 2` gets twice the spare space of one with `flex-grow: 1`.
 - **`flex-shrink`** — how readily an item *gives up* space when the row is too narrow. `1` (default) means "shrink if needed." `0` means "never shrink — keep my size."
@@ -211,7 +221,13 @@ The avatar and button keep their size (`flex-shrink: 0`); the search input takes
 
 ## Per-item overrides: align-self and order
 
+<InShort>`align-self` overrides the container's `align-items` for one item, and `order` changes an item's visual position without editing the HTML.</InShort>
+
 Container properties apply to every item at once. Two item-level properties let one item break ranks.
+
+<WhyItMatters>
+These solve the "everything is aligned, except this one thing" problem without restructuring your markup. The catch with `order` is worth remembering: it moves items visually but not for screen readers or the Tab key, so it is a presentation tweak — never a fix for HTML in the wrong order.
+</WhyItMatters>
 
 - **`align-self`** overrides the container's `align-items` for a single item — handy when one item should sit at the top or bottom while the rest stay centered.
 - **`order`** changes an item's position in the visual sequence. Items default to `order: 0` and lay out in source order; a lower number moves earlier, a higher number later — *without* touching the HTML.
@@ -262,6 +278,8 @@ The middle box pins itself to the top with `align-self` while its neighbors stay
 
 ## Fluid type and spacing with clamp()
 
+<InShort>`clamp(min, preferred, max)` scales a value smoothly between a floor and ceiling — put a `vw` unit in the middle and type grows with the viewport, then stops, with no media query.</InShort>
+
 In the responsive chapter you changed sizes at breakpoints — a jump from one value to another. **`clamp()`** scales a value *smoothly* between a floor and a ceiling, so type can grow with the viewport and then stop, with no media query at all.
 
 It takes three arguments: `clamp(minimum, preferred, maximum)`. The browser uses the preferred value, but never lets it drop below the minimum or rise above the maximum. The trick is a viewport unit (`vw`) in the middle: `1vw` is 1% of the viewport width, so the preferred size tracks the screen.
@@ -299,6 +317,8 @@ It takes three arguments: `clamp(minimum, preferred, maximum)`. The browser uses
 On a narrow phone the heading sits at its `1.5rem` floor; on a wide monitor it caps at `3rem`; in between it grows with the screen. The same idea works for spacing — `padding: clamp(1rem, 4vw, 3rem)` gives a margin that breathes on large screens and tightens on small ones. `clamp()` does not replace media queries (those still re-arrange the *layout*); it replaces the busywork of resizing single values at each breakpoint.
 
 ## Dark mode with prefers-color-scheme
+
+<InShort>`@media (prefers-color-scheme: dark)` reads the user's OS theme; redefine your custom properties inside it and every `var()` rule flips to dark for free.</InShort>
 
 Media queries are not only about width. **`prefers-color-scheme`** reads the user's operating-system theme, so your page can honor a dark-mode preference automatically. Pair it with custom properties and dark mode becomes a handful of variable swaps — the rest of your CSS, all written with `var()`, needs no changes.
 
@@ -357,6 +377,8 @@ Only the four variables change inside the dark-mode query; every rule that reads
 
 ## Grid placement by line number
 
+<InShort>Grid lines are numbered from `1`, so `grid-column: 2 / 4` anchors an item between column lines 2 and 4 — an exact position rather than just "span 2".</InShort>
+
 The grid chapter placed items with `span`. Grid also lets you name *exact lines*. The lines between and around tracks are numbered from `1`, so a three-column grid has column lines `1` through `4`. **`grid-column: 2 / 4`** means "start at line 2, end at line 4" — spanning the two columns between them. `grid-row` works the same way down the rows.
 
 <CodeExample preview files={[
@@ -407,6 +429,8 @@ The grid chapter placed items with `span`. Grid also lets you name *exact lines*
 `grid-column: 1 / 3` puts the hero between column lines 1 and 3 (covering columns 1 and 2), and `grid-row: 1 / 3` makes it two rows tall. The other items flow into the cells the hero left free. Compared with `span`, line numbers let you anchor an item to an exact position rather than just say "take two." You can mix the two: `grid-column: 2 / span 2` starts at line 2 and spans two columns.
 
 ## Naming regions with grid-template-areas
+
+<InShort>When placing by line number gets fiddly, `grid-template-areas` lets you draw the layout as a map of names instead — label items with `grid-area`, then arrange the names in rows of strings.</InShort>
 
 For a whole layout, even line numbers get fiddly. **`grid-template-areas`** lets you draw the layout as a map of names — the most readable placement tool grid offers. You label each item with `grid-area`, then arrange those labels in rows of strings on the container.
 

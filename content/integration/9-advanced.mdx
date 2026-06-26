@@ -13,11 +13,19 @@ estMinutes: 50
 prerequisites: ["integration/3-events-and-listeners", "integration/5-creating-and-removing-elements", "integration/7-json-fetch-apis"]
 ---
 
+<InShort>An optional, deeper layer of craft: one listener for many items (**event delegation**), saving state across reloads (**`localStorage`**), and a **fetch** that handles every outcome — all with platform patterns, no frameworks.</InShort>
+
 This is an **optional, deeper chapter**. The capstone app already works: it adds, completes, and deletes tasks, and the fetch chapter renders live data. But that app has soft spots a real project would harden. It attaches a fresh listener to every element on every render. It forgets everything the moment you reload the page. Its fetch trusts that a response means success. This chapter fixes each of those — not with new frameworks, just with patterns the platform already gives you.
 
 Each section teaches one technique with a runnable example, then you will drill them and finish with a quiz. None of this is required to ship the capstone — it is the next layer of craft.
 
+<WhyItMatters>
+These are the touches that separate a demo from a shippable app: state that survives a reload, an interface that stays responsive as it grows, and network code that fails gracefully. Knowing how they work by hand is also what lets you reason about a framework later, when its abstraction leaks.
+</WhyItMatters>
+
 ## Event delegation: one listener for many items
+
+<InShort>Put **one** listener on the parent and let children's clicks **bubble** up to it — `event.target` tells you what was clicked and `closest()` finds its row — instead of a listener per item.</InShort>
 
 Look back at the capstone. Inside `render`, every task gets its own delete button *and* its own click listener. Re-render ten times and you have created and thrown away ten sets of listeners. It works, but it is wasteful, and it ties the listener's lifetime to the element's.
 
@@ -63,6 +71,8 @@ Two new helpers make this clean. `event.target.matches(".del")` asks "is the cli
 Why this beats a listener per item: you attach it **once**, and it keeps working for items added *later* — even ones that did not exist when the listener was set up. The capstone's footnote worried that listeners attached inside `render` are fragile and rebuilt constantly; delegation sidesteps the whole problem. One listener, on a parent that outlives every child.
 
 ## Persisting state with localStorage
+
+<InShort>**`localStorage`** keeps data on disk across reloads, but only as strings — so `JSON.stringify` to save your array and `JSON.parse` to load it back.</InShort>
 
 Your capstone's tasks live in a JavaScript array. Reload the page and that array is recreated from scratch — your work is gone. **`localStorage`** is a small key/value store the browser keeps on disk, per site, that survives reloads and even closing the tab.
 
@@ -110,6 +120,8 @@ Slot this into the capstone's rhythm: call `loadTasks()` to fill `tasks` at the 
 A couple of cautions. `localStorage` is per-origin and visible to anyone at the keyboard, so never store secrets or passwords in it. And a saved string can be corrupt or hand-edited; wrapping the parse in `try...catch` and falling back to `[]` keeps a bad value from breaking the whole app.
 
 ## Robust fetch: ok, status, and UI states
+
+<InShort>`fetch` does **not** throw on a `404` or `500` — check **`response.ok`** yourself and throw — then show all four UI states: loading, success, empty, and error.</InShort>
 
 The fetch chapter wrapped the request in `try...catch` — good for a dropped connection. But there is a trap: a `404 Not Found` or `500 Server Error` is still a **successful HTTP exchange**, so `fetch` does **not** throw. The promise resolves; `try...catch` never fires. You have to check the response yourself with **`response.ok`** (true for status codes 200–299) and **`response.status`** (the number).
 

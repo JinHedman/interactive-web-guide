@@ -13,6 +13,8 @@ estMinutes: 35
 prerequisites: ["html/5-semantics"]
 ---
 
+<InShort>A `<form>` groups inputs; pair every `<input>` with a `<label>` via `for`/`id`, pick the right `type`, and add `<textarea>`, `<select>`, a `<button>`, and validation attributes like `required`.</InShort>
+
 Forms are how a page collects input: a contact message, a sign-up, a search box. HTML gives you inputs for text, choices, and more, plus the labels and buttons that tie them together. In this chapter you add a contact form to your profile page. (Hooking the form up to actually do something comes later with JavaScript — here you build the markup.)
 
 ## The form element
@@ -31,6 +33,8 @@ A `<form>` wraps a group of inputs. Two attributes describe what happens when it
 You will not have a real server to receive this yet, so submitting will not do much. The markup is what matters for now.
 
 ## Labels pair with inputs
+
+<InShort>Give the input an `id`, point the label's `for` at that same id — now clicking the label focuses the input and screen readers announce it.</InShort>
 
 Every input needs a `<label>`. Connect them by giving the input an `id` and pointing the label's `for` attribute at that same id. Clicking the label then focuses the input, and screen readers announce the label when the input is focused.
 

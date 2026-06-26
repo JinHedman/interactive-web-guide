@@ -42,6 +42,24 @@ prerequisites: ["html/1-structure"]
 - `<Quiz>` and `<Exercise>` take data per the **interactive-content** skill.
 - `<ReadMore title="…">` for the contemporary/framework pointer.
 
+## Approachability aids — `<InShort>` and `<WhyItMatters>`
+Both are **additive**: they never replace or remove prose. The full text always stays in place — these help a reader skim or get motivation without deleting anything.
+
+- **`<InShort>`** — a one-line "skim" summary placed **above a long block of prose** (the chapter intro, and any section that opens with more than ~2 sentences). Lets an eager reader take the point and move on; the full paragraph(s) follow unchanged. Keep it to a single sentence; inline `` `code` `` and `**bold**` are fine.
+  ```mdx
+  <InShort>`display` controls how an element flows; **flexbox** arranges items in a row or column — no floats, no margin hacks.</InShort>
+
+  So far your card stacks everything top to bottom. Real layouts place things side by side…  {/* full intro stays */}
+  ```
+- **`<WhyItMatters>`** — a collapsed (native `<details>`, no JS) "Why this matters" disclosure for motivation/context: *why* a learner should care, where it shows up in real work. Use it **only where the motivation isn't already obvious** in the prose — abstract topics, or "why does this exist" moments — **not** on every chapter. ~1–3 sentences.
+  ```mdx
+  <WhyItMatters>
+  Before flexbox, lining things up meant floats and brittle margins. It replaced all of that with a few properties — the layout tool you'll reach for on almost every page.
+  </WhyItMatters>
+  ```
+
+Placement: `<InShort>` goes **first**, then the full intro prose, then (optionally) `<WhyItMatters>`. Do not put fenced `<CodeExample>` blocks inside either — they hold prose only.
+
 ## Code conventions
 - Every snippet correct, runnable, minimal. No `…` placeholders inside runnable examples.
 - 2-space indent. Lowercase HTML tags. Use semantic HTML.

@@ -15,7 +15,13 @@ prerequisites: ["css/3-layout-and-flexbox"]
 estMinutes: 40
 ---
 
+<InShort>**Grid** lays out rows **and** columns at once: define tracks with `grid-template-columns` and the `fr` unit, place items with `span` or named areas, and make it responsive with `repeat(auto-fit, minmax(…))`.</InShort>
+
 In the flexbox chapter you got a peek at `display: grid` and saw three equal columns with one line of CSS. Flexbox lays things out in *one* direction — a row or a column. **Grid** lays things out in *two* directions at once — rows **and** columns — which is exactly what a photo gallery, a card grid, or a full page layout needs. This chapter turns that peek into a working tool: defining tracks, placing items, naming regions, and making the whole thing responsive.
+
+<WhyItMatters>
+Card galleries, dashboards, and whole-page templates are everywhere, and building them with flexbox alone means fighting the tool. Grid is the layout system designers actually reach for the moment a design has both rows and columns — learning it is what lets you build the layouts you see on real sites.
+</WhyItMatters>
 
 ## Turning an element into a grid
 
@@ -66,6 +72,8 @@ Set `display: grid` on a container and its direct children become **grid items**
 
 ## The fr unit and repeat()
 
+<InShort>The `fr` unit splits leftover space into equal shares, and `repeat(3, 1fr)` is shorthand for `1fr 1fr 1fr` — three columns that share the width and resize with the container.</InShort>
+
 Fixed pixel columns do not adapt to the container. The **`fr` unit** ("fraction") solves this: it splits the *available* space into shares. `1fr 1fr 1fr` means three columns that each take an equal share of whatever width is left after gaps. Typing the same value three times is noisy, so **`repeat()`** writes it once: `repeat(3, 1fr)` means "three tracks of `1fr`."
 
 <CodeExample preview files={[
@@ -114,6 +122,8 @@ Now the three columns stretch to fill the container and stay equal as it resizes
 `gap` works just like it does in flexbox: it sets the space *between* tracks, with no margins on the items. Use `gap: 1rem 0.5rem` for different row and column gaps (row gap first), or a single value for both.
 
 ## Placing items across columns and rows
+
+<InShort>`grid-column: span 2` makes an item occupy two columns and `grid-row: span 2` makes it two rows tall — how you build a feature tile larger than its neighbors.</InShort>
 
 By default each item fills one cell. To make an item span more, use **`grid-column`** and **`grid-row`** with the `span` keyword. `grid-column: span 2` tells an item to occupy two columns; `grid-row: span 2` makes it two rows tall. This is how you build a feature tile that is bigger than its neighbors.
 
@@ -168,6 +178,8 @@ The `.feature` tile covers a two-by-two block in the top-left, and the rest of t
 
 ## Naming regions with grid-template-areas
 
+<InShort>`grid-template-areas` lets you draw a whole-page layout as a map of names — label each item with `grid-area`, then arrange the names in rows of strings.</InShort>
+
 For a whole-page layout, spans get hard to track. **`grid-template-areas`** lets you draw the layout as a little ASCII map instead. You give each item a name with `grid-area`, then arrange those names in rows of strings. It reads almost like the layout it produces.
 
 <CodeExample preview files={[
@@ -220,6 +232,8 @@ For a whole-page layout, spans get hard to track. **`grid-template-areas`** lets
 Each quoted string is one row of the grid; each word is a column cell. Repeating a name (`"header header"`) makes that area span those columns. The header and footer stretch across both columns, while the sidebar and main content share the middle row. To rearrange the page you just rewrite the map — no need to renumber column lines.
 
 ## A responsive grid in one line
+
+<InShort>`repeat(auto-fit, minmax(180px, 1fr))` fits as many columns as fit (each at least `180px`, growing to fill) — a responsive card grid with **no media query**.</InShort>
 
 Media queries (next chapter) can change the column count at set breakpoints, but grid can also adapt on its own. The pattern `repeat(auto-fit, minmax(180px, 1fr))` means: "fit as many columns as you can, each at least 180px wide, growing to share the leftover space." Add columns when there is room, drop to fewer when there is not — no breakpoints required.
 
