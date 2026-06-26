@@ -9,6 +9,8 @@ import ExerciseServer from "./ExerciseServer";
 import ReadMore from "./ReadMore";
 import DocsLinks from "./DocsLinks";
 import DocRef from "./DocRef";
+import InShort from "./InShort";
+import WhyItMatters from "./WhyItMatters";
 import { lookupReference } from "@/lib/references";
 
 export function getMDXComponents(chapterId: string) {
@@ -29,6 +31,12 @@ export function getMDXComponents(chapterId: string) {
     ) => <ExerciseServer {...props} chapterId={chapterId} />,
     ReadMore: (props: React.ComponentProps<typeof ReadMore>) => (
       <ReadMore {...props} />
+    ),
+    InShort: (props: React.ComponentProps<typeof InShort>) => (
+      <InShort {...props} />
+    ),
+    WhyItMatters: (props: React.ComponentProps<typeof WhyItMatters>) => (
+      <WhyItMatters {...props} />
     ),
     DocsLinks: (props: React.ComponentProps<typeof DocsLinks>) => (
       <DocsLinks {...props} />

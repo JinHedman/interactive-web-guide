@@ -538,3 +538,70 @@ body {
     border-top: 1px solid var(--border);
   }
 }
+
+/* ─── In short (skim summary) + Why this matters (optional context) ───────── */
+/* Both are additive: the full lesson prose stays in place. <InShort> gives an
+   eager reader a one-line takeaway above a long block; <WhyItMatters> tucks
+   motivation into a native, no-JS <details> for those who want the "why". */
+.in-short {
+  margin: 1.4rem 0;
+  padding: 12px 16px 12px 18px;
+  border-left: 3px solid var(--brand);
+  background: var(--brand-light);
+  border-radius: 0 8px 8px 0;
+}
+.in-short .in-short-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 4px;
+}
+.in-short p {
+  margin: 0;
+  font-size: 1.02rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--fg-base);
+}
+
+.why-matters {
+  margin: 1.4rem 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+.why-matters > summary {
+  cursor: pointer;
+  list-style: none;
+  padding: 11px 16px;
+  font-size: 0.92rem;
+  font-weight: 600;
+  color: var(--fg-muted);
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+.why-matters > summary::-webkit-details-marker { display: none; }
+.why-matters > summary::before {
+  content: "\25B8"; /* ▸ */
+  color: var(--brand);
+  transition: transform 0.15s ease;
+}
+.why-matters[open] > summary::before { transform: rotate(90deg); }
+.why-matters[open] > summary { border-bottom: 1px solid var(--border); }
+.why-matters .why-body {
+  padding: 12px 16px 14px;
+  color: var(--fg-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+.why-matters .why-body > :first-child { margin-top: 0; }
+.why-matters .why-body > :last-child { margin-bottom: 0; }
+@media (prefers-reduced-motion: reduce) {
+  .why-matters > summary::before { transition: none; }
+}
