@@ -3,6 +3,7 @@ import Logo from "@/components/Logo";
 import CodeWindow from "@/components/CodeWindow";
 import {
   ResumeButton,
+  ReviewLink,
   ModuleProgressBar,
   ResetAllControl,
 } from "@/components/HomeProgressControls";
@@ -100,6 +101,7 @@ export default function Home() {
           ) : (
             <span style={topLinkStyle}>Cheatsheet</span>
           )}
+          <ReviewLink />
           <ResumeButton firstChapterHref={firstChapter?.href ?? null} />
         </nav>
       </header>

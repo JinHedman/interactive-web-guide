@@ -608,3 +608,424 @@ body {
 @media (prefers-reduced-motion: reduce) {
   .why-matters > summary::before { transition: none; }
 }
+
+/* ─── Predict (predict-the-output retrieval card) ─────────────────────────── */
+/* Pairs with a preceding <CodeExample> shown WITHOUT a preview: the reader
+   reasons about the output, commits, then reveals the answer. Brand-accent
+   eyebrow mirrors <InShort>. Token-based; works in both themes. */
+.predict {
+  margin: 1.75rem 0;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: 0 12px 12px 0;
+  background: var(--bg-surface);
+}
+.predict-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.66rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 6px;
+}
+.prose .predict .predict-prompt {
+  margin: 0 0 12px;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.5;
+  color: var(--fg-base);
+}
+.predict-input-label {
+  display: block;
+  font-size: 0.72rem;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-subtle);
+  margin-bottom: 5px;
+}
+.predict-input {
+  width: 100%;
+  resize: vertical;
+  padding: 9px 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg-base);
+  color: var(--fg-base);
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  outline: none;
+}
+.predict-input:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.predict-actions {
+  margin-top: 12px;
+}
+.predict-reveal {
+  padding: 9px 18px;
+  background: var(--brand-solid);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+}
+.predict-reveal:hover {
+  background: var(--brand-hover);
+}
+.predict-answer {
+  padding: 12px 15px;
+  background: var(--bg-base);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+}
+.predict-answer-label {
+  display: block;
+  font-size: 0.66rem;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--fg-subtle);
+  margin-bottom: 6px;
+}
+.predict-answer > :first-child {
+  margin-top: 0;
+}
+.predict-answer > :last-child {
+  margin-bottom: 0;
+}
+.predict-selfcheck {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.predict-selfcheck-q {
+  font-size: 0.82rem;
+  color: var(--fg-muted);
+  margin-right: 2px;
+}
+.predict-thumb {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 5px 12px;
+  border: 1px solid var(--border-strong);
+  border-radius: 20px;
+  background: var(--bg-surface);
+  color: var(--fg-muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.12s, color 0.12s, background 0.12s;
+}
+.predict-thumb:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}
+.predict-thumb[data-active="true"] {
+  border-color: var(--brand);
+  color: var(--brand);
+  background: var(--brand-light);
+}
+
+/* ─── Hint ladder (graduated hints inside <Exercise>) ─────────────────────── */
+/* Revealed one at a time before the solution; the solution stays the final
+   escape hatch below. Numbered cards, brand-accented trigger. */
+.hint-ladder {
+  margin: 16px 0;
+}
+.hint-ladder-trigger {
+  padding: 7px 15px;
+  background: none;
+  color: var(--brand);
+  border: 1px dashed var(--brand);
+  border-radius: 8px;
+  font-weight: 600;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: background 0.12s, border-style 0.12s;
+}
+.hint-ladder-trigger:hover {
+  background: var(--brand-light);
+}
+.hint-ladder-list {
+  list-style: none;
+  margin: 0 0 12px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.hint-card {
+  padding: 11px 14px;
+  background: var(--brand-light);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand);
+  border-radius: 0 8px 8px 0;
+}
+.hint-card-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.64rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 4px;
+}
+.hint-card-body {
+  margin: 0;
+  font-size: 0.88rem;
+  line-height: 1.55;
+  color: var(--fg-base);
+}
+
+/* ─── Review surface (/review) + home "Review (N)" link ───────────────────── */
+.home-review-link:hover .home-review-count,
+.home-review-link:hover {
+  background: var(--brand);
+  color: #fff;
+}
+.home-review-count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 18px;
+  height: 18px;
+  padding: 0 5px;
+  border-radius: 9px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1;
+}
+.home-review-link:hover .home-review-count {
+  background: #fff;
+  color: var(--brand);
+}
+
+.review-page {
+  max-width: 680px;
+  margin: 0 auto;
+  padding: 48px 24px 80px;
+}
+.review-page-head {
+  margin-bottom: 28px;
+}
+.review-eyebrow {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--brand);
+  margin-bottom: 8px;
+}
+.review-title {
+  font-size: 2rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg-base);
+  margin: 0 0 10px;
+}
+.review-intro {
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  margin: 0;
+}
+
+.review-session {
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+  overflow: hidden;
+}
+.review-session-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 13px 18px;
+  background: var(--brand-light);
+  border-bottom: 1px solid var(--border);
+}
+.review-session-count {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--brand);
+}
+.review-session-source {
+  font-size: 12px;
+  color: var(--fg-muted);
+  text-decoration: none;
+}
+.review-session-source:hover {
+  color: var(--brand);
+  text-decoration: underline;
+}
+.review-question {
+  padding: 18px;
+}
+.review-question-prompt {
+  font-weight: 500;
+  font-size: 14.5px;
+  line-height: 1.5;
+  margin: 0 0 14px;
+  color: var(--fg-base);
+}
+.review-option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 13px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: transparent;
+  cursor: pointer;
+  font-size: 14px;
+  transition: border-color 0.12s, background 0.12s;
+}
+.review-option.is-selected {
+  border-color: var(--brand);
+  background: var(--brand-light);
+}
+.review-option.is-answer {
+  border-color: var(--progress-read);
+  background: var(--quiz-correct-bg);
+  cursor: default;
+}
+.review-option.is-wrong {
+  border-color: var(--danger-border);
+  background: var(--quiz-wrong-bg);
+  cursor: default;
+}
+.review-option-tag {
+  margin-left: auto;
+  color: var(--progress-read);
+  font-weight: 600;
+  font-size: 12px;
+}
+.review-fill {
+  width: 100%;
+  max-width: 320px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  border: 1px solid var(--border);
+  font-size: 0.9rem;
+  font-family: var(--font-mono);
+  background: var(--bg-base);
+  color: var(--fg-base);
+  outline: none;
+}
+.review-fill:focus-visible {
+  border-color: var(--brand);
+  outline: 2px solid var(--brand);
+  outline-offset: 1px;
+}
+.review-feedback {
+  margin-top: 14px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+}
+.review-feedback.is-correct {
+  background: var(--quiz-correct-bg);
+  color: var(--progress-read);
+  border: 1px solid var(--progress-read);
+}
+.review-feedback.is-wrong {
+  background: var(--quiz-wrong-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger-border);
+}
+.review-feedback-explain {
+  display: block;
+  margin-top: 4px;
+  color: var(--fg-muted);
+  font-weight: 400;
+}
+.review-session-actions {
+  padding: 0 18px 18px;
+}
+.review-btn-primary {
+  padding: 9px 18px;
+  background: var(--brand-solid);
+  color: #fff;
+  border: none;
+  border-radius: 9px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+}
+.review-btn-primary:hover:not(:disabled) {
+  background: var(--brand-hover);
+}
+.review-btn-primary:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.review-empty {
+  text-align: center;
+  padding: 48px 24px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--bg-surface);
+}
+.review-empty-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: var(--quiz-correct-bg);
+  color: var(--progress-read);
+  border: 1px solid var(--progress-read);
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 16px;
+}
+.review-empty-title {
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: var(--fg-base);
+  margin: 0 0 8px;
+}
+.review-empty-body {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--fg-muted);
+  max-width: 420px;
+  margin: 0 auto 18px;
+}
+.review-empty-link {
+  display: inline-flex;
+  align-items: center;
+  border: 1px solid var(--border-strong);
+  color: var(--fg-base);
+  padding: 9px 18px;
+  border-radius: 9px;
+  font-size: 14px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: border-color 0.12s, color 0.12s;
+}
+.review-empty-link:hover {
+  border-color: var(--brand);
+  color: var(--brand);
+}

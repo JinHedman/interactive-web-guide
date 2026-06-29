@@ -44,6 +44,20 @@ for (let i = 0; i < hobbies.length; i++) {
 
 Looping while `i < hobbies.length` works for any array length — you do not hard-code the count.
 
+Before you run a loop, it pays to trace it in your head. Try this one first, then reveal the answer.
+
+<CodeExample language="js">
+{`let total = 0;
+for (let i = 1; i <= 4; i++) {
+  total += i;
+}
+console.log(total);`}
+</CodeExample>
+
+<Predict prompt="What does this log to the console?">
+`10` — the loop adds `1 + 2 + 3 + 4`, so `total` is `10` when it stops (after `i` reaches `5` and the condition `i <= 4` is false).
+</Predict>
+
 ## for...of
 
 When you just want each item and do not care about the index, `for...of` is cleaner.
@@ -80,6 +94,20 @@ console.log("Lift off!");
 </CodeExample>
 
 **Watch out for infinite loops.** Something inside the loop must eventually make the condition false. If you forget `countdown--`, the condition stays `true` forever and the page freezes. Always make sure each pass moves toward the exit.
+
+Here is a small variation — trace it before you reveal the answer.
+
+<CodeExample language="js">
+{`let n = 0;
+while (n < 4) {
+  console.log(n);
+  n += 2;
+}`}
+</CodeExample>
+
+<Predict prompt="What does this log, line by line?">
+`0` then `2`. After the second pass `n` is `4`, so `n < 4` is false and the loop stops — it never logs `4`.
+</Predict>
 
 ## forEach
 

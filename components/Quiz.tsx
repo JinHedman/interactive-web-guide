@@ -3,10 +3,14 @@
 import { useEffect, useId, useReducer } from "react";
 import type { QuizQuestion } from "@/lib/types";
 import { setQuizScore, type ProgressEventDetail } from "@/lib/progress";
+import { addMissed, type ReviewItem } from "@/lib/review";
 
 export interface QuizProps {
   questions: QuizQuestion[];
   chapterId?: string; // e.g. "html/1-structure" — used to persist score
+  // Human-readable chapter title, injected by the MDX component map. Stored
+  // alongside any missed questions so the /review surface can label them.
+  chapterTitle?: string;
 }
 
 // ─── State machine ───────────────────────────────────────────────────────────
@@ -54,7 +58,7 @@ function reducer(state: State, action: Action): State {
 }
 
 // ─── Component ────────────────────────────────────────────────────────────────
-export default function Quiz({ questions = [], chapterId }: QuizProps) {
+export default function Quiz({ questions = [], chapterId, chapterTitle }: QuizProps) {
   const uid = useId();
   const [state, dispatch] = useReducer(reducer, questions.length, initState);
 
@@ -63,12 +67,23 @@ export default function Quiz({ questions = [], chapterId }: QuizProps) {
 
   const score = computeScore(questions, state.questions);
 
-  // Persist score when quiz is finished
+  // Persist score AND capture missed questions into the spaced-review store when
+  // the learner finalizes the quiz. Missed questions resurface on /review for
+  // re-attempt; addMissed de-dupes by chapterId + question id, so re-taking the
+  // quiz never piles up duplicates (a now-correct question stays in the queue
+  // until answered correctly *there* — capture only adds, it never removes).
   useEffect(() => {
-    if (state.finished && chapterId) {
-      setQuizScore(chapterId, score);
-    }
-  }, [state.finished, chapterId, score]);
+    if (!state.finished || !chapterId) return;
+    setQuizScore(chapterId, score);
+
+    const missed: ReviewItem[] = questions
+      .filter((q, i) => !checkCorrect(q, state.questions[i].selected))
+      .map((q) => ({ chapterId, chapterTitle, question: q }));
+    addMissed(missed);
+    // `state.questions`/`questions` are stable for a finished quiz render; the
+    // effect re-runs only when `finished` flips, which is the capture moment.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [state.finished, chapterId, chapterTitle, score]);
 
   // Return to a fresh, re-takeable state when this chapter is reset (per-chapter
   // "Reset this section" or the global "Reset all progress").

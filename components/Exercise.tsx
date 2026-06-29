@@ -36,6 +36,12 @@ export interface ExerciseProps {
    * exclusive with solutionFiles.
    */
   solutionProse?: string;
+  /**
+   * Optional graduated hints, revealed ONE AT A TIME before the solution
+   * (a gentle nudge → the key concept → almost the answer). Absent/empty =
+   * unchanged behavior (no hint ladder). Plain strings; rendered as text.
+   */
+  hints?: string[];
   chapterId?: string; // e.g. "html/1-structure"
 }
 
@@ -46,9 +52,12 @@ export default function Exercise({
   expected,
   solutionFiles = [],
   solutionProse,
+  hints = [],
   chapterId,
 }: ExerciseProps) {
   const [showSolution, setShowSolution] = useState(false);
+  // How many hints in the ladder are currently revealed (0 = none shown yet).
+  const [hintsShown, setHintsShown] = useState(0);
 
   // This exercise's stable id within its chapter (slug of its title). Tracked
   // independently so chapters with several exercises don't share one flag.
@@ -72,7 +81,10 @@ export default function Exercise({
       const affectsUs =
         detail.kind === "clear-all" ||
         (detail.kind === "reset-chapter" && detail.chapterId === chapterId);
-      if (affectsUs) setShowSolution(false);
+      if (affectsUs) {
+        setShowSolution(false);
+        setHintsShown(0);
+      }
     }
     window.addEventListener("guide:progress", onProgress);
     return () => window.removeEventListener("guide:progress", onProgress);
@@ -204,6 +216,45 @@ export default function Exercise({
             {expected}
           </p>
         </div>
+
+        {/* Hint ladder — graduated hints revealed one at a time. Sits above the
+            action buttons; the "Reveal solution" block below stays the final
+            escape hatch. Only rendered when the author supplied hints. */}
+        {hints.length > 0 && (
+          <div className="hint-ladder">
+            {hintsShown === 0 ? (
+              <button
+                type="button"
+                className="hint-ladder-trigger"
+                onClick={() => setHintsShown(1)}
+              >
+                Need a hint?
+              </button>
+            ) : (
+              <>
+                <ol className="hint-ladder-list" aria-live="polite">
+                  {hints.slice(0, hintsShown).map((hint, i) => (
+                    <li key={i} className="hint-card">
+                      <span className="hint-card-label">
+                        Hint {i + 1} of {hints.length}
+                      </span>
+                      <p className="hint-card-body">{hint}</p>
+                    </li>
+                  ))}
+                </ol>
+                {hintsShown < hints.length && (
+                  <button
+                    type="button"
+                    className="hint-ladder-trigger"
+                    onClick={() => setHintsShown((n) => Math.min(n + 1, hints.length))}
+                  >
+                    Show next hint
+                  </button>
+                )}
+              </>
+            )}
+          </div>
+        )}
 
         {/* Action buttons */}
         <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center" }}>

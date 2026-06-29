@@ -10,7 +10,37 @@ import {
   subscribe,
 } from "@/lib/progress";
 import { useHasMounted, useLastVisited } from "@/lib/useProgress";
+import { useReviewCount, clearReview } from "@/lib/review";
 import ResetButton from "./ResetButton";
+
+// ─── Review entry point (top bar) ────────────────────────────────────────────
+// "Review (N)" link to /review, shown only once there are missed questions to
+// re-attempt. Hydration-safe: useReviewCount() returns 0 on the server and the
+// first client render, so this renders nothing until mounted — no SSR mismatch.
+export function ReviewLink() {
+  const count = useReviewCount();
+  if (count <= 0) return null;
+  return (
+    <Link href="/review" className="home-review-link" style={reviewLinkStyle}>
+      Review <span className="home-review-count">{count}</span>
+    </Link>
+  );
+}
+
+const reviewLinkStyle: React.CSSProperties = {
+  display: "inline-flex",
+  alignItems: "center",
+  gap: 7,
+  border: "1px solid var(--brand)",
+  color: "var(--brand)",
+  background: "var(--brand-light)",
+  padding: "6px 13px",
+  borderRadius: 9,
+  fontWeight: 600,
+  fontSize: 13,
+  textDecoration: "none",
+  lineHeight: 1,
+};
 
 // ─── Resume button (top bar) ─────────────────────────────────────────────────
 // Wired to the existing resume-last-chapter logic: most recently visited
@@ -112,7 +142,10 @@ export function ResetAllControl() {
   return (
     <ResetButton
       label="Reset all progress"
-      onConfirm={clearAllProgress}
+      onConfirm={() => {
+        clearAllProgress();
+        clearReview(); // a global reset empties the review queue too
+      }}
       doneMessage="All progress reset"
       variant="danger"
     />

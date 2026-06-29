@@ -11,9 +11,13 @@ import DocsLinks from "./DocsLinks";
 import DocRef from "./DocRef";
 import InShort from "./InShort";
 import WhyItMatters from "./WhyItMatters";
+import Predict from "./Predict";
 import { lookupReference } from "@/lib/references";
 
-export function getMDXComponents(chapterId: string) {
+// `chapterTitle` (the lesson's frontmatter title) is threaded in so <Quiz> can
+// label any missed questions it captures into the spaced-review store. Optional
+// so callers that only have the id still type-check.
+export function getMDXComponents(chapterId: string, chapterTitle?: string) {
   // Chapter module ("html" | "css" | "javascript" | …) disambiguates inline-code
   // doc references (a bare token can be both a CSS property and a JS identifier).
   const module = chapterId.split("/")[0];
@@ -23,8 +27,11 @@ export function getMDXComponents(chapterId: string) {
     CodeExample: (props: React.ComponentProps<typeof CodeExample>) => (
       <CodeExample {...props} />
     ),
-    Quiz: (props: Omit<React.ComponentProps<typeof Quiz>, "chapterId">) => (
-      <Quiz {...props} chapterId={chapterId} />
+    Quiz: (
+      props: Omit<React.ComponentProps<typeof Quiz>, "chapterId" | "chapterTitle">
+    ) => <Quiz {...props} chapterId={chapterId} chapterTitle={chapterTitle} />,
+    Predict: (props: React.ComponentProps<typeof Predict>) => (
+      <Predict {...props} />
     ),
     Exercise: (
       props: Omit<React.ComponentProps<typeof ExerciseServer>, "chapterId">
