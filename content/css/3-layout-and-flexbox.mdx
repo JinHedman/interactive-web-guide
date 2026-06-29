@@ -266,6 +266,11 @@ Flexbox excels at laying out items in *one* direction — a row or a column. Whe
     "View with Live Server, adjust the gap until it looks balanced, then commit in GitHub Desktop."
   ]}
   expected="A round avatar sitting to the left of the name and bio, with an evenly spaced row of links above the card."
+  hints={[
+    "The avatar and details stack because their parent is still a normal block. Flexbox is set on the container, not the items — so which single element wraps both of them? That is the one to change.",
+    "A flex container needs display: flex plus a little spacing and vertical alignment: gap controls the space between the avatar and the details, and align-items: center lines them up on the cross axis.",
+    "On .card use display: flex; align-items: center; gap: 1rem;. Keep the avatar round and stop it from squashing with width/height, border-radius: 50%, and flex-shrink: 0. For the links row, make .links its own flex container with justify-content: space-between and a gap."
+  ]}
   solution={[
     {
       name: "index.html (body)",

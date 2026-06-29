@@ -33,7 +33,7 @@ export default async function LessonPage({ params }: PageProps) {
   const { source, frontmatter } = chapter;
   const chapterId = `${module}/${slug}`;
   const { prev, next } = getPrevNext(module, slug);
-  const components = getMDXComponents(chapterId);
+  const components = getMDXComponents(chapterId, frontmatter.title);
 
   return (
     <article className="lesson-article">

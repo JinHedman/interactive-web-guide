@@ -39,6 +39,8 @@ export interface ExerciseServerProps {
   solutionLang?: string;
   /** Single-string mode only: window filename. Default derived from lang. */
   solutionName?: string;
+  /** Optional graduated hints, revealed one at a time before the solution. */
+  hints?: string[];
   chapterId?: string;
 }
 
