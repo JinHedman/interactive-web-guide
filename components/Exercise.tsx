@@ -222,36 +222,29 @@ export default function Exercise({
             escape hatch. Only rendered when the author supplied hints. */}
         {hints.length > 0 && (
           <div className="hint-ladder">
-            {hintsShown === 0 ? (
+            {/* The list is the aria-live region and is ALWAYS rendered (empty
+                until the first hint) so that hint 1 is appended into an existing
+                region and announced — a region inserted together with its first
+                child is not reliably announced. `.hint-ladder-list:empty`
+                collapses its margin so the empty list adds no visible gap. */}
+            <ol className="hint-ladder-list" aria-live="polite">
+              {hints.slice(0, hintsShown).map((hint, i) => (
+                <li key={i} className="hint-card">
+                  <span className="hint-card-label">
+                    Hint {i + 1} of {hints.length}
+                  </span>
+                  <p className="hint-card-body">{hint}</p>
+                </li>
+              ))}
+            </ol>
+            {hintsShown < hints.length && (
               <button
                 type="button"
                 className="hint-ladder-trigger"
-                onClick={() => setHintsShown(1)}
+                onClick={() => setHintsShown((n) => Math.min(n + 1, hints.length))}
               >
-                Need a hint?
+                {hintsShown === 0 ? "Need a hint?" : "Show next hint"}
               </button>
-            ) : (
-              <>
-                <ol className="hint-ladder-list" aria-live="polite">
-                  {hints.slice(0, hintsShown).map((hint, i) => (
-                    <li key={i} className="hint-card">
-                      <span className="hint-card-label">
-                        Hint {i + 1} of {hints.length}
-                      </span>
-                      <p className="hint-card-body">{hint}</p>
-                    </li>
-                  ))}
-                </ol>
-                {hintsShown < hints.length && (
-                  <button
-                    type="button"
-                    className="hint-ladder-trigger"
-                    onClick={() => setHintsShown((n) => Math.min(n + 1, hints.length))}
-                  >
-                    Show next hint
-                  </button>
-                )}
-              </>
             )}
           </div>
         )}

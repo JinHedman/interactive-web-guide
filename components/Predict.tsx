@@ -25,7 +25,6 @@ export interface PredictProps {
 export default function Predict({ prompt, children }: PredictProps) {
   const uid = useId();
   const inputId = `${uid}-predict-input`;
-  const answerId = `${uid}-predict-answer`;
 
   const [revealed, setRevealed] = useState(false);
   // Visual-only self-check; not persisted (pilot scope).
@@ -69,7 +68,7 @@ export default function Predict({ prompt, children }: PredictProps) {
 
       {revealed && (
         <>
-          <div id={answerId} className="predict-answer" ref={answerRef} tabIndex={-1}>
+          <div className="predict-answer" ref={answerRef} tabIndex={-1}>
             <span className="predict-answer-label">Answer</span>
             {children}
           </div>
