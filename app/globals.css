@@ -766,6 +766,11 @@ body {
   flex-direction: column;
   gap: 10px;
 }
+/* The list is always present (it's the aria-live region); collapse its margin
+   while empty so it adds no gap above the "Need a hint?" button. */
+.hint-ladder-list:empty {
+  margin: 0;
+}
 .hint-card {
   padding: 11px 14px;
   background: var(--brand-light);
